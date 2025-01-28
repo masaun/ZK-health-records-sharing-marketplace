@@ -1,0 +1,17 @@
+cache
+out
+proofs
+broadcast
+.env
+
+.DS_Store
+./circuits/.DS_Store
+./contracts/.DS_Store
+./test/.DS_Store
+
+plonk_vk.sol
+circuits/target/*
+circuits/Prover.toml
+circuits/Verifier.toml
+
+circuits/test_verifyProof.toml
