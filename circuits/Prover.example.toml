@@ -1,0 +1,46 @@
+#return = ""     # Don't write the return value here - Because the return value is the Struct data
+productId = "" # Either type "string" or "integer" is fine.
+providerId = ""
+name = ""
+walletAddress = ""
+height = ""
+weight = ""
+age = ""
+gender = ""
+race_type = ""
+blood_type = ""
+blood_pressure = ""
+heart_rate = ""
+average_hours_of_sleep = ""
+revealProviderId = "" # True: "0", False: "1"
+revealName = ""
+revealWalletAddress = ""
+revealAge = ""
+revealGender = ""
+revealHeight = ""
+revealWeight = ""
+revealRaceType = ""
+revealBloodType = ""
+revealBloodPressure = ""
+revealHeartRate = ""
+revealAverageHoursOfSleep = "" # True: "0", False: "1"
+
+
+#############################################################################
+# [PENDING]: Write the "return" value in a Struct data format ("RevealedData") #
+#############################################################################
+
+# [return]
+# productId = ""
+# providerId = ""
+# name = ""
+# walletAddress = ""
+# height = ""
+# weight = ""
+# age = ""
+# gender = ""
+# race_type = ""
+# blood_type = ""
+# blood_pressure = ""
+# heart_rate = ""
+# average_hours_of_sleep = ""
