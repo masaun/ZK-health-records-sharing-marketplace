@@ -1,7 +1,10 @@
 [package]
-name="with_foundry"
+name="health_data_sharing"
 type="bin"
-authors = ["critesjosh"]
+authors = [""]
 compiler_version = ">=0.31.0"
+description = "ZK based medical records sharing"
+entry = "src/main.nr"
+license = ""
 
 [dependencies]
