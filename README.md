@@ -1,3 +1,14 @@
+
+## Installation
+- Install libraries
+  (NOTE: Before this installation, all folders should be removed under the ./lib directory)
+```shell
+forge install OpenZeppelin/openzeppelin-contracts
+forge install 0xnonso/foundry-noir-helper
+```
+
+<br>
+
 ## Run ZK circuit
 
 - Run the `build.sh` to run ZK circuit
