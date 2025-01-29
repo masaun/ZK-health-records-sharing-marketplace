@@ -13,6 +13,8 @@ import { RewardPoolFactory } from "../contracts/rewards/RewardPoolFactory.sol";
 import { RewardPool } from "../contracts/rewards/RewardPool.sol";
 import { MockRewardToken } from "../contracts/rewards/MockRewardToken.sol";
 
+import { SafeERC20 } from "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
+
 import { NoirHelper } from "foundry-noir-helper/NoirHelper.sol";
 
 
@@ -20,6 +22,8 @@ import { NoirHelper } from "foundry-noir-helper/NoirHelper.sol";
  * @notice - The test of the scenario of HealthDataSharing
  **/
 contract ScenarioTest is Test {
+    using SafeERC20 for MockRewardToken;
+
     UltraVerifier public verifier;
     HealthDataSharingVerifier public healthDataSharingVerifier;
     HealthDataSharingRequester public healthDataSharingRequester;
@@ -119,7 +123,7 @@ contract ScenarioTest is Test {
 
         console.logString("3/ A medical researcher would create a reward pool and deposit the reward token into the reward pool");
         uint256 amount = 10 * 1e18;
-        rewardToken.approve(address(rewardPool), amount);
+        rewardToken.safeIncreaseAllowance(address(rewardPool), amount);
         rewardPool.depositRewardToken(amount);
         console.log("%s: %s", "medicalResearcher.balance", medicalResearcher.balance);
         console.log("%s: %s", "address(rewardPool).balance", address(rewardPool).balance);

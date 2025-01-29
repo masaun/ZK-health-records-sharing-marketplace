@@ -16,4 +16,8 @@ contract MockRewardToken is ERC20, Ownable {
     function mint(address to, uint256 amount) external onlyOwner {
         _mint(to, amount);
     }
+
+    // function approve(address spender, uint256 amount) external onlyOwner {
+    //    _approve(msg.sender, spender, amount);
+    // }
 }
