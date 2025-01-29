@@ -9,6 +9,21 @@ forge install 0xnonso/foundry-noir-helper
 
 <br>
 
+- Install the `ultraplonk_verifier` (`v0.3.0`) \
+  https://github.com/zkVerify/ultraplonk_verifier
+```shell
+cargo install --features bins --path .
+```
+
+(NOTE: If the outdated-version of the  `ultraplonk_verifier` is already installed, the following command should be used instead of the command above)
+```shell
+cargo install --features bins --path . --force
+```
+
+
+
+<br>
+
 ## Run ZK circuit
 
 - Run the `build.sh` to run ZK circuit
