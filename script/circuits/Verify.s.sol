@@ -1,11 +1,11 @@
 pragma solidity ^0.8.17;
 
 import "forge-std/Script.sol";
-import "../circuits/target/contract.sol";
-import "../contract/Starter.sol";
+import { UltraVerifier } from "../../circuits/target/contract.sol";
+import { HealthDataSharingVerifier } from "../../contracts/circuits/HealthDataSharingVerifier.sol";
 
 contract VerifyScript is Script {
-    Starter public starter;
+    HealthDataSharingVerifier public healthDataSharingVerifier;
     UltraVerifier public verifier;
 
     function setUp() public {}
@@ -15,16 +15,16 @@ contract VerifyScript is Script {
         vm.startBroadcast(deployerPrivateKey);
 
         verifier = new UltraVerifier();
-        starter = new Starter(verifier);
+        healthDataSharingVerifier = new HealthDataSharingVerifier(verifier);
 
-        string memory proof = vm.readLine("./circuits/proofs/with_foundry.proof");
+        string memory proof = vm.readLine("./circuits/proofs/health_data_sharing_proof");
         bytes memory proofBytes = vm.parseBytes(proof);
 
         bytes32[] memory correct = new bytes32[](2);
         correct[0] = bytes32(0x0000000000000000000000000000000000000000000000000000000000000003);
         correct[1] = correct[0];
 
-        bool equal = starter.verifyEqual(proofBytes, correct);
-        return equal;
+        bool result = healthDataSharingVerifier.verifyHealthDataSharingProof(proofBytes, correct);
+        return result;
     }
 }
