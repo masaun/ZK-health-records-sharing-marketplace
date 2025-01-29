@@ -5,6 +5,9 @@ import { HealthDataSharingRequester } from "./HealthDataSharingRequester.sol";
 
 import { RewardPool } from "./rewards/RewardPool.sol";
 
+/// @dev - zkVerify Attestation Contracts
+import { IZkVerifyAttestation } from "./zkv-attestation-contracts/interfaces/IZkVerifyAttestation.sol";
+
 
 /** 
  * @notice - HealthDataSharing Executor contract
