@@ -1,3 +1,65 @@
+## Run ZK circuit
+
+- Run the `build.sh` to run ZK circuit
+```shell
+sh ./circuits/build.sh
+```
+
+## Test - ZK circuit
+- Run the `circuit_test.sh` to test the ZK circuit. 
+```shell
+cd circuits
+sh circuit_test.sh
+```
+
+<br>
+
+<br>
+
+## SC
+
+- Compile the smart contracts
+```shell
+sh ./buildContract.sh
+```
+
+<br>
+
+## Test - SC
+
+- Run the test of the `HealthDataSharing.t.sol`
+```shell
+sh ./test/runningTest_1.sh
+```
+
+- Run the test of the `HealthDataSharingViaNoirHelper.t.sol`
+```shell
+sh ./test/runningTest_2.sh
+```
+
+- Run the test of the `Scenario.t.sol`
+```shell
+sh ./test/runningTest_3.sh
+```
+
+
+
+## Test - SC for Hashing
+- Run the test of the `HashingWithKeccak256.t.sol`
+```shell
+sh ./test/hashing/runningTest_hash_1.sh
+```
+
+- Run the test of the `HashingWithSha256.t.sol`
+```shell
+sh ./test/hashing/runningTest_hash_2.sh
+```
+
+<br>
+
+<hr>
+
+
 # Noir with Foundry
 
 This example uses Foundry to deploy and test a verifier.
