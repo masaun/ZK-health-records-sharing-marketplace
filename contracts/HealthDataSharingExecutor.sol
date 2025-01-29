@@ -1,12 +1,13 @@
 pragma solidity ^0.8.17;
 
+/// @dev - zkVerify Attestation Contracts
+import { IZkVerifyAttestation } from "./zkv-attestation-contracts/interfaces/IZkVerifyAttestation.sol";
+
+/// @dev - ZK (Ultraplonk) circuit, which is generated in Noir.
 import { HealthDataSharingVerifier } from "./circuits/HealthDataSharingVerifier.sol"; /// @dev - Deployed-Verifier SC, which was generated based on the main.nr
 import { HealthDataSharingRequester } from "./HealthDataSharingRequester.sol";
 
 import { RewardPool } from "./rewards/RewardPool.sol";
-
-/// @dev - zkVerify Attestation Contracts
-import { IZkVerifyAttestation } from "./zkv-attestation-contracts/interfaces/IZkVerifyAttestation.sol";
 
 
 /** 
@@ -15,6 +16,7 @@ import { IZkVerifyAttestation } from "./zkv-attestation-contracts/interfaces/IZk
  * @notice - Scenario: a Wearable Device (i.e. Apple Watch, Pulse) holder can send their medical data (i.e. Execise Hours + Blood Presure) to the medical researcher - without revealing extra sensitive personal data on their Smart Watch.
  */
 contract HealthDataSharingExecutor {
+    IZkVerifyAttestation public zkVerifyAttestation;
     HealthDataSharingVerifier public healthDataSharingVerifier;
     HealthDataSharingRequester public healthDataSharingRequester;
     RewardPool public rewardPool;
@@ -29,10 +31,12 @@ contract HealthDataSharingExecutor {
     }
 
     constructor(
+        IZkVerifyAttestation _zkVerifyAttestation,
         HealthDataSharingVerifier _healthDataSharingVerifier, 
         HealthDataSharingRequester _healthDataSharingRequester,
         RewardPool _rewardPool
     ) {
+        zkVerifyAttestation = _zkVerifyAttestation; /// @dev - The ZkVerifyAttestation contract-deployed on EDU Chain
         healthDataSharingVerifier = _healthDataSharingVerifier;
         healthDataSharingRequester = _healthDataSharingRequester;
         rewardPool = _rewardPool;
@@ -53,11 +57,21 @@ contract HealthDataSharingExecutor {
         bytes calldata proof, 
         bytes32[] calldata publicInput, 
         uint256 medicalResearcherId, 
-        uint256 healthDataSharingRequestId
+        uint256 healthDataSharingRequestId,
+        /// @dev - The parameters below are for the zkVerifyAttestation# verifyProofAttestation()
+        uint256 _attestationId,
+        bytes32 _leaf,
+        bytes32[] calldata _merklePath,
+        uint256 _leafCount,
+        uint256 _index
+
     ) public onlyWearableDeviceHolder returns(bool) {
-        /// @dev - Check a given proof
+        /// @dev - Validate a given proof via the Verifier contract, which was generated via the ZK circuit in Noir.
         bool result = _verifyHealthDataSharingProof(proof, publicInput);
         require(result == true, "Invalid proofs");
+
+        /// @dev - Validate a given attestation of a given proof via the Verifier contract, which was generated via the zkVerifier.
+        zkVerifyAttestation.verifyProofAttestation(_attestationId, _leaf, _merklePath, _leafCount,_index);
 
         /// @dev - Check whether or not a given number of public inputs is equal to the number of items, which was requested by a Medical Researcher.
         //require(publicInput.length == healthDataSharingVerifierRequestor.getHealthDataSharingVerifierRequest(medicalResearcherId, healthDataSharingVerifierRequestId), "Invalid number of public inputs");

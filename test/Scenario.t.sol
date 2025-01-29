@@ -4,8 +4,14 @@ import "forge-std/Test.sol";
 import "forge-std/console.sol";
 import {Vm} from "forge-std/Vm.sol";
 
+
+/// @dev - zkVerify Attestation Contracts
+import { IZkVerifyAttestation } from "../contracts/zkv-attestation-contracts/interfaces/IZkVerifyAttestation.sol";
+
+/// @dev - ZK (Ultraplonk) circuit, which is generated in Noir.
 import { UltraVerifier } from "../circuits/target/contract.sol"; /// @dev - Deployed-Verifier SC, which was generated based on the main.nr
 import { HealthDataSharingVerifier } from "../contracts/circuits/HealthDataSharingVerifier.sol";
+
 import { HealthDataSharingRequester } from "../contracts/HealthDataSharingRequester.sol";
 import { HealthDataSharingExecutor } from "../contracts/HealthDataSharingExecutor.sol";
 
@@ -24,6 +30,7 @@ import { NoirHelper } from "foundry-noir-helper/NoirHelper.sol";
 contract ScenarioTest is Test {
     using SafeERC20 for MockRewardToken;
 
+    IZkVerifyAttestation public zkVerifyAttestation;
     UltraVerifier public verifier;
     HealthDataSharingVerifier public healthDataSharingVerifier;
     HealthDataSharingRequester public healthDataSharingRequester;
@@ -32,6 +39,9 @@ contract ScenarioTest is Test {
     RewardPool public rewardPool;
     MockRewardToken public rewardToken;
     NoirHelper public noirHelper;
+
+    /// @dev - Deployed-SC address on EDU Chain
+    address _zkVerifyAttestation;
 
     /// @dev - Actors
     address medicalResearcher;
@@ -46,10 +56,11 @@ contract ScenarioTest is Test {
         rewardPool = rewardPoolFactory.createNewRewardPool(rewardToken, rewardAmountPerSubmission);
 
         noirHelper = new NoirHelper();
+        zkVerifyAttestation = IZkVerifyAttestation(_zkVerifyAttestation); /// @dev - The ZkVerifyAttestation contract-deployed on EDU Chain
         verifier = new UltraVerifier();
         healthDataSharingVerifier = new HealthDataSharingVerifier(verifier);
         healthDataSharingRequester = new HealthDataSharingRequester(healthDataSharingVerifier);
-        healthDataSharingExecutor = new HealthDataSharingExecutor(healthDataSharingVerifier, healthDataSharingRequester, rewardPool);
+        healthDataSharingExecutor = new HealthDataSharingExecutor(zkVerifyAttestation, healthDataSharingVerifier, healthDataSharingRequester, rewardPool);
 
         /// @dev - Set actors and charge the ETH balance of a medical researcher
         medicalResearcher = address(0x1);
