@@ -67,11 +67,12 @@ contract HealthDataSharingExecutor {
 
     ) public onlyWearableDeviceHolder returns(bool) {
         /// @dev - Validate a given proof via the Verifier contract, which was generated via the ZK circuit in Noir.
-        bool result = _verifyHealthDataSharingProof(proof, publicInput);
-        require(result == true, "Invalid proofs");
+        bool result1 = _verifyHealthDataSharingProof(proof, publicInput);
+        require(result1 == true, "Invalid proof");
 
         /// @dev - Validate a given attestation of a given proof via the Verifier contract, which was generated via the zkVerifier.
-        zkVerifyAttestation.verifyProofAttestation(_attestationId, _leaf, _merklePath, _leafCount,_index);
+        bool result2 = zkVerifyAttestation.verifyProofAttestation(_attestationId, _leaf, _merklePath, _leafCount,_index);
+        require(result2 == true, "Invalid attestation of proof");
 
         /// @dev - Check whether or not a given number of public inputs is equal to the number of items, which was requested by a Medical Researcher.
         //require(publicInput.length == healthDataSharingVerifierRequestor.getHealthDataSharingVerifierRequest(medicalResearcherId, healthDataSharingVerifierRequestId), "Invalid number of public inputs");
