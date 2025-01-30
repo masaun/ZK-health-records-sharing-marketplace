@@ -7,6 +7,7 @@ import {Vm} from "forge-std/Vm.sol";
 
 /// @dev - zkVerify Attestation Contracts
 import { IZkVerifyAttestation } from "../contracts/zkv-attestation-contracts/interfaces/IZkVerifyAttestation.sol";
+import { ZkVerifyAttestationSubmitter } from "../contracts/zkv-attestation-contracts/ZkVerifyAttestationSubmitter.sol";
 
 /// @dev - ZK (Ultraplonk) circuit, which is generated in Noir.
 import { UltraVerifier } from "../circuits/target/contract.sol"; /// @dev - Deployed-Verifier SC, which was generated based on the main.nr
@@ -31,6 +32,8 @@ contract ScenarioTest is Test {
     using SafeERC20 for MockRewardToken;
 
     IZkVerifyAttestation public zkVerifyAttestation;
+    ZkVerifyAttestationSubmitter public zkVerifyAttestationSubmitter;
+
     UltraVerifier public verifier;
     HealthDataSharingVerifier public healthDataSharingVerifier;
     HealthDataSharingRequester public healthDataSharingRequester;
@@ -55,12 +58,13 @@ contract ScenarioTest is Test {
         uint256 rewardAmountPerSubmission = 5 * 1e18; /// @dev - 5 RewardToken
         rewardPool = rewardPoolFactory.createNewRewardPool(rewardToken, rewardAmountPerSubmission);
 
-        noirHelper = new NoirHelper();
         zkVerifyAttestation = IZkVerifyAttestation(_zkVerifyAttestation); /// @dev - The ZkVerifyAttestation contract-deployed on EDU Chain
+        zkVerifyAttestationSubmitter = new ZkVerifyAttestationSubmitter(_zkVerifyAttestation); /// @dev  -The ZkVerifyAttestationSubmitter contract is the specific purpose contract to submit an attestaion to the ZkVerifyAttestation contract.
         verifier = new UltraVerifier();
         healthDataSharingVerifier = new HealthDataSharingVerifier(verifier);
         healthDataSharingRequester = new HealthDataSharingRequester(healthDataSharingVerifier);
         healthDataSharingExecutor = new HealthDataSharingExecutor(zkVerifyAttestation, healthDataSharingVerifier, healthDataSharingRequester, rewardPool);
+        noirHelper = new NoirHelper();
 
         /// @dev - Set actors and charge the ETH balance of a medical researcher
         medicalResearcher = address(0x1);
@@ -139,6 +143,17 @@ contract ScenarioTest is Test {
         console.log("%s: %s", "medicalResearcher.balance", medicalResearcher.balance);
         console.log("%s: %s", "address(rewardPool).balance", address(rewardPool).balance);
         vm.stopPrank();
+        console.logString("\n");
+
+        console.logString("4/ Convert a Ultraplonk proof-generated via Noir's ZK circuit to a zkVerify version of proof + Submit the proof-converted to the zkVerify network and receive its attestation (attestation ID)");
+        /// [TODO]:
+        console.logString("\n");
+
+        console.logString("5/ Submit the attestation (attestation ID) to the ZkVerifierAttestation contract on EDU Chain");
+        vm.startPrank(healthDataProvider);
+        uint256 _attestationId;     /// [TODO]:
+        bytes32 _proofsAttestation; /// [TODO]:
+        zkVerifyAttestationSubmitter.submitAttestation(_attestationId, _proofsAttestation);
         console.logString("\n");
 
         console.logString("4/ A health data provider would generate a zkProof of their health data");
