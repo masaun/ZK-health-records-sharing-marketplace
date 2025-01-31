@@ -9,13 +9,22 @@ forge install 0xnonso/foundry-noir-helper
 
 <br>
 
-- Install the `ultraplonk_verifier` (`v0.3.0`) \
-  https://github.com/zkVerify/ultraplonk_verifier
+## Installation - `UltraPlonk zk-SNARK Verifier` powered by zkVerify
+
+- NOTE: The original repo of the `ultraplonk_verifier` can be seen here: https://github.com/zkVerify/ultraplonk_verifier
+
+
+- 1/ Move to the `./circuits/zkVerify/ultraplonk_verifier` directory:
+```shell
+cd circuits/zkVerify/ultraplonk_verifier
+```
+
+- 2/ Install the `ultraplonk_verifier` (`v0.3.0`) \
 ```shell
 cargo install --features bins --path .
 ```
 
-(NOTE: If the outdated-version of the  `ultraplonk_verifier` is already installed, the following command should be used instead of the command above)
+(NOTE: If the outdated-version of the `ultraplonk_verifier` is already installed, the following command should be used instead of the command above)
 ```shell
 cargo install --features bins --path . --force
 ```
@@ -24,12 +33,27 @@ cargo install --features bins --path . --force
 
 <br>
 
-## Run ZK circuit
+## Run ZK circuit and generate (prove) a Ultraplonk proof 
 
 - Run the `build.sh` to run ZK circuit
 ```shell
 sh ./circuits/build.sh
 ```
+
+<br>
+
+## Convert an original Ultraplonk proof to the zkVerify version of Ultraplonk proof
+- 1/ Move to the `./circuits/zkVerify/ultraplonk_verifier` directory:
+```shell
+cd circuits/zkVerify/ultraplonk_verifier
+```
+
+- 2/ Convert an given original Ultraplonk proof to the zkVerify version of Ultraplonk proof
+```shell
+sh 〜 (TODO: Add the appropriate .sh file)
+```
+
+<br>
 
 ## Test - ZK circuit
 - Run the `circuit_test.sh` to test the ZK circuit. 
