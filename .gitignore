@@ -17,3 +17,5 @@ circuits/Prover.toml
 circuits/Verifier.toml
 
 circuits/test_verifyProof.toml
+
+circuits/zkVerify/output_zkverify_version_of_proof_pubs_vk/*
