@@ -101,10 +101,17 @@ cd app
 npm install
 ```
 
-- 3/ Run
+- 3/ Install `zkverifyjs` (`v0.6.0`)
+```shell
+npm i zkverifyjs
+```
+
+- 4/ Run
 ```shell
 npm run dev
 ```
+
+- 5/ Open the WebApp (`http://localhost:3000`) on a Browser (i.e. Google Chrome).
 
 
 <br>
