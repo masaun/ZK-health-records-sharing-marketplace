@@ -29,6 +29,13 @@ cargo install --features bins --path .
 cargo install --features bins --path . --force
 ```
 
+- 3/ Check whether or not the `ultraplonk_verifier` version is `v0.3.0`:
+```shell
+noir-cli -V
+```
+This result must be `noir-cli 0.3.0`.
+
+
 
 
 <br>
@@ -50,7 +57,7 @@ cd circuits/zkVerify/ultraplonk_verifier
 
 - 2/ Convert an given original Ultraplonk proof to the zkVerify version of Ultraplonk proof
 ```shell
-sh 〜 (TODO: Add the appropriate .sh file)
+sh convert_ultraplonk_to_zkverify_proof.sh
 ```
 
 <br>
