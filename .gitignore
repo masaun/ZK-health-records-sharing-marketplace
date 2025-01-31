@@ -6,6 +6,8 @@ broadcast
 
 .DS_Store
 ./circuits/.DS_Store
+./circuits/zkVerify/.DS_Store
+./circuits/zkVerify/ultraplonk_verifier/.DS_Store
 ./contracts/.DS_Store
 ./test/.DS_Store
 
