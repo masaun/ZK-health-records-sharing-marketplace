@@ -33,14 +33,30 @@ export function useZkVerify() {
             setError(null);
             setTransactionResult(null);
 
-            const { events, transactionResult } = await session.verify().risc0().execute({
+            /// @dev - For submitting a Groth16 proof of RISC Zero
+            // const { events, transactionResult } = await session.verify().risc0().execute({
+            //     proofData: {
+            //         proof: proofData,
+            //         publicSignals: publicSignals,
+            //         vk: vk,
+            //         version: 'V1_0'
+            //     }
+            // });
+
+            /// @dev - For submitting a UltraPlonk proof of Noir
+            const { events, transactionResult } = await session.verify()
+                .ultraplonk()
+                .execute({
                 proofData: {
                     proof: proofData,
                     publicSignals: publicSignals,
-                    vk: vk,
-                    version: 'V1_0'
+                    vk: vk
                 }
             });
+
+            /// @dev - Retrieve the logs of above.
+            console.log("events: ", events);
+            console.log("transactionResult: ", transactionResult);
 
             events.on('includedInBlock', (data: any) => {
                 setStatus('includedInBlock');
