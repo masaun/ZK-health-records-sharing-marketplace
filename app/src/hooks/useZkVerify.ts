@@ -85,10 +85,18 @@ export function useZkVerify() {
             ////////////////////////////////////////////////////////////////////////
             /// The code below is for retrieving the merkle proof, leaf index, etc. 
             ////////////////////////////////////////////////////////////////////////
-            let attestationId = transactionInfo.attestationId;
-            let leafDigest = transactionInfo.leafDigest;
-            console.log(`\tattestationId: ${attestationId}`); /// [Log]: i.e). 28836
-            console.log(`\tleafDigest: ${leafDigest}`);       /// [Log]: i.e). 0x394c1161bbec36222eee5ede34594fe5f38082daa2ac896852cba35bdd952b3b
+            // Upon successful publication on zkVerify of the attestation containing the proof, extract:
+            // - the attestation id
+            // - the leaf digest (i.e. the structured hash of the statement of the proof)
+            let attestationId, leafDigest;
+            try {
+                ({ attestationId, leafDigest } = await transactionResult);
+                console.log(`Attestation published on zkVerify`)
+                console.log(`\tattestationId: ${attestationId}`); /// [Log]: i.e). 28836
+                console.log(`\tleafDigest: ${leafDigest}`);       /// [Log]: i.e). 0x394c1161bbec36222eee5ede34594fe5f38082daa2ac896852cba35bdd952b3b    
+            } catch (error) {
+                console.error('Transaction failed:', error);
+            }
 
             // Retrieve via rpc call:
             // - the merkle proof of inclusion of the proof inside the attestation
