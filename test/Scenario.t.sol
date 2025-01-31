@@ -4,8 +4,14 @@ import "forge-std/Test.sol";
 import "forge-std/console.sol";
 import {Vm} from "forge-std/Vm.sol";
 
+
+/// @dev - zkVerify Attestation Contracts
+import { IZkVerifyAttestation } from "../contracts/zkv-attestation-contracts/interfaces/IZkVerifyAttestation.sol";
+
+/// @dev - ZK (Ultraplonk) circuit, which is generated in Noir.
 import { UltraVerifier } from "../circuits/target/contract.sol"; /// @dev - Deployed-Verifier SC, which was generated based on the main.nr
 import { HealthDataSharingVerifier } from "../contracts/circuits/HealthDataSharingVerifier.sol";
+
 import { HealthDataSharingRequester } from "../contracts/HealthDataSharingRequester.sol";
 import { HealthDataSharingExecutor } from "../contracts/HealthDataSharingExecutor.sol";
 
@@ -24,6 +30,8 @@ import { NoirHelper } from "foundry-noir-helper/NoirHelper.sol";
 contract ScenarioTest is Test {
     using SafeERC20 for MockRewardToken;
 
+    IZkVerifyAttestation public zkVerifyAttestation;
+
     UltraVerifier public verifier;
     HealthDataSharingVerifier public healthDataSharingVerifier;
     HealthDataSharingRequester public healthDataSharingRequester;
@@ -32,6 +40,9 @@ contract ScenarioTest is Test {
     RewardPool public rewardPool;
     MockRewardToken public rewardToken;
     NoirHelper public noirHelper;
+
+    /// @dev - Deployed-SC address on EDU Chain
+    address _zkVerifyAttestation;
 
     /// @dev - Actors
     address medicalResearcher;
@@ -45,11 +56,12 @@ contract ScenarioTest is Test {
         uint256 rewardAmountPerSubmission = 5 * 1e18; /// @dev - 5 RewardToken
         rewardPool = rewardPoolFactory.createNewRewardPool(rewardToken, rewardAmountPerSubmission);
 
-        noirHelper = new NoirHelper();
+        zkVerifyAttestation = IZkVerifyAttestation(_zkVerifyAttestation); /// @dev - The ZkVerifyAttestation contract-deployed on EDU Chain
         verifier = new UltraVerifier();
         healthDataSharingVerifier = new HealthDataSharingVerifier(verifier);
         healthDataSharingRequester = new HealthDataSharingRequester(healthDataSharingVerifier);
-        healthDataSharingExecutor = new HealthDataSharingExecutor(healthDataSharingVerifier, healthDataSharingRequester, rewardPool);
+        healthDataSharingExecutor = new HealthDataSharingExecutor(zkVerifyAttestation, healthDataSharingVerifier, healthDataSharingRequester, rewardPool);
+        noirHelper = new NoirHelper();
 
         /// @dev - Set actors and charge the ETH balance of a medical researcher
         medicalResearcher = address(0x1);
@@ -130,17 +142,21 @@ contract ScenarioTest is Test {
         vm.stopPrank();
         console.logString("\n");
 
-        console.logString("4/ A health data provider would generate a zkProof of their health data");
+        console.logString("4/ Convert a Ultraplonk proof-generated via Noir's ZK circuit to a zkVerify version of proof + Submit the proof-converted to the zkVerify network and receive its attestation (attestation ID)");
+        /// [TODO]:
+        console.logString("\n");
+
+        console.logString("5/ A health data provider would generate a zkProof of their health data");
         vm.startPrank(healthDataProvider);
         console.logString("\n");
 
-        console.logString("5/ A health data provider would submit the generated-zkProof of their health data + The amount of the reward tokens would be destributed to the health data provider");
+        console.logString("6/ A health data provider would submit the generated-zkProof of their health data + The amount of the reward tokens would be destributed to the health data provider");
         console.logString("\n");
         
-        console.logString("6/ Confirm that the health data provider could receive the appropreate amount of the reward tokens");        
+        console.logString("7/ Confirm that the health data provider could receive the appropreate amount of the reward tokens");        
         console.logString("\n");
 
-        console.logString("7/ Confirm that the th medical researcher could collect the health data-requested (when the step 2/)");        
+        console.logString("8/ Confirm that the th medical researcher could collect the health data-requested (when the step 2/)");        
         console.logString("\n");
     }
    
