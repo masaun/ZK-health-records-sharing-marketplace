@@ -83,6 +83,32 @@ sh ./test/hashing/runningTest_hash_2.sh
 
 <br>
 
+
+## Front-end 
+
+- Prequisities
+  - Node 18+
+  - [zkVerify Wallet](https://docs.zkverify.io/tutorials/connect-a-wallet)
+
+
+- 1/ Move to `./app` directory
+```shell
+cd app
+```
+
+- 2/ Install
+```shell
+npm install
+```
+
+- 3/ Run
+```shell
+npm run dev
+```
+
+
+<br>
+
 <hr>
 
 
