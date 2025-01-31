@@ -81,6 +81,62 @@ export function useZkVerify() {
             } else {
                 throw new Error("Your proof isn't correct.");
             }
+
+            ////////////////////////////////////////////////////////////////////////
+            /// The code below is for retrieving the merkle proof, leaf index, etc. 
+            ////////////////////////////////////////////////////////////////////////
+            // Retrieve via rpc call:
+            // - the merkle proof of inclusion of the proof inside the attestation
+            // - the total number of leaves of the attestation merkle tree
+            // - the leaf index of our proof
+            let merkleProof, numberOfLeaves, leafIndex;
+            try {
+                const proofDetails = await session.poe(attestationId, leafDigest);
+                ({ proof: merkleProof, numberOfLeaves, leafIndex } = await proofDetails);
+                console.log(`Merkle proof details`)
+                console.log(`\tmerkleProof: ${merkleProof}`);
+                console.log(`\tnumberOfLeaves: ${numberOfLeaves}`);
+                console.log(`\tleafIndex: ${leafIndex}`);
+            } catch (error) {
+                console.error('RPC failed:', error);
+            }
+
+            const provider = new ethers.JsonRpcProvider(ETH_RPC_URL, null, { polling: true });
+            const wallet = new ethers.Wallet(ETH_SECRET_KEY, provider);
+
+            const abiZkvContract = [
+                "event AttestationPosted(uint256 indexed attestationId, bytes32 indexed root)"
+            ];
+
+            const abiAppContract = [
+                "function proveYouCanFactor42(uint256 attestationId, bytes32[] calldata merklePath, uint256 leafCount, uint256 index)",
+                "event SuccessfulProofSubmission(address indexed from)"
+            ];
+
+            const zkvContract = new ethers.Contract(ETH_ZKVERIFY_CONTRACT_ADDRESS, abiZkvContract, provider);
+            const appContract = new ethers.Contract(ETH_APP_CONTRACT_ADDRESS, abiAppContract, wallet);
+
+            const filterAttestationsById = zkvContract.filters.AttestationPosted(attestationId, null);
+            zkvContract.once(filterAttestationsById, async (_id, _root) => {
+                // After the attestation has been posted on the EVM, send a `proveYouCanFactor42` tx
+                // to the app contract, with all the necessary merkle proof details
+                const txResponse = await appContract.proveYouCanFactor42(
+                    attestationId,
+                    merkleProof,
+                    numberOfLeaves,
+                    leafIndex
+                );
+                const { hash } = await txResponse;
+                console.log(`Tx sent to EVM, tx-hash ${hash}`);
+            });
+
+            const filterAppEventsByCaller = appContract.filters.SuccessfulProofSubmission(evmAccount);
+            appContract.once(filterAppEventsByCaller, async () => {
+                console.log("App contract has acknowledged that you can factor 42!")
+            })
+            ////////////////////////////////////////////////////////////////////////
+            /// End
+            ////////////////////////////////////////////////////////////////////////
         } catch (error: unknown) {
             const errorMessage = (error as Error).message;
             setError(errorMessage);
@@ -88,5 +144,5 @@ export function useZkVerify() {
         }
     };
 
-    return { status, eventData, transactionResult, error, onVerifyProof };
+    return { status, eventData, transactionResult, error, onVerifyProof }; /// @dev - NOTE: This line is the orignal return values.
 }
