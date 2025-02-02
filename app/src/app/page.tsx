@@ -7,7 +7,8 @@ import styles from './page.module.css';
 //import proofData from '../proofs/risc0_v1_0.json';   /// @dev - For a Groth16 proof of RISC Zero
 //import proofData from '../proofs/ultraplonk.json';   /// @dev - For a UltraPlonk proof of Noir
 //import proofData from '../proofs/ultraplonk_with-foundry.json';  /// @dev - For a UltraPlonk proof of Noir
-import proofData from '../proofs/ultraplonk_zkv.json';  /// @dev - For a UltraPlonk proof of Noir
+//import proofData from '../proofs/ultraplonk_zkv.json';  /// @dev - For a UltraPlonk proof of Noir
+import proofData from '../../../circuits/zkVerify/final-output/ultraplonk_health_data_sharing_zkv.json';  /// @dev - For a UltraPlonk proof of Noir
 import Image from 'next/image';
 
 export default function Home() {

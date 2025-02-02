@@ -19,3 +19,5 @@ circuits/Verifier.toml
 circuits/test_verifyProof.toml
 
 circuits/zkVerify/output_zkverify_version_of_proof_pubs_vk/*
+
+circuits/zkVerify/final-output/ultraplonk_health_data_sharing_zkv.json
