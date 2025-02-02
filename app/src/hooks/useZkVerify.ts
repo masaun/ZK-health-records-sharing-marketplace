@@ -114,8 +114,8 @@ export function useZkVerify() {
                 console.error('RPC failed:', error);
             }
 
-            // const provider = new ethers.JsonRpcProvider(ETH_RPC_URL, null, { polling: true });
-            // const wallet = new ethers.Wallet(ETH_SECRET_KEY, provider);
+            const provider = new ethers.JsonRpcProvider(ETH_RPC_URL, null, { polling: true });
+            const wallet = new ethers.Wallet(ETH_SECRET_KEY, provider);
 
             // const abiZkvContract = [
             //     "event AttestationPosted(uint256 indexed attestationId, bytes32 indexed root)"
