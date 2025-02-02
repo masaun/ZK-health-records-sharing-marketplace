@@ -1,5 +1,5 @@
 {
-  "vk": "\"[object Object]\"",
-  "publicSignals": "\"[object Object]\"",
-  "proof": "\"[object Object]\""
+  "publicSignals": [
+    null
+  ]
 }
