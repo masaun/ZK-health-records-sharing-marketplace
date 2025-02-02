@@ -63,8 +63,8 @@ fn main(  // [TODO]: Move the following parameters into the convert_health_data_
     revealBloodPressure: bool,
     revealHeartRate: bool,
     revealAverageHoursOfSleep: bool
-) -> pub RevealedData {
-//) -> pub u64 {
+//) -> pub RevealedData {
+) -> pub u64 {
 
     // Extracting data from the Helper
     // 46829 Gates
@@ -125,9 +125,9 @@ fn main(  // [TODO]: Move the following parameters into the convert_health_data_
         blood_pressure: outputBloodPressure,
         heart_rate: outputHeartRate,
         average_hours_of_sleep: outputAverageHoursOfSleep
-    }
+    };
 
-    // productId
+    productId
 }
 
 
@@ -195,70 +195,70 @@ fn test_main() { // nargo test --show-output
     let revealHeartRate: bool = true;
     let revealAverageHoursOfSleep: bool = true;
 
-    let revealed_data = main(
-        productId, 
-        providerId, 
-        name, 
-        walletAddress, 
-        height, 
-        weight, 
-        age, 
-        gender,
-        race_type,
-        blood_type, 
-        blood_pressure, 
-        heart_rate, 
-        average_hours_of_sleep,
-        revealProviderId,
-        revealName,
-        revealWalletAddress,
-        revealAge,
-        revealGender,
-        revealHeight,
-        revealWeight,
-        revealRaceType,
-        revealBloodType,
-        revealBloodPressure,
-        revealHeartRate,
-        revealAverageHoursOfSleep
-    );
+    // let revealed_data = main(
+    //     productId, 
+    //     providerId, 
+    //     name, 
+    //     walletAddress, 
+    //     height, 
+    //     weight, 
+    //     age, 
+    //     gender,
+    //     race_type,
+    //     blood_type, 
+    //     blood_pressure, 
+    //     heart_rate, 
+    //     average_hours_of_sleep,
+    //     revealProviderId,
+    //     revealName,
+    //     revealWalletAddress,
+    //     revealAge,
+    //     revealGender,
+    //     revealHeight,
+    //     revealWeight,
+    //     revealRaceType,
+    //     revealBloodType,
+    //     revealBloodPressure,
+    //     revealHeartRate,
+    //     revealAverageHoursOfSleep
+    // );
 
-    // @dev - For when the return value is "RevealedData (struct data)"  - Validate the return value
-    assert(revealed_data.age == 21, "Age should be 21");
-    assert(revealed_data.gender == 1, "Gender should Male (1)");
-    println(revealed_data.age);
-    println(revealed_data.gender);
+    // // @dev - For when the return value is "RevealedData (struct data)"  - Validate the return value
+    // assert(revealed_data.age == 21, "Age should be 21");
+    // assert(revealed_data.gender == 1, "Gender should Male (1)");
+    // println(revealed_data.age);
+    // println(revealed_data.gender);
 
     // @dev - For when the return value is "productId (u64)"  - Validate the return value
-    // assert(
-    //     main(
-    //         providerId, 
-    //         productId, 
-    //         name, 
-    //         walletAddress, 
-    //         height, 
-    //         weight, 
-    //         age, 
-    //         gender,
-    //         race_type,
-    //         blood_type, 
-    //         blood_pressure, 
-    //         heart_rate, 
-    //         average_hours_of_sleep,
-    //         revealProviderId,
-    //         revealName,
-    //         revealWalletAddress,
-    //         revealAge,
-    //         revealGender,
-    //         revealHeight,
-    //         revealWeight,
-    //         revealRaceType,
-    //         revealBloodType,
-    //         revealBloodPressure,
-    //         revealHeartRate,
-    //         revealAverageHoursOfSleep
-    //     ) == 1
-    // );
+    assert(
+        main(
+            providerId, 
+            productId, 
+            name, 
+            walletAddress, 
+            height, 
+            weight, 
+            age, 
+            gender,
+            race_type,
+            blood_type, 
+            blood_pressure, 
+            heart_rate, 
+            average_hours_of_sleep,
+            revealProviderId,
+            revealName,
+            revealWalletAddress,
+            revealAge,
+            revealGender,
+            revealHeight,
+            revealWeight,
+            revealRaceType,
+            revealBloodType,
+            revealBloodPressure,
+            revealHeartRate,
+            revealAverageHoursOfSleep
+        ) == 1
+    );
 }
 
 
