@@ -1,6 +1,6 @@
-const proof = require("zkv_health_data_sharing_proof.hex");
-const pubs = require("zkv_health_data_sharing_pubs.hex");
-const vk = require("zkv_health_data_sharing_vk.hex");
+const proof = require("./output_zkverify_version_of_proof_pubs_vk/zkv_health_data_sharing_proof.hex");
+const pubs = require("./output_zkverify_version_of_proof_pubs_vk/zkv_health_data_sharing_pubs.hex");
+const vk = require("./output_zkverify_version_of_proof_pubs_vk/zkv_health_data_sharing_vk.hex");
 
 const fs = require("fs");
 
