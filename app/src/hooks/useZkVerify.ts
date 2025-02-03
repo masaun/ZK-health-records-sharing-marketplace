@@ -121,8 +121,9 @@ export function useZkVerify() {
                 "event AttestationPosted(uint256 indexed attestationId, bytes32 indexed root)"
             ];
 
+            /// @dev - HealthDataSharingExecutor#submitHealthData()
             const abiAppContract = [
-                "function proveYouCanFactor42(uint256 attestationId, bytes32[] calldata merklePath, uint256 leafCount, uint256 index)",
+                "function submitHealthData(bytes calldata proof, bytes32[] calldata publicInput, uint256 medicalResearcherId, uint256 healthDataSharingRequestId, uint256 _attestationId, bytes32 _leaf, bytes32[] calldata _merklePath, uint256 _leafCount, uint256 _index)",
                 "event SuccessfulProofSubmission(address indexed from)"
             ];
 

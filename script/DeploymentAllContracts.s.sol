@@ -42,6 +42,7 @@ contract DeploymentAllContracts is Script {
     function setUp() public {}
 
     function run() public {
+        vm.createSelectFork("educhain-testnet");
         uint256 deployerPrivateKey = vm.envUint("EDU_CHAIN_PRIVATE_KEY");
         //uint256 deployerPrivateKey = vm.envUint("LOCALHOST_PRIVATE_KEY");
         vm.startBroadcast(deployerPrivateKey);
@@ -58,6 +59,8 @@ contract DeploymentAllContracts is Script {
         healthDataSharingVerifier = new HealthDataSharingVerifier(verifier);
         healthDataSharingRequester = new HealthDataSharingRequester(healthDataSharingVerifier);
         healthDataSharingExecutor = new HealthDataSharingExecutor(zkVerifyAttestation, healthDataSharingVerifier, healthDataSharingRequester, rewardPool);
+
+        vm.stopBroadcast();
 
         /// @dev - Logs of the deployed-contracts on EDU Chain (testnet)
         console.logString("Logs of the deployed-contracts on EDU Chain (testnet)");
@@ -85,7 +88,7 @@ contract DeploymentAllContracts is Script {
 /// CLI (icl. SC sources)
 ////////////////////////////
 
-// forge script script/DeploymentAllContracts.s.sol --broadcast --private-key <EDU_CHAIN_PRIVATE_KEY> \
+// forge script script/DeploymentAllContracts.s.sol --broadcast --private-key <EDU_CHAIN_PRIVATE_KEY> --verify \
 //     ./contracts/zkv-attestation-contracts/interfaces/IZkVerifyAttestation.sol:ZkVerifyAttestation \
 //     ./circuits/target/contract.sol:UltraVerifier \
 //     ./contracts/circuits/HealthDataSharingVerifier.sol:HealthDataSharingVerifier \
