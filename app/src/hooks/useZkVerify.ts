@@ -131,21 +131,21 @@ export function useZkVerify() {
 
             const filterAttestationsById = zkvContract.filters.AttestationPosted(attestationId, null);
             zkvContract.once(filterAttestationsById, async (_id, _root) => {
-                // After the attestation has been posted on the EVM, send a `proveYouCanFactor42` tx
+                // After the attestation has been posted on the EVM, send a `submitHealthData` tx
                 // to the app contract, with all the necessary merkle proof details
-                const txResponse = await appContract.proveYouCanFactor42(
+                const txResponse = await appContract.submitHealthData( // @dev - HealthDataSharingExecutor#submitHealthData()
                     attestationId,
                     merkleProof,
                     numberOfLeaves,
                     leafIndex
                 );
                 const { hash } = await txResponse;
-                console.log(`Tx sent to EVM, tx-hash ${hash}`);
+                console.log(`Tx sent to EDU Chain (Testnet), tx-hash ${hash}`);
             });
 
             const filterAppEventsByCaller = appContract.filters.SuccessfulProofSubmission(evmAccount);
             appContract.once(filterAppEventsByCaller, async () => {
-                console.log("App contract has acknowledged that you can factor 42!")
+                console.log("App contract has acknowledged that you can submit health data!")
             })
 
             ////////////////////////////////////////////////////////////////////////
