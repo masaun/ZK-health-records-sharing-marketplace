@@ -65,7 +65,9 @@ contract HealthDataSharingExecutor {
         uint256 _leafCount,
         uint256 _index
 
-    ) public onlyWearableDeviceHolder returns(bool) {
+    ) public returns(bool) {                            /// [TODO]: After testing on Frontend, this should be removed.
+    //) public onlyWearableDeviceHolder returns(bool) { /// [TODO]: After testing on Frontend, this should be resumed.
+
         /// @dev - Validate a given proof via the Verifier contract, which was generated via the ZK circuit in Noir.
         bool result1 = _verifyHealthDataSharingProof(proof, publicInput);
         require(result1 == true, "Invalid proof");
@@ -81,11 +83,12 @@ contract HealthDataSharingExecutor {
         /// [TODO]: Implement the logic/function to proceed the health data to be shared.
         /// [Actor]: a Medical Researcher and a Data Provider
 
+        /// [TODO]: After testing on Frontend, the following code should be resumed.
         /// @dev - The RewardToken (ERC20) would be distributed to the health data provider (i.e. Wearable Device holder)
-        address medicalResearcherAccount = healthDataSharingRequester.getMedicalResearcherById(medicalResearcherId);
-        address healthDataProvider = msg.sender;
-        uint256 rewardAmount = rewardPool.getRewardData(medicalResearcherAccount).rewardAmountPerSubmission;
-        rewardPool.distributeRewardToken(medicalResearcherAccount, healthDataProvider, rewardAmount);
+        // address medicalResearcherAccount = healthDataSharingRequester.getMedicalResearcherById(medicalResearcherId);
+        // address healthDataProvider = msg.sender;
+        // uint256 rewardAmount = rewardPool.getRewardData(medicalResearcherAccount).rewardAmountPerSubmission;
+        // rewardPool.distributeRewardToken(medicalResearcherAccount, healthDataProvider, rewardAmount);
     }
 
 
