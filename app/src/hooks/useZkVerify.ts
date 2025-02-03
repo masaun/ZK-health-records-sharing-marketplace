@@ -114,8 +114,8 @@ export function useZkVerify() {
                 console.error('RPC failed:', error);
             }
 
-            const provider = new ethers.JsonRpcProvider(ETH_RPC_URL, null, { polling: true });
-            const wallet = new ethers.Wallet(ETH_SECRET_KEY, provider);
+            const provider = new ethers.JsonRpcProvider(EDU_CHAIN_RPC_URL, null, { polling: true });
+            const wallet = new ethers.Wallet(EDU_CHAIN_SECRET_KEY, provider);
 
             const abiZkvContract = [
                 "event AttestationPosted(uint256 indexed attestationId, bytes32 indexed root)"
@@ -126,8 +126,8 @@ export function useZkVerify() {
                 "event SuccessfulProofSubmission(address indexed from)"
             ];
 
-            const zkvContract = new ethers.Contract(ETH_ZKVERIFY_CONTRACT_ADDRESS, abiZkvContract, provider);
-            const appContract = new ethers.Contract(ETH_APP_CONTRACT_ADDRESS, abiAppContract, wallet);
+            const zkvContract = new ethers.Contract(EDU_CHAIN_ZKVERIFY_CONTRACT_ADDRESS, abiZkvContract, provider);
+            const appContract = new ethers.Contract(EDU_CHAIN_APP_CONTRACT_ADDRESS, abiAppContract, wallet);
 
             const filterAttestationsById = zkvContract.filters.AttestationPosted(attestationId, null);
             zkvContract.once(filterAttestationsById, async (_id, _root) => {
