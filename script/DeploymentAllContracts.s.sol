@@ -85,7 +85,7 @@ contract DeploymentAllContracts is Script {
 /// CLI (icl. SC sources)
 ////////////////////////////
 
-// forge script script/DeploymentAllContracts.s.sol --broadcast --private-key <PRIVATE_KEY> \
+// forge script script/DeploymentAllContracts.s.sol --broadcast --private-key <EDU_CHAIN_PRIVATE_KEY> \
 //     ./contracts/zkv-attestation-contracts/interfaces/IZkVerifyAttestation.sol:ZkVerifyAttestation \
 //     ./circuits/target/contract.sol:UltraVerifier \
 //     ./contracts/circuits/HealthDataSharingVerifier.sol:HealthDataSharingVerifier \
