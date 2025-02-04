@@ -17,9 +17,11 @@ contract DeploymentTest is Script {
     function setUp() public {}
 
     function run() public {
-        uint256 deployerPrivateKey = vm.envUint("EDU_CHAIN_PRIVATE_KEY");
+        vm.createSelectFork("educhain-testnet");
+        //uint256 deployerPrivateKey = vm.envUint("EDU_CHAIN_PRIVATE_KEY");
         //uint256 deployerPrivateKey = vm.envUint("LOCALHOST_PRIVATE_KEY");
-        vm.startBroadcast(deployerPrivateKey);
+        vm.startBroadcast();
+        //vm.startBroadcast(deployerPrivateKey);
 
         new UltraVerifier();
         //verifier = new UltraVerifier();

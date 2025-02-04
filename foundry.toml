@@ -12,11 +12,11 @@ forge-std = "lib/foundry-noir-helper/lib/forge-std/src/"
 
 [rpc_endpoints]
 sepolia = "${SEPOLIA_RPC}"
-# educhain-testnet = "${EDU_CHAIN_RPC}"
+educhain-testnet = "${EDU_CHAIN_RPC}"
 
 [etherscan]
 sepolia = { key = "${SEPOLIA_PRIVATE_KEY}" }
-# educhain-testnet = { key = "${EDU_CHAIN_PRIVATE_KEY}" }
+educhain-testnet = { key = "${EDU_CHAIN_PRIVATE_KEY}" }
 
 # See more config options https://github.com/foundry-rs/foundry/tree/master/config
 

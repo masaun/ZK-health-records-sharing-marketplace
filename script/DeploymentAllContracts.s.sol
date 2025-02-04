@@ -43,10 +43,12 @@ contract DeploymentAllContracts is Script {
 
     function run() public {
         vm.createSelectFork("educhain-testnet");
-        uint256 deployerPrivateKey = vm.envUint("EDU_CHAIN_PRIVATE_KEY");
+        //vm.createSelectFork("educhain-testnet");
+        //uint256 deployerPrivateKey = vm.envUint("EDU_CHAIN_PRIVATE_KEY");
         //uint256 deployerPrivateKey = vm.envUint("LOCALHOST_PRIVATE_KEY");
-        vm.startBroadcast(deployerPrivateKey);
+        //vm.startBroadcast(deployerPrivateKey);
 
+        vm.startBroadcast();
         rewardPoolFactory = new RewardPoolFactory();
         rewardToken = new MockRewardToken();
 

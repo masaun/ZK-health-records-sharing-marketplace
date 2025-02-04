@@ -132,10 +132,17 @@ export function useZkVerify() {
 
             const filterAttestationsById = zkvContract.filters.AttestationPosted(attestationId, null);
             zkvContract.once(filterAttestationsById, async (_id, _root) => {
+                let medicalResearcherId = 1;        /// [TODO]: Replace with a dynamic value
+                let healthDataSharingRequestId = 1; /// [TODO]: Replace with a dynamic value
                 // After the attestation has been posted on the EVM, send a `submitHealthData` tx
                 // to the app contract, with all the necessary merkle proof details
                 const txResponse = await appContract.submitHealthData( // @dev - HealthDataSharingExecutor#submitHealthData()
+                    proofData,
+                    publicSignals,
+                    medicalResearcherId,
+                    healthDataSharingRequestId,
                     attestationId,
+                    leafDigest,  /// leaf
                     merkleProof,
                     numberOfLeaves,
                     leafIndex
