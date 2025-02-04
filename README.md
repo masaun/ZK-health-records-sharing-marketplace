@@ -100,7 +100,6 @@ sh ./test/runningTest_3.sh
 ```
 
 
-
 ## Test - SC for Hashing
 - Run the test of the `HashingWithKeccak256.t.sol`
 ```shell
@@ -111,6 +110,23 @@ sh ./test/hashing/runningTest_hash_1.sh
 ```shell
 sh ./test/hashing/runningTest_hash_2.sh
 ```
+
+<br>
+
+## SC Deployment
+- Deploy all contracts on EDU Chain (testnet) by running the `script/DeploymentAllContracts.s.sol` 
+```shell
+forge script script/DeploymentAllContracts.s.sol --broadcast --private-key <EDU_CHAIN_PRIVATE_KEY> \
+    ./contracts/zkv-attestation-contracts/interfaces/IZkVerifyAttestation.sol:ZkVerifyAttestation \
+    ./circuits/target/contract.sol:UltraVerifier \
+    ./contracts/circuits/HealthDataSharingVerifier.sol:HealthDataSharingVerifier \
+    ./contracts/HealthDataSharingRequester.sol:HealthDataSharingRequester \
+    ./contracts/HealthDataSharingExecutor.sol:HealthDataSharingExecutor \
+    ./contracts/rewards/RewardPoolFactory.sol:RewardPoolFactory \
+    ./contracts/rewards/RewardPool.sol:RewardPool \
+    ./contracts/rewards/MockRewardToken.sol:RewardToken
+```
+
 
 <br>
 

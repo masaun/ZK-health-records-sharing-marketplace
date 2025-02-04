@@ -114,39 +114,47 @@ export function useZkVerify() {
                 console.error('RPC failed:', error);
             }
 
-            // const provider = new ethers.JsonRpcProvider(ETH_RPC_URL, null, { polling: true });
-            // const wallet = new ethers.Wallet(ETH_SECRET_KEY, provider);
+            const provider = new ethers.JsonRpcProvider(EDU_CHAIN_RPC_URL, null, { polling: true });
+            const wallet = new ethers.Wallet(EDU_CHAIN_SECRET_KEY, provider);
 
-            // const abiZkvContract = [
-            //     "event AttestationPosted(uint256 indexed attestationId, bytes32 indexed root)"
-            // ];
+            const abiZkvContract = [
+                "event AttestationPosted(uint256 indexed attestationId, bytes32 indexed root)"
+            ];
 
-            // const abiAppContract = [
-            //     "function proveYouCanFactor42(uint256 attestationId, bytes32[] calldata merklePath, uint256 leafCount, uint256 index)",
-            //     "event SuccessfulProofSubmission(address indexed from)"
-            // ];
+            /// @dev - HealthDataSharingExecutor#submitHealthData()
+            const abiAppContract = [
+                "function submitHealthData(bytes calldata proof, bytes32[] calldata publicInput, uint256 medicalResearcherId, uint256 healthDataSharingRequestId, uint256 _attestationId, bytes32 _leaf, bytes32[] calldata _merklePath, uint256 _leafCount, uint256 _index)",
+                "event SuccessfulProofSubmission(address indexed from)"
+            ];
 
-            // const zkvContract = new ethers.Contract(ETH_ZKVERIFY_CONTRACT_ADDRESS, abiZkvContract, provider);
-            // const appContract = new ethers.Contract(ETH_APP_CONTRACT_ADDRESS, abiAppContract, wallet);
+            const zkvContract = new ethers.Contract(EDU_CHAIN_ZKVERIFY_CONTRACT_ADDRESS, abiZkvContract, provider);
+            const appContract = new ethers.Contract(EDU_CHAIN_APP_CONTRACT_ADDRESS, abiAppContract, wallet);
 
-            // const filterAttestationsById = zkvContract.filters.AttestationPosted(attestationId, null);
-            // zkvContract.once(filterAttestationsById, async (_id, _root) => {
-            //     // After the attestation has been posted on the EVM, send a `proveYouCanFactor42` tx
-            //     // to the app contract, with all the necessary merkle proof details
-            //     const txResponse = await appContract.proveYouCanFactor42(
-            //         attestationId,
-            //         merkleProof,
-            //         numberOfLeaves,
-            //         leafIndex
-            //     );
-            //     const { hash } = await txResponse;
-            //     console.log(`Tx sent to EVM, tx-hash ${hash}`);
-            // });
+            const filterAttestationsById = zkvContract.filters.AttestationPosted(attestationId, null);
+            zkvContract.once(filterAttestationsById, async (_id, _root) => {
+                let medicalResearcherId = 1;        /// [TODO]: Replace with a dynamic value
+                let healthDataSharingRequestId = 1; /// [TODO]: Replace with a dynamic value
+                // After the attestation has been posted on the EVM, send a `submitHealthData` tx
+                // to the app contract, with all the necessary merkle proof details
+                const txResponse = await appContract.submitHealthData( // @dev - HealthDataSharingExecutor#submitHealthData()
+                    proofData,
+                    publicSignals,
+                    medicalResearcherId,
+                    healthDataSharingRequestId,
+                    attestationId,
+                    leafDigest,  /// leaf
+                    merkleProof,
+                    numberOfLeaves,
+                    leafIndex
+                );
+                const { hash } = await txResponse;
+                console.log(`Tx sent to EDU Chain (Testnet), tx-hash ${hash}`);
+            });
 
-            // const filterAppEventsByCaller = appContract.filters.SuccessfulProofSubmission(evmAccount);
-            // appContract.once(filterAppEventsByCaller, async () => {
-            //     console.log("App contract has acknowledged that you can factor 42!")
-            // })
+            const filterAppEventsByCaller = appContract.filters.SuccessfulProofSubmission(evmAccount);
+            appContract.once(filterAppEventsByCaller, async () => {
+                console.log("App contract has acknowledged that you can submit health data!")
+            })
 
             ////////////////////////////////////////////////////////////////////////
             /// End

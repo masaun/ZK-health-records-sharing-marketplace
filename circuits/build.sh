@@ -19,6 +19,9 @@ bb verify -k ./target/health_data_sharing_vk.bin -p ./target/health_data_sharing
 echo "Check a zkProof"
 head -c 32 ./target/health_data_sharing_proof.bin | od -An -v -t x1 | tr -d $' \n'
 
+echo "Copy and paste vk for generating a Solidity Verifier contract"
+cp ./target/health_data_sharing_vk.bin ./target/vk
+
 echo "Generate a Solidity Verifier contract"
 bb contract
 
