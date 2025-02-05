@@ -182,8 +182,8 @@ export function useZkVerify() {
                 console.error('Transaction failed:', error);
             }
 
-            /// @dev - Wait 30 seconds (2 block + 6 seconds) to wait for that a new attestation is published.
-            await asyncTimeout(30000);
+            /// @dev - Wait 60 seconds (2 block + 6 seconds) to wait for that a new attestation is published.
+            await asyncTimeout(60000);
             // setTimeout(() => {
             //     console.log("Waited 60s");
             // }, 60000);
@@ -264,7 +264,7 @@ export function useZkVerify() {
  * @notice - Wait for "ms" mili seconds
  */
 export const asyncTimeout = (ms: number) => {
-    console.log("Waited 30s");
+    console.log("Waited 60s");
     return new Promise((resolve) => {
         setTimeout(resolve, ms);
     });
