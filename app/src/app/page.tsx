@@ -32,7 +32,7 @@ export default function Home() {
     const { vk, publicSignals, proof } = proofData;
 
     try {
-      await onVerifyProof(proof, publicSignals, vk);
+      await onVerifyProof(proof, publicSignals, vk); /// @dev - useZkVerify.ts
     } catch (error) {
       setVerificationResult(`Error: ${(error as Error).message}`);
     } finally {
