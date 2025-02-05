@@ -116,7 +116,7 @@ sh ./test/hashing/runningTest_hash_2.sh
 ## SC Deployment
 - Deploy all contracts on EDU Chain (testnet) by running the `script/DeploymentAllContracts.s.sol` 
 ```shell
-forge script script/DeploymentAllContracts.s.sol --broadcast --private-key <EDU_CHAIN_PRIVATE_KEY> \
+forge script script/DeploymentAllContracts.s.sol --broadcast --private-key <PK> \
     ./contracts/zkv-attestation-contracts/interfaces/IZkVerifyAttestation.sol:ZkVerifyAttestation \
     ./circuits/target/contract.sol:UltraVerifier \
     ./contracts/circuits/HealthDataSharingVerifier.sol:HealthDataSharingVerifier \
@@ -124,7 +124,7 @@ forge script script/DeploymentAllContracts.s.sol --broadcast --private-key <EDU_
     ./contracts/HealthDataSharingExecutor.sol:HealthDataSharingExecutor \
     ./contracts/rewards/RewardPoolFactory.sol:RewardPoolFactory \
     ./contracts/rewards/RewardPool.sol:RewardPool \
-    ./contracts/rewards/MockRewardToken.sol:RewardToken
+    ./contracts/rewards/MockRewardToken.sol:RewardToken --skip-simulation
 ```
 
 

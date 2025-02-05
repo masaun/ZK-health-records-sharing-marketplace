@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useAccount } from '@/context/AccountContext';
+import { ethers } from 'ethers';
 
 export function useZkVerify() {
     const { selectedAccount, selectedWallet } = useAccount();
@@ -97,6 +98,11 @@ export function useZkVerify() {
             } catch (error) {
                 console.error('Transaction failed:', error);
             }
+
+            /// @dev - Wait 15 seconds (1 block + 3 seconds) to wait for that a new attestation is published.
+            setTimeout(() => {
+                console.log("Waited 20s");
+            }, 20000);
 
             // Retrieve via rpc call:
             // - the merkle proof of inclusion of the proof inside the attestation
