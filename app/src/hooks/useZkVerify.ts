@@ -99,6 +99,11 @@ export function useZkVerify() {
                 console.error('Transaction failed:', error);
             }
 
+            /// @dev - Wait 15 seconds (1 block + 3 seconds) to wait for that a new attestation is published.
+            setTimeout(() => {
+                console.log("Waited 20s");
+            }, 20000);
+
             // Retrieve via rpc call:
             // - the merkle proof of inclusion of the proof inside the attestation
             // - the total number of leaves of the attestation merkle tree
