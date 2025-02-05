@@ -74,7 +74,7 @@ export function useZkVerify() {
             // Assign the Web3Modal class to the reference object by setting it's `current` value
             // The `current` value is persisted throughout as long as this page is open
             web3ModalRef.current = new Web3Modal({
-            network: "eduChain",
+            network: "eduChain", /// [TODO]: Should be replaced with an appropreate network name.
             providerOptions: {},
             disableInjectedProvider: false,
             });
@@ -138,10 +138,6 @@ export function useZkVerify() {
                 }
             });
 
-            /// @dev - Retrieve the logs of above.
-            console.log("events: ", events);
-            console.log("transactionResult: ", transactionResult);
-
             events.on('includedInBlock', (data: any) => {
                 setStatus('includedInBlock');
                 setEventData(data);
@@ -169,6 +165,10 @@ export function useZkVerify() {
             ////////////////////////////////////////////////////////////////////////
             /// The code below is for retrieving the merkle proof, leaf index, etc. 
             ////////////////////////////////////////////////////////////////////////
+            /// @dev - Retrieve the logs of above.
+            console.log("events: ", events);
+            console.log("transactionResult: ", transactionResult);
+
             // Upon successful publication on zkVerify of the attestation containing the proof, extract:
             // - the attestation id
             // - the leaf digest (i.e. the structured hash of the statement of the proof)
