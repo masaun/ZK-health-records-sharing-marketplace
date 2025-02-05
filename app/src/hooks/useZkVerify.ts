@@ -99,10 +99,11 @@ export function useZkVerify() {
                 console.error('Transaction failed:', error);
             }
 
-            /// @dev - Wait 15 seconds (1 block + 3 seconds) to wait for that a new attestation is published.
-            setTimeout(() => {
-                console.log("Waited 20s");
-            }, 20000);
+            /// @dev - Wait 30 seconds (2 block + 6 seconds) to wait for that a new attestation is published.
+            await asyncTimeout(30000);
+            // setTimeout(() => {
+            //     console.log("Waited 60s");
+            // }, 60000);
 
             // Retrieve via rpc call:
             // - the merkle proof of inclusion of the proof inside the attestation
@@ -135,7 +136,8 @@ export function useZkVerify() {
             const zkvContract = new ethers.Contract(EDU_CHAIN_ZKVERIFY_CONTRACT_ADDRESS, abiZkvContract, provider);
             const appContract = new ethers.Contract(EDU_CHAIN_APP_CONTRACT_ADDRESS, abiAppContract, wallet);
 
-            const filterAttestationsById = zkvContract.filters.AttestationPosted(attestationId, null);
+            const filterAttestationsById = await zkvContract.filters.AttestationPosted(attestationId, null);
+            console.log(`filterAttestationsById: ${filterAttestationsById}`);
             zkvContract.once(filterAttestationsById, async (_id, _root) => {
                 let medicalResearcherId = 1;        /// [TODO]: Replace with a dynamic value
                 let healthDataSharingRequestId = 1; /// [TODO]: Replace with a dynamic value
@@ -173,3 +175,14 @@ export function useZkVerify() {
 
     return { status, eventData, transactionResult, error, onVerifyProof }; /// @dev - NOTE: This line is the orignal return values.
 }
+
+
+/**
+ * @notice - Wait for "ms" mili seconds
+ */
+export const asyncTimeout = (ms: number) => {
+    console.log("Waited 30s");
+    return new Promise((resolve) => {
+        setTimeout(resolve, ms);
+    });
+};
