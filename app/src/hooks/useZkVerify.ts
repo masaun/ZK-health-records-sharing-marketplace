@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useAccount } from '@/context/AccountContext';
+import { ethers } from 'ethers';
 
 export function useZkVerify() {
     const { selectedAccount, selectedWallet } = useAccount();
