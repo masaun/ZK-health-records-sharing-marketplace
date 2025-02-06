@@ -145,6 +145,18 @@ export function useZkVerify() {
             const zkvContract = new ethers.Contract(process.env.NEXT_PUBLIC_EDU_CHAIN_ZKVERIFY_CONTRACT_ADDRESS, abiZkvContract, provider);
             const appContract = new ethers.Contract(process.env.NEXT_PUBLIC_EDU_CHAIN_APP_CONTRACT_ADDRESS, abiAppContract, wallet);
 
+            zkvContract.on(
+                "AttestationPosted", (_attestationId, _proofsAttestation, _event) => {
+                    let attestationPostedEvent ={
+                        attestationId: _attestationId,
+                        proofsAttestation: _proofsAttestation,
+                        eventData: _event
+                    }
+                    console.log("AttestationPosted: ", JSON.stringify(attestationPostedEvent, null, 4))
+                }
+            );
+
+
             const filterAttestationsById = zkvContract.filters.AttestationPosted(attestationId, null);
             console.log(`filterAttestationsById: ${JSON.stringify(filterAttestationsById)}`);
             zkvContract.once(filterAttestationsById, async (_id, _root) => {
