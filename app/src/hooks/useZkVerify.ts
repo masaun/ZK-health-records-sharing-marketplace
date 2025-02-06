@@ -146,7 +146,7 @@ export function useZkVerify() {
             const appContract = new ethers.Contract(process.env.NEXT_PUBLIC_EDU_CHAIN_APP_CONTRACT_ADDRESS, abiAppContract, wallet);
 
             const filterAttestationsById = zkvContract.filters.AttestationPosted(attestationId, null);
-            console.log(`filterAttestationsById: ${filterAttestationsById}`);
+            console.log(`filterAttestationsById: ${JSON.stringify(filterAttestationsById)}`);
             zkvContract.once(filterAttestationsById, async (_id, _root) => {
                 let medicalResearcherId = 1;        /// [TODO]: Replace with a dynamic value
                 let healthDataSharingRequestId = 1; /// [TODO]: Replace with a dynamic value
