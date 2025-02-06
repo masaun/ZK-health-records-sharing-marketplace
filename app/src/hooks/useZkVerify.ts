@@ -182,6 +182,9 @@ export function useZkVerify() {
                 console.error('Transaction failed:', error);
             }
 
+            /// @dev - Retrieve the logs of above.
+            console.log("NEXT_PUBLIC_EDU_CHAIN_RPC_URL (1): ", process.env.NEXT_PUBLIC_EDU_CHAIN_RPC_URL);
+
             /// @dev - Wait 60 seconds (2 block + 6 seconds) to wait for that a new attestation is published.
             await asyncTimeout(60000);
             // setTimeout(() => {
@@ -204,8 +207,14 @@ export function useZkVerify() {
                 console.error('RPC failed:', error);
             }
 
-            const provider = new ethers.JsonRpcProvider(EDU_CHAIN_RPC_URL, null, { polling: true });
-            const wallet = new ethers.Wallet(EDU_CHAIN_SECRET_KEY, provider);
+
+            /// @dev - Retrieve the logs of above.
+            console.log("NEXT_PUBLIC_EDU_CHAIN_RPC_URL (2): ", process.env.NEXT_PUBLIC_EDU_CHAIN_RPC_URL);
+            //const provider = new ethers.JsonRpcProvider(EDU_CHAIN_RPC_URL, null, { polling: true });
+            const provider = new ethers.providers.JsonRpcProvider(process.env.NEXT_PUBLIC_EDU_CHAIN_RPC_URL);
+            console.log("provider: ", provider);
+            const wallet = new ethers.Wallet(process.env.EDU_CHAIN_SECRET_KEY, provider);
+
 
             const abiZkvContract = [
                 "event AttestationPosted(uint256 indexed attestationId, bytes32 indexed root)"
@@ -216,8 +225,8 @@ export function useZkVerify() {
                 "function submitHealthData(bytes calldata proof, bytes32[] calldata publicInput, uint256 medicalResearcherId, uint256 healthDataSharingRequestId, uint256 _attestationId, bytes32 _leaf, bytes32[] calldata _merklePath, uint256 _leafCount, uint256 _index)"
             ];
 
-            const zkvContract = new ethers.Contract(EDU_CHAIN_ZKVERIFY_CONTRACT_ADDRESS, abiZkvContract, provider);
-            const appContract = new ethers.Contract(EDU_CHAIN_APP_CONTRACT_ADDRESS, abiAppContract, wallet);
+            const zkvContract = new ethers.Contract(NEXT_PUBLIC_EDU_CHAIN_ZKVERIFY_CONTRACT_ADDRESS, abiZkvContract, provider);
+            const appContract = new ethers.Contract(NEXT_PUBLIC_EDU_CHAIN_APP_CONTRACT_ADDRESS, abiAppContract, wallet);
 
             const filterAttestationsById = zkvContract.filters.AttestationPosted(attestationId, null);
             console.log(`filterAttestationsById: ${filterAttestationsById}`);

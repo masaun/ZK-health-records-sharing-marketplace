@@ -11,7 +11,6 @@
   },
   "dependencies": {
     "@talismn/connect-components": "1.1.9",
-    "dotenv": "^16.4.5",
     "ethers": "^6.13.5",
     "next": "14.2.15",
     "react": "18",
