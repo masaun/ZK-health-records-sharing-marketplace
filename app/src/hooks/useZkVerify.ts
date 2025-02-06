@@ -137,7 +137,7 @@ export function useZkVerify() {
             console.log("NEXT_PUBLIC_EDU_CHAIN_RPC_URL: ", process.env.NEXT_PUBLIC_EDU_CHAIN_RPC_URL);
 
             const abiZkvContract = [
-                "event AttestationPosted(uint256 indexed attestationId, bytes32 indexed root)"
+                "event AttestationPosted(uint256 indexed _attestationId, bytes32 indexed _proofsAttestation)"
             ];
 
             /// @dev - HealthDataSharingExecutor#submitHealthData()
@@ -145,20 +145,21 @@ export function useZkVerify() {
                 "function submitHealthData(bytes calldata proof, bytes32[] calldata publicInput, uint256 medicalResearcherId, uint256 healthDataSharingRequestId, uint256 _attestationId, bytes32 _leaf, bytes32[] calldata _merklePath, uint256 _leafCount, uint256 _index)"
             ];
 
-            const zkvContract = new ethers.Contract(process.env.NEXT_PUBLIC_EDU_CHAIN_ZKVERIFY_CONTRACT_ADDRESS, abiZkvContract, provider);
-            const appContract = new ethers.Contract(process.env.NEXT_PUBLIC_EDU_CHAIN_APP_CONTRACT_ADDRESS, abiAppContract, provider);
+            const zkvContract = new Contract(process.env.NEXT_PUBLIC_EDU_CHAIN_ZKVERIFY_CONTRACT_ADDRESS, abiZkvContract, provider);
+            const appContract = new Contract(process.env.NEXT_PUBLIC_EDU_CHAIN_APP_CONTRACT_ADDRESS, abiAppContract, provider);
             //const appContract = new ethers.Contract(process.env.NEXT_PUBLIC_EDU_CHAIN_APP_CONTRACT_ADDRESS, abiAppContract, wallet);
             const appContractWithSigner = appContract.connect(await signer);
 
             /// @dev - Added below for retrieving the "AttestationPosted" event-emitted.
             zkvContract.on(
-                "AttestationPosted", (_attestationId, _proofsAttestation, _event) => {
-                    let attestationPostedEvent = {
-                        attestationId: _attestationId,
-                        proofsAttestation: _proofsAttestation,
-                        eventData: _event
-                    }
-                    console.log(`AttestationPosted: ${JSON.stringify(attestationPostedEvent)}`, null, 4)
+                "AttestationPosted", (_attestationId, _proofsAttestation, event) => {
+                    // let attestationPostedEvent = {
+                    //     attestationId: _attestationId,
+                    //     proofsAttestation: _proofsAttestation,
+                    //     eventData: _event
+                    // }
+                    console.log(`attestationId: ${ _attestationId } / proofsAttestation: ${ _proofsAttestation } / event: ${ event }`);
+                    // console.log(`AttestationPosted: ${JSON.stringify(attestationPostedEvent)}`, null, 4)
                 }
             );
 
