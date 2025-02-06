@@ -25,49 +25,49 @@ export default function Home() {
   /////////////////////////////////////////////////////////////
   /// Connect with a browser wallet (i.e. MetaMask)
   /////////////////////////////////////////////////////////////
-  let [provider, setProvider] = useState();
-  provider = new BrowserProvider(window.ethereum);
+  const [provider, setProvider] = useState();
+  //provider = new ethers.BrowserProvider(window.ethereum);
   const [walletConnected, setWalletConnected] = useState<boolean>(false); // walletConnected keep track of whether the user's wallet (i.e. MetaMask) is connected or not
 
   /*
   *  connectWallet: Connects the MetaMask wallet
   */
-  const connectWallet = async () => {
-    try {
-        const browserProvider = new BrowserProvider(window.ethereum);
-        setProvider(browserProvider);
+  // const connectWallet = async () => {
+  //   try {
+  //       const browserProvider = new ethers.BrowserProvider(window.ethereum);
+  //       setProvider(browserProvider);
 
-        await provider.send("eth_requestAccounts");
+  //       await provider.send("eth_requestAccounts");
 
-        // Get the provider from web3Modal, which in our case is MetaMask
-        // When used for the first time, it prompts the user to connect their wallet
-        await getProviderOrSigner();
-        setWalletConnected(true);
-    } catch (err) {
-        console.error(err);
-    }
-  };
+  //       // Get the provider from web3Modal, which in our case is MetaMask
+  //       // When used for the first time, it prompts the user to connect their wallet
+  //       await getProviderOrSigner();
+  //       setWalletConnected(true);
+  //   } catch (err) {
+  //       console.error(err);
+  //   }
+  // };
 
-  const getProviderOrSigner = async (needSigner = false) => {
-    // Connect to Metamask
-    // Since we store `web3Modal` as a reference, we need to access the `current` value to get access to the underlying object
-    //const provider = await web3ModalRef.current.connect();
-    //const web3Provider = new providers.Web3Provider(provider);
-    const web3Provider = provider;
+  // const getProviderOrSigner = async (needSigner = false) => {
+  //   // Connect to Metamask
+  //   // Since we store `web3Modal` as a reference, we need to access the `current` value to get access to the underlying object
+  //   //const provider = await web3ModalRef.current.connect();
+  //   //const web3Provider = new providers.Web3Provider(provider);
+  //   const web3Provider = provider;
 
-    // If user is not connected to the Rinkeby network, let them know and throw an error
-    const { chainId } = await web3Provider.getNetwork();
-    if (chainId !== 656476) {
-        window.alert("Change the network to EDU Chain (Open Campus) - testnet");
-        throw new Error("Change network to EDU Chain (Open Campus) - testnet");
-    }
+  //   // If user is not connected to the Rinkeby network, let them know and throw an error
+  //   const { chainId } = await web3Provider.getNetwork();
+  //   if (chainId !== 656476) {
+  //       window.alert("Change the network to EDU Chain (Open Campus) - testnet");
+  //       throw new Error("Change network to EDU Chain (Open Campus) - testnet");
+  //   }
 
-    if (needSigner) {
-        const signer = web3Provider.getSigner();
-        return signer;
-    }
-    return web3Provider;
-  };
+  //   if (needSigner) {
+  //       const signer = web3Provider.getSigner();
+  //       return signer;
+  //   }
+  //   return web3Provider;
+  // };
 
   /////////////////////////////////////////////////////////////
   /// zkVerify
@@ -109,9 +109,18 @@ export default function Home() {
     }
 
     // if wallet is not connected, create a new instance of Web3Modal and connect the MetaMask wallet
-    if (!walletConnected) {
-      connectWallet();
+    if (typeof window !== "undefined") {
+      if (window.ethereum) {
+        const browserProvider = new ethers.BrowserProvider(window.ethereum);
+        setProvider(browserProvider);
+        setWalletConnected(true);
+      } else {
+        console.error("Please install MetaMask! (or any EVM Wallet)");
+      }
     }
+    // if (!walletConnected) {
+    //   connectWallet();
+    // }
 
   }, [error, status, eventData, walletConnected]);
   //}, [error, status, eventData]);
