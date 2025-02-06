@@ -132,6 +132,7 @@ export function useZkVerify() {
             //const provider = new ethers.JsonRpcProvider(EDU_CHAIN_RPC_URL, null, { polling: true });
             console.log("provider: ", provider);
             const wallet = new ethers.Wallet(process.env.NEXT_PUBLIC_EDU_CHAIN_SECRET_KEY, provider);
+            const signer = provider.getSigner(); // Assumes Metamask or similar is injected in the browser
 
             const abiZkvContract = [
                 "event AttestationPosted(uint256 indexed attestationId, bytes32 indexed root)"
@@ -144,7 +145,9 @@ export function useZkVerify() {
 
             const zkvContract = new ethers.Contract(process.env.NEXT_PUBLIC_EDU_CHAIN_ZKVERIFY_CONTRACT_ADDRESS, abiZkvContract, provider);
             const appContract = new ethers.Contract(process.env.NEXT_PUBLIC_EDU_CHAIN_APP_CONTRACT_ADDRESS, abiAppContract, wallet);
+            const appContractWithSigner = appContract.connect(await signer);
 
+            /// @dev - Added below for retrieving the "AttestationPosted" event-emitted.
             zkvContract.on(
                 "AttestationPosted", (_attestationId, _proofsAttestation, _event) => {
                     let attestationPostedEvent ={
@@ -152,19 +155,19 @@ export function useZkVerify() {
                         proofsAttestation: _proofsAttestation,
                         eventData: _event
                     }
-                    console.log("AttestationPosted: ", JSON.stringify(attestationPostedEvent, null, 4))
+                    console.log(`AttestationPosted: ${JSON.stringify(attestationPostedEvent)}`, null, 4))
                 }
             );
 
-
             const filterAttestationsById = zkvContract.filters.AttestationPosted(attestationId, null);
-            console.log(`filterAttestationsById: ${JSON.stringify(filterAttestationsById)}`);
+            console.log(`filterAttestationsById: ${JSON.stringify(filterAttestationsById)}`, null, 4);
             zkvContract.once(filterAttestationsById, async (_id, _root) => {
                 let medicalResearcherId = 1;        /// [TODO]: Replace with a dynamic value
                 let healthDataSharingRequestId = 1; /// [TODO]: Replace with a dynamic value
                 // After the attestation has been posted on the EVM, send a `submitHealthData` tx
                 // to the app contract, with all the necessary merkle proof details
-                const txResponse = await appContract.submitHealthData( // @dev - HealthDataSharingExecutor#submitHealthData()
+                const txResponse = await appContractWithSigner.submitHealthData(  // @dev - HealthDataSharingExecutor#submitHealthData()
+                //const txResponse = await appContract.submitHealthData(          // @dev - HealthDataSharingExecutor#submitHealthData()
                     proofData,
                     publicSignals,
                     medicalResearcherId,
@@ -175,14 +178,16 @@ export function useZkVerify() {
                     numberOfLeaves,
                     leafIndex
                 );
+                await txResponse.wait();
                 const { hash } = await txResponse;
                 console.log(`Tx sent to EDU Chain (Testnet), tx-hash ${hash}`);
             });
 
-            const filterAppEventsByCaller = appContract.filters.SuccessfulProofSubmission(evmAccount);
-            appContract.once(filterAppEventsByCaller, async () => {
-                console.log("App contract has acknowledged that you can submit health data!")
-            })
+            // const evmAccount = ethers.computeAddress(process.env.NEXT_PUBLIC_EDU_CHAIN_SECRET_KEY);
+            // const filterAppEventsByCaller = appContract.filters.SuccessfulProofSubmission(evmAccount);
+            // appContract.once(filterAppEventsByCaller, async () => {
+            //     console.log("App contract has acknowledged that you can submit health data!")
+            // })
 
             ////////////////////////////////////////////////////////////////////////
             /// End
