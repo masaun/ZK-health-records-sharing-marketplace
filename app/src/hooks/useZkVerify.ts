@@ -1,8 +1,91 @@
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useAccount } from '@/context/AccountContext';
-import { ethers } from 'ethers';
+import { ethers, providers, Contract } from 'ethers';
+import Web3Modal from 'web3modal';
 
 export function useZkVerify() {
+    /////////////////////////////////////////////////////////////
+    /// Connect with a browser wallet (i.e. MetaMask)
+    /////////////////////////////////////////////////////////////
+    // walletConnected keep track of whether the user's wallet is connected or not
+    const [walletConnected, setWalletConnected] = useState<boolean>(false);
+    // joinedWhitelist keeps track of whether the current metamask address has joined the Whitelist or not
+    const [joinedWhitelist, setJoinedWhitelist] = useState<boolean>(false);
+    // loading is set to true when we are waiting for a transaction to get mined
+    const [loading, setLoading] = useState<boolean>(false);
+    // numberOfWhitelisted tracks the number of addresses's whitelisted
+    const [numberOfWhitelisted, setNumberOfWhitelisted] = useState<any>(0);
+    // Create a reference to the Web3 Modal (used for connecting to Metamask) which persists as long as the page is open
+    const web3ModalRef = useRef();
+
+    /**
+     * Returns a Provider or Signer object representing the Ethereum RPC with or without the
+     * signing capabilities of metamask attached
+     *
+     * A `Provider` is needed to interact with the blockchain - reading transactions, reading balances, reading state, etc.
+     *
+     * A `Signer` is a special type of Provider used in case a `write` transaction needs to be made to the blockchain, which involves the connected account
+     * needing to make a digital signature to authorize the transaction being sent. Metamask exposes a Signer API to allow your website to
+     * request signatures from the user using Signer functions.
+     */
+    const getProviderOrSigner = async (needSigner = false) => {
+        // Connect to Metamask
+        // Since we store `web3Modal` as a reference, we need to access the `current` value to get access to the underlying object
+        const provider = await web3ModalRef.current.connect();
+        const web3Provider = new providers.Web3Provider(provider);
+
+        // If user is not connected to the Rinkeby network, let them know and throw an error
+        const { chainId } = await web3Provider.getNetwork();
+        if (chainId !== 4) {
+            window.alert("Change the network to Rinkeby");
+            throw new Error("Change network to Rinkeby");
+        }
+
+        if (needSigner) {
+            const signer = web3Provider.getSigner();
+            return signer;
+        }
+        return web3Provider;
+    };
+
+    /*
+    *  connectWallet: Connects the MetaMask wallet
+    */
+    const connectWallet = async () => {
+        try {
+            // Get the provider from web3Modal, which in our case is MetaMask
+            // When used for the first time, it prompts the user to connect their wallet
+            await getProviderOrSigner();
+            setWalletConnected(true);
+
+            //checkIfAddressInWhitelist();
+            //getNumberOfWhitelisted();
+        } catch (err) {
+            console.error(err);
+        }
+    };
+
+    // useEffects are used to react to changes in state of the website
+    // The array at the end of function call represents what state changes will trigger this effect
+    // In this case, whenever the value of `walletConnected` changes - this effect will be called
+    useEffect(() => {
+        // if wallet is not connected, create a new instance of Web3Modal and connect the MetaMask wallet
+        if (!walletConnected) {
+            // Assign the Web3Modal class to the reference object by setting it's `current` value
+            // The `current` value is persisted throughout as long as this page is open
+            web3ModalRef.current = new Web3Modal({
+            network: "eduChain", /// [TODO]: Should be replaced with an appropreate network name.
+            providerOptions: {},
+            disableInjectedProvider: false,
+            });
+            connectWallet();
+        }
+    }, [walletConnected]);
+
+
+    /////////////////////////////////////////////////////////////
+    /// zkVerify
+    /////////////////////////////////////////////////////////////
     const { selectedAccount, selectedWallet } = useAccount();
     const [status, setStatus] = useState<string | null>(null);
     const [eventData, setEventData] = useState<any>(null);
@@ -55,10 +138,6 @@ export function useZkVerify() {
                 }
             });
 
-            /// @dev - Retrieve the logs of above.
-            console.log("events: ", events);
-            console.log("transactionResult: ", transactionResult);
-
             events.on('includedInBlock', (data: any) => {
                 setStatus('includedInBlock');
                 setEventData(data);
@@ -86,6 +165,10 @@ export function useZkVerify() {
             ////////////////////////////////////////////////////////////////////////
             /// The code below is for retrieving the merkle proof, leaf index, etc. 
             ////////////////////////////////////////////////////////////////////////
+            /// @dev - Retrieve the logs of above.
+            console.log("events: ", events);
+            console.log("transactionResult: ", transactionResult);
+
             // Upon successful publication on zkVerify of the attestation containing the proof, extract:
             // - the attestation id
             // - the leaf digest (i.e. the structured hash of the statement of the proof)
@@ -99,8 +182,8 @@ export function useZkVerify() {
                 console.error('Transaction failed:', error);
             }
 
-            /// @dev - Wait 30 seconds (2 block + 6 seconds) to wait for that a new attestation is published.
-            await asyncTimeout(30000);
+            /// @dev - Wait 60 seconds (2 block + 6 seconds) to wait for that a new attestation is published.
+            await asyncTimeout(60000);
             // setTimeout(() => {
             //     console.log("Waited 60s");
             // }, 60000);
@@ -121,8 +204,14 @@ export function useZkVerify() {
                 console.error('RPC failed:', error);
             }
 
-            const provider = new ethers.JsonRpcProvider(EDU_CHAIN_RPC_URL, null, { polling: true });
-            const wallet = new ethers.Wallet(EDU_CHAIN_SECRET_KEY, provider);
+
+            /// @dev - Retrieve the logs of above.
+            console.log("NEXT_PUBLIC_EDU_CHAIN_RPC_URL: ", process.env.NEXT_PUBLIC_EDU_CHAIN_RPC_URL);
+            //const provider = new ethers.JsonRpcProvider(EDU_CHAIN_RPC_URL, null, { polling: true });
+            const provider = new ethers.providers.JsonRpcProvider(process.env.NEXT_PUBLIC_EDU_CHAIN_RPC_URL);
+            console.log("provider: ", provider);
+            const wallet = new ethers.Wallet(process.env.NEXT_PUBLIC_EDU_CHAIN_SECRET_KEY, provider);
+
 
             const abiZkvContract = [
                 "event AttestationPosted(uint256 indexed attestationId, bytes32 indexed root)"
@@ -133,10 +222,10 @@ export function useZkVerify() {
                 "function submitHealthData(bytes calldata proof, bytes32[] calldata publicInput, uint256 medicalResearcherId, uint256 healthDataSharingRequestId, uint256 _attestationId, bytes32 _leaf, bytes32[] calldata _merklePath, uint256 _leafCount, uint256 _index)"
             ];
 
-            const zkvContract = new ethers.Contract(EDU_CHAIN_ZKVERIFY_CONTRACT_ADDRESS, abiZkvContract, provider);
-            const appContract = new ethers.Contract(EDU_CHAIN_APP_CONTRACT_ADDRESS, abiAppContract, wallet);
+            const zkvContract = new ethers.Contract(NEXT_PUBLIC_EDU_CHAIN_ZKVERIFY_CONTRACT_ADDRESS, abiZkvContract, provider);
+            const appContract = new ethers.Contract(NEXT_PUBLIC_EDU_CHAIN_APP_CONTRACT_ADDRESS, abiAppContract, wallet);
 
-            const filterAttestationsById = await zkvContract.filters.AttestationPosted(attestationId, null);
+            const filterAttestationsById = zkvContract.filters.AttestationPosted(attestationId, null);
             console.log(`filterAttestationsById: ${filterAttestationsById}`);
             zkvContract.once(filterAttestationsById, async (_id, _root) => {
                 let medicalResearcherId = 1;        /// [TODO]: Replace with a dynamic value
@@ -181,7 +270,7 @@ export function useZkVerify() {
  * @notice - Wait for "ms" mili seconds
  */
 export const asyncTimeout = (ms: number) => {
-    console.log("Waited 30s");
+    console.log("Waited 60s");
     return new Promise((resolve) => {
         setTimeout(resolve, ms);
     });
