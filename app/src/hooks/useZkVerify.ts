@@ -15,12 +15,18 @@ export function useZkVerify() {
     const [error, setError] = useState<string | null>(null);
 
     const onVerifyProof = async (
-        provider: any, /// Web3 Provider, which is retrieved via ethers.js
+        provider: any, /// Browser Provider, which is retrieved via ethers.js v6
+        signer: any,   /// Browser Signer, which is retrieved via ethers.js v6
+        account: any,  /// Browser Account, which is retrieved via ethers.js v6
         proof: string,
         publicSignals: any,
         vk: any
     ): Promise<void> => {
         try {
+            console.log(`provider: ${await provider}`);
+            console.log(`signer: ${await signer}`);
+            console.log(`account: ${await account}`);
+
             if (!proof || !publicSignals || !vk) {
                 throw new Error('Proof, public signals, or verification key is missing');
             }
@@ -129,10 +135,6 @@ export function useZkVerify() {
 
             /// @dev - Retrieve the logs of above.
             console.log("NEXT_PUBLIC_EDU_CHAIN_RPC_URL: ", process.env.NEXT_PUBLIC_EDU_CHAIN_RPC_URL);
-            //const provider = new ethers.JsonRpcProvider(EDU_CHAIN_RPC_URL, null, { polling: true });
-            console.log("provider: ", provider);
-            const wallet = new ethers.Wallet(process.env.NEXT_PUBLIC_EDU_CHAIN_SECRET_KEY, provider);
-            const signer = provider.getSigner(); // Assumes Metamask or similar is injected in the browser
 
             const abiZkvContract = [
                 "event AttestationPosted(uint256 indexed attestationId, bytes32 indexed root)"
@@ -144,18 +146,19 @@ export function useZkVerify() {
             ];
 
             const zkvContract = new ethers.Contract(process.env.NEXT_PUBLIC_EDU_CHAIN_ZKVERIFY_CONTRACT_ADDRESS, abiZkvContract, provider);
-            const appContract = new ethers.Contract(process.env.NEXT_PUBLIC_EDU_CHAIN_APP_CONTRACT_ADDRESS, abiAppContract, wallet);
+            const appContract = new ethers.Contract(process.env.NEXT_PUBLIC_EDU_CHAIN_APP_CONTRACT_ADDRESS, abiAppContract, provider);
+            //const appContract = new ethers.Contract(process.env.NEXT_PUBLIC_EDU_CHAIN_APP_CONTRACT_ADDRESS, abiAppContract, wallet);
             const appContractWithSigner = appContract.connect(await signer);
 
             /// @dev - Added below for retrieving the "AttestationPosted" event-emitted.
             zkvContract.on(
                 "AttestationPosted", (_attestationId, _proofsAttestation, _event) => {
-                    let attestationPostedEvent ={
+                    let attestationPostedEvent = {
                         attestationId: _attestationId,
                         proofsAttestation: _proofsAttestation,
                         eventData: _event
                     }
-                    console.log(`AttestationPosted: ${JSON.stringify(attestationPostedEvent)}`, null, 4))
+                    console.log(`AttestationPosted: ${JSON.stringify(attestationPostedEvent)}`, null, 4)
                 }
             );
 

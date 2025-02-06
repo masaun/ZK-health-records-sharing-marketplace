@@ -26,27 +26,42 @@ export default function Home() {
   /// Connect with a browser wallet (i.e. MetaMask)
   /////////////////////////////////////////////////////////////
   const [provider, setProvider] = useState();
-  //provider = new ethers.BrowserProvider(window.ethereum);
+  const [signer, setSigner] = useState();
+  const [account, setAccount] = useState();
   const [walletConnected, setWalletConnected] = useState<boolean>(false); // walletConnected keep track of whether the user's wallet (i.e. MetaMask) is connected or not
 
   /*
   *  connectWallet: Connects the MetaMask wallet
   */
-  // const connectWallet = async () => {
-  //   try {
-  //       const browserProvider = new ethers.BrowserProvider(window.ethereum);
-  //       setProvider(browserProvider);
+  const connectWallet = async () => {
+    // if wallet is not connected, create a new instance of Web3Modal and connect the MetaMask wallet
+    if (typeof window !== "undefined") {
+      let browserSigner = null;
+      let browserProvider;
+      let browserAccount;
+      if (window.ethereum) {
+        browserProvider = new ethers.BrowserProvider(window.ethereum);
+        setProvider(browserProvider);
+        //const provider = new ethers.JsonRpcProvider(EDU_CHAIN_RPC_URL, null, { polling: true });
+        console.log("browserProvider: ", await browserProvider);
 
-  //       await provider.send("eth_requestAccounts");
+        browserSigner = await browserProvider.getSigner(); // Assumes Metamask or similar is injected in the browser
+        setSigner(browserSigner);
+        console.log("browserSigner: ", await browserProvider);
 
-  //       // Get the provider from web3Modal, which in our case is MetaMask
-  //       // When used for the first time, it prompts the user to connect their wallet
-  //       await getProviderOrSigner();
-  //       setWalletConnected(true);
-  //   } catch (err) {
-  //       console.error(err);
-  //   }
-  // };
+        const accounts = await browserProvider.send("eth_requestAccounts", []);
+        browserAccount = accounts[0];
+        setAccount(browserAccount);
+        console.log("browserAccount: ", await browserAccount);
+
+        setWalletConnected(true);
+      } else {
+        console.error("Please install MetaMask! (or any EVM Wallet)");
+        //console.log("MetaMask not installed; using read-only defaults")
+        browserProvider = ethers.getDefaultProvider()
+      }
+    }
+  };
 
   // const getProviderOrSigner = async (needSigner = false) => {
   //   // Connect to Metamask
@@ -85,7 +100,7 @@ export default function Home() {
     const { vk, publicSignals, proof } = proofData;
 
     try {
-      await onVerifyProof(provider, proof, publicSignals, vk); /// @dev - useZkVerify.ts + Web3 Provider
+      await onVerifyProof(provider, signer, account, proof, publicSignals, vk); /// @dev - useZkVerify.ts + Web3 Provider
       //await onVerifyProof(proof, publicSignals, vk); /// @dev - useZkVerify.ts
     } catch (error) {
       setVerificationResult(`Error: ${(error as Error).message}`);
@@ -108,19 +123,9 @@ export default function Home() {
       setVerificationResult('Transaction Rejected By User.');
     }
 
-    // if wallet is not connected, create a new instance of Web3Modal and connect the MetaMask wallet
-    if (typeof window !== "undefined") {
-      if (window.ethereum) {
-        const browserProvider = new ethers.BrowserProvider(window.ethereum);
-        setProvider(browserProvider);
-        setWalletConnected(true);
-      } else {
-        console.error("Please install MetaMask! (or any EVM Wallet)");
-      }
+    if (!walletConnected) {
+      connectWallet(); /// @dev - Connetct an EVM wallet (i.e. MetaMask)
     }
-    // if (!walletConnected) {
-    //   connectWallet();
-    // }
 
   }, [error, status, eventData, walletConnected]);
   //}, [error, status, eventData]);
