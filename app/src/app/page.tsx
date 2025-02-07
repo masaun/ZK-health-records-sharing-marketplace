@@ -176,10 +176,6 @@ export default function Home() {
                   <p>Transaction Hash: {transactionResult.txHash || 'N/A'}</p>
                   <p>Proof Type: {transactionResult.proofType || 'N/A'}</p>
                   <p>Attestation ID: {transactionResult.attestationId || 'N/A'}</p>
-                  <p>Merkle Proof: {merkleProofDetails.merkleProof || 'N/A'}</p>
-
-
-                  merkleProofDetails, txHash
                 </div>
             )}
 
@@ -190,13 +186,13 @@ export default function Home() {
                   <p>Leaf Index: {merkleProofDetails.leafIndex || 'N/A'}</p>
                   merkleProofDetails, txHash
                 </div>
-            )}
+            )} 
 
             {txHash && (
                 <div className={styles.transactionDetails}>
                   <p>Tx Hash-sent to EDU Chain: {txHash || 'N/A'}</p>
                 </div>
-            )}
+            )} 
           </div>
         </div>
       </div>

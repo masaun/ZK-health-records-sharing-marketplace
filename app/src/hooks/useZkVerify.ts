@@ -127,7 +127,8 @@ export function useZkVerify() {
             try {
                 const proofDetails = await session.poe(attestationId, leafDigest);
                 ({ proof: merkleProof, numberOfLeaves, leafIndex } = await proofDetails);
-                console.log(`Merkle proof details`)
+                console.log(`Merkle proof details`);
+                console.log(`\tproofDetails: ${proofDetails}`);
                 console.log(`\tmerkleProof: ${merkleProof}`);
                 console.log(`\tnumberOfLeaves: ${numberOfLeaves}`);
                 console.log(`\tleafIndex: ${leafIndex}`);
@@ -228,8 +229,8 @@ export function useZkVerify() {
         }
     };
 
-    return { status, eventData, transactionResult, merkleProofDetails, txHash, error, onVerifyProof }; /// @dev - NOTE: This line is the orignal return values.
-    //return { status, eventData, transactionResult, error, onVerifyProof }; /// @dev - NOTE: This line is the orignal return values.
+    //return { status, eventData, transactionResult, error, onVerifyProof };                                  
+    return { status, eventData, transactionResult, merkleProofDetails, txHash, error, onVerifyProof };
 }
 
 
