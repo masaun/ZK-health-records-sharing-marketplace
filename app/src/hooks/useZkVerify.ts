@@ -148,18 +148,13 @@ export function useZkVerify() {
             const zkvContract = new Contract(process.env.NEXT_PUBLIC_EDU_CHAIN_ZKVERIFY_CONTRACT_ADDRESS, abiZkvContract, provider);
             const appContract = new Contract(process.env.NEXT_PUBLIC_EDU_CHAIN_APP_CONTRACT_ADDRESS, abiAppContract, provider);
             //const appContract = new ethers.Contract(process.env.NEXT_PUBLIC_EDU_CHAIN_APP_CONTRACT_ADDRESS, abiAppContract, wallet);
-            const appContractWithSigner = appContract.connect(await signer);
+            const appContractWithSigner = appContract.connect(signer);
 
             /// @dev - Added below for retrieving the "AttestationPosted" event-emitted.
             zkvContract.on(
                 "AttestationPosted", (_attestationId, _proofsAttestation, event) => {
-                    // let attestationPostedEvent = {
-                    //     attestationId: _attestationId,
-                    //     proofsAttestation: _proofsAttestation,
-                    //     eventData: _event
-                    // }
-                    console.log(`attestationId: ${ _attestationId } / proofsAttestation: ${ _proofsAttestation } / event: ${ event }`);
-                    // console.log(`AttestationPosted: ${JSON.stringify(attestationPostedEvent)}`, null, 4)
+                    console.log(`attestationId: ${ _attestationId } / proofsAttestation: ${ _proofsAttestation }`);
+                    console.log(`event: ${JSON.stringify(event)}`, null, 4);
                 }
             );
 
