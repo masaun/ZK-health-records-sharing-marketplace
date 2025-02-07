@@ -12,6 +12,8 @@ export function useZkVerify() {
     const [status, setStatus] = useState<string | null>(null);
     const [eventData, setEventData] = useState<any>(null);
     const [transactionResult, setTransactionResult] = useState<any>(null);
+    const [merkleProofDetails, setMerkleProofDetails] = useState<any>(null);
+    const [txHash, setTxHash] = useState<any>(null);
     const [error, setError] = useState<string | null>(null);
 
     const onVerifyProof = async (
@@ -129,6 +131,8 @@ export function useZkVerify() {
                 console.log(`\tmerkleProof: ${merkleProof}`);
                 console.log(`\tnumberOfLeaves: ${numberOfLeaves}`);
                 console.log(`\tleafIndex: ${leafIndex}`);
+                let proofInfo = await proofDetails;
+                setMerkleProofDetails(proofInfo);
             } catch (error) {
                 console.error('RPC failed:', error);
             }
@@ -171,7 +175,7 @@ export function useZkVerify() {
             await txResponse.wait();
             const { hash } = await txResponse;
             console.log(`Tx sent to EDU Chain (Testnet), tx-hash ${hash}`);
-
+            setTxHash(hash);
 
 
             /// @dev - Added below for retrieving the "AttestationPosted" event-emitted.
@@ -224,7 +228,8 @@ export function useZkVerify() {
         }
     };
 
-    return { status, eventData, transactionResult, error, onVerifyProof }; /// @dev - NOTE: This line is the orignal return values.
+    return { status, eventData, transactionResult, merkleProofDetails, txHash, error, onVerifyProof }; /// @dev - NOTE: This line is the orignal return values.
+    //return { status, eventData, transactionResult, error, onVerifyProof }; /// @dev - NOTE: This line is the orignal return values.
 }
 
 

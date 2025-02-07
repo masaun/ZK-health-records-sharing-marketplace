@@ -20,7 +20,8 @@ export default function Home() {
   const [blockHash, setBlockHash] = useState<string | null>(null);
   const walletButtonRef = useRef<ConnectWalletButtonHandle | null>(null);
   const { selectedAccount, selectedWallet } = useAccount();
-  const { onVerifyProof, status, eventData, transactionResult, error } = useZkVerify();
+  const { onVerifyProof, status, eventData, transactionResult, merkleProofDetails, txHash, error } = useZkVerify(); 
+  //const { onVerifyProof, status, eventData, transactionResult, error } = useZkVerify(); 
 
   /////////////////////////////////////////////////////////////
   /// Connect with a browser wallet (i.e. MetaMask)
@@ -175,6 +176,25 @@ export default function Home() {
                   <p>Transaction Hash: {transactionResult.txHash || 'N/A'}</p>
                   <p>Proof Type: {transactionResult.proofType || 'N/A'}</p>
                   <p>Attestation ID: {transactionResult.attestationId || 'N/A'}</p>
+                  <p>Merkle Proof: {merkleProofDetails.merkleProof || 'N/A'}</p>
+
+
+                  merkleProofDetails, txHash
+                </div>
+            )}
+
+            {merkleProofDetails && (
+                <div className={styles.transactionDetails}>
+                  <p>Merkle Proof: {merkleProofDetails.merkleProof || 'N/A'}</p>
+                  <p>Number Of Leaves: {merkleProofDetails.numberOfLeaves || 'N/A'}</p>
+                  <p>Leaf Index: {merkleProofDetails.leafIndex || 'N/A'}</p>
+                  merkleProofDetails, txHash
+                </div>
+            )}
+
+            {txHash && (
+                <div className={styles.transactionDetails}>
+                  <p>Tx Hash-sent to EDU Chain: {txHash || 'N/A'}</p>
                 </div>
             )}
           </div>
