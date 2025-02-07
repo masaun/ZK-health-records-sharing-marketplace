@@ -160,7 +160,7 @@ export function useZkVerify() {
 
             const filterAttestationsById = zkvContract.filters.AttestationPosted(attestationId, null);
             console.log(`filterAttestationsById: ${JSON.stringify(filterAttestationsById)}`, null, 4);
-            zkvContract.once(filterAttestationsById, async (_id, _root) => {
+            zkvContract.once(filterAttestationsById, async (_attestationId, _proofsAttestation) => {
                 let medicalResearcherId = 1;        /// [TODO]: Replace with a dynamic value
                 let healthDataSharingRequestId = 1; /// [TODO]: Replace with a dynamic value
                 // After the attestation has been posted on the EVM, send a `submitHealthData` tx
