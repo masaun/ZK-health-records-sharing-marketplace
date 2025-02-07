@@ -150,6 +150,30 @@ export function useZkVerify() {
             //const appContract = new ethers.Contract(process.env.NEXT_PUBLIC_EDU_CHAIN_APP_CONTRACT_ADDRESS, abiAppContract, wallet);
             const appContractWithSigner = appContract.connect(signer);
 
+            
+            /// @dev - Call the HealthDataSharingExecutor#submitHealthData()
+            let medicalResearcherId = 1;        /// [TODO]: Replace with a dynamic value
+            let healthDataSharingRequestId = 1; /// [TODO]: Replace with a dynamic value
+            // After the attestation has been posted on the EVM, send a `submitHealthData` tx
+            // to the app contract, with all the necessary merkle proof details
+            const txResponse = await appContractWithSigner.submitHealthData(  // @dev - HealthDataSharingExecutor#submitHealthData()
+            //const txResponse = await appContract.submitHealthData(          // @dev - HealthDataSharingExecutor#submitHealthData()
+                proofData,
+                publicSignals,
+                medicalResearcherId,
+                healthDataSharingRequestId,
+                attestationId,
+                leafDigest,  /// leaf
+                merkleProof,
+                numberOfLeaves,
+                leafIndex
+            );
+            await txResponse.wait();
+            const { hash } = await txResponse;
+            console.log(`Tx sent to EDU Chain (Testnet), tx-hash ${hash}`);
+
+
+
             /// @dev - Added below for retrieving the "AttestationPosted" event-emitted.
             zkvContract.on(
                 "AttestationPosted", (_attestationId, _proofsAttestation, event) => {
@@ -160,27 +184,27 @@ export function useZkVerify() {
 
             const filterAttestationsById = zkvContract.filters.AttestationPosted(attestationId, null);
             console.log(`filterAttestationsById: ${JSON.stringify(filterAttestationsById)}`, null, 4);
-            zkvContract.once(filterAttestationsById, async (_attestationId, _proofsAttestation) => {
-                let medicalResearcherId = 1;        /// [TODO]: Replace with a dynamic value
-                let healthDataSharingRequestId = 1; /// [TODO]: Replace with a dynamic value
-                // After the attestation has been posted on the EVM, send a `submitHealthData` tx
-                // to the app contract, with all the necessary merkle proof details
-                const txResponse = await appContractWithSigner.submitHealthData(  // @dev - HealthDataSharingExecutor#submitHealthData()
-                //const txResponse = await appContract.submitHealthData(          // @dev - HealthDataSharingExecutor#submitHealthData()
-                    proofData,
-                    publicSignals,
-                    medicalResearcherId,
-                    healthDataSharingRequestId,
-                    attestationId,
-                    leafDigest,  /// leaf
-                    merkleProof,
-                    numberOfLeaves,
-                    leafIndex
-                );
-                await txResponse.wait();
-                const { hash } = await txResponse;
-                console.log(`Tx sent to EDU Chain (Testnet), tx-hash ${hash}`);
-            });
+            // zkvContract.once(filterAttestationsById, async (_attestationId, _proofsAttestation) => {
+            //     let medicalResearcherId = 1;        /// [TODO]: Replace with a dynamic value
+            //     let healthDataSharingRequestId = 1; /// [TODO]: Replace with a dynamic value
+            //     // After the attestation has been posted on the EVM, send a `submitHealthData` tx
+            //     // to the app contract, with all the necessary merkle proof details
+            //     const txResponse = await appContractWithSigner.submitHealthData(  // @dev - HealthDataSharingExecutor#submitHealthData()
+            //     //const txResponse = await appContract.submitHealthData(          // @dev - HealthDataSharingExecutor#submitHealthData()
+            //         proofData,
+            //         publicSignals,
+            //         medicalResearcherId,
+            //         healthDataSharingRequestId,
+            //         attestationId,
+            //         leafDigest,  /// leaf
+            //         merkleProof,
+            //         numberOfLeaves,
+            //         leafIndex
+            //     );
+            //     await txResponse.wait();
+            //     const { hash } = await txResponse;
+            //     console.log(`Tx sent to EDU Chain (Testnet), tx-hash ${hash}`);
+            // });
 
             // const evmAccount = ethers.computeAddress(process.env.NEXT_PUBLIC_EDU_CHAIN_SECRET_KEY);
             // const filterAppEventsByCaller = appContract.filters.SuccessfulProofSubmission(evmAccount);
@@ -188,13 +212,15 @@ export function useZkVerify() {
             //     console.log("App contract has acknowledged that you can submit health data!")
             // })
 
+
+
             ////////////////////////////////////////////////////////////////////////
             /// End
             ////////////////////////////////////////////////////////////////////////
         } catch (error: unknown) {
             const errorMessage = (error as Error).message;
             setError(errorMessage);
-            setStatus('error');
+            setStatus('error'); /// @dev - This message is shown on the bottom of left on the screen (UI).
         }
     };
 
