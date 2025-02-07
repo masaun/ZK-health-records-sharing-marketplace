@@ -150,9 +150,6 @@ export function useZkVerify() {
             //const appContract = new ethers.Contract(process.env.NEXT_PUBLIC_EDU_CHAIN_APP_CONTRACT_ADDRESS, abiAppContract, wallet);
             const appContractWithSigner = appContract.connect(signer);
 
-            /// @dev - Wait 60 seconds to wait for the "AttestationPosted" event-emitted is synced in the zkVerify's tesenet (and its Block Explorer).
-            await asyncTimeout(60000);
-
             /// @dev - Added below for retrieving the "AttestationPosted" event-emitted.
             zkvContract.on(
                 "AttestationPosted", (_attestationId, _proofsAttestation, event) => {
