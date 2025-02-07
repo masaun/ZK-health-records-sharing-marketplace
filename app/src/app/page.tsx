@@ -181,10 +181,9 @@ export default function Home() {
 
             {merkleProofDetails && (
                 <div className={styles.transactionDetails}>
-                  <p>Merkle Proof: {merkleProofDetails.merkleProof || 'N/A'}</p>
+                  <p>Merkle Proof: {merkleProofDetails.proof.merkleProof || 'N/A'}</p>
                   <p>Number Of Leaves: {merkleProofDetails.numberOfLeaves || 'N/A'}</p>
                   <p>Leaf Index: {merkleProofDetails.leafIndex || 'N/A'}</p>
-                  merkleProofDetails, txHash
                 </div>
             )} 
 

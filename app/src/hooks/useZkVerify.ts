@@ -128,7 +128,7 @@ export function useZkVerify() {
                 const proofDetails = await session.poe(attestationId, leafDigest);
                 ({ proof: merkleProof, numberOfLeaves, leafIndex } = await proofDetails);
                 console.log(`Merkle proof details`);
-                console.log(`\tproofDetails: ${proofDetails}`);
+                console.log(`\tproofDetails: ${JSON.stringify(proofDetails, null, 4)}`);
                 console.log(`\tmerkleProof: ${merkleProof}`);
                 console.log(`\tnumberOfLeaves: ${numberOfLeaves}`);
                 console.log(`\tleafIndex: ${leafIndex}`);
@@ -183,7 +183,7 @@ export function useZkVerify() {
             zkvContract.on(
                 "AttestationPosted", (_attestationId, _proofsAttestation, event) => {
                     console.log(`attestationId: ${ _attestationId } / proofsAttestation: ${ _proofsAttestation }`);
-                    console.log(`event: ${JSON.stringify(event)}`, null, 4);
+                    console.log(`event: ${JSON.stringify(event, null, 4)}`);
                 }
             );
 
