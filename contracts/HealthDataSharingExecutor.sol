@@ -64,7 +64,6 @@ contract HealthDataSharingExecutor {
         bytes32[] calldata _merklePath,
         uint256 _leafCount,
         uint256 _index
-
     ) public returns(bool) {                            /// [TODO]: After testing on Frontend, this should be removed.
     //) public onlyWearableDeviceHolder returns(bool) { /// [TODO]: After testing on Frontend, this should be resumed.
 
