@@ -1,88 +1,10 @@
 import { useState, useEffect, useRef } from 'react';
 import { useAccount } from '@/context/AccountContext';
+
 import { ethers, providers, Contract } from 'ethers';
-import Web3Modal from 'web3modal';
+
 
 export function useZkVerify() {
-    /////////////////////////////////////////////////////////////
-    /// Connect with a browser wallet (i.e. MetaMask)
-    /////////////////////////////////////////////////////////////
-    // walletConnected keep track of whether the user's wallet is connected or not
-    const [walletConnected, setWalletConnected] = useState<boolean>(false);
-    // joinedWhitelist keeps track of whether the current metamask address has joined the Whitelist or not
-    const [joinedWhitelist, setJoinedWhitelist] = useState<boolean>(false);
-    // loading is set to true when we are waiting for a transaction to get mined
-    const [loading, setLoading] = useState<boolean>(false);
-    // numberOfWhitelisted tracks the number of addresses's whitelisted
-    const [numberOfWhitelisted, setNumberOfWhitelisted] = useState<any>(0);
-    // Create a reference to the Web3 Modal (used for connecting to Metamask) which persists as long as the page is open
-    const web3ModalRef = useRef();
-
-    /**
-     * Returns a Provider or Signer object representing the Ethereum RPC with or without the
-     * signing capabilities of metamask attached
-     *
-     * A `Provider` is needed to interact with the blockchain - reading transactions, reading balances, reading state, etc.
-     *
-     * A `Signer` is a special type of Provider used in case a `write` transaction needs to be made to the blockchain, which involves the connected account
-     * needing to make a digital signature to authorize the transaction being sent. Metamask exposes a Signer API to allow your website to
-     * request signatures from the user using Signer functions.
-     */
-    const getProviderOrSigner = async (needSigner = false) => {
-        // Connect to Metamask
-        // Since we store `web3Modal` as a reference, we need to access the `current` value to get access to the underlying object
-        const provider = await web3ModalRef.current.connect();
-        const web3Provider = new providers.Web3Provider(provider);
-
-        // If user is not connected to the Rinkeby network, let them know and throw an error
-        const { chainId } = await web3Provider.getNetwork();
-        if (chainId !== 4) {
-            window.alert("Change the network to Rinkeby");
-            throw new Error("Change network to Rinkeby");
-        }
-
-        if (needSigner) {
-            const signer = web3Provider.getSigner();
-            return signer;
-        }
-        return web3Provider;
-    };
-
-    /*
-    *  connectWallet: Connects the MetaMask wallet
-    */
-    const connectWallet = async () => {
-        try {
-            // Get the provider from web3Modal, which in our case is MetaMask
-            // When used for the first time, it prompts the user to connect their wallet
-            await getProviderOrSigner();
-            setWalletConnected(true);
-
-            //checkIfAddressInWhitelist();
-            //getNumberOfWhitelisted();
-        } catch (err) {
-            console.error(err);
-        }
-    };
-
-    // useEffects are used to react to changes in state of the website
-    // The array at the end of function call represents what state changes will trigger this effect
-    // In this case, whenever the value of `walletConnected` changes - this effect will be called
-    useEffect(() => {
-        // if wallet is not connected, create a new instance of Web3Modal and connect the MetaMask wallet
-        if (!walletConnected) {
-            // Assign the Web3Modal class to the reference object by setting it's `current` value
-            // The `current` value is persisted throughout as long as this page is open
-            web3ModalRef.current = new Web3Modal({
-            network: "eduChain", /// [TODO]: Should be replaced with an appropreate network name.
-            providerOptions: {},
-            disableInjectedProvider: false,
-            });
-            connectWallet();
-        }
-    }, [walletConnected]);
-
-
     /////////////////////////////////////////////////////////////
     /// zkVerify
     /////////////////////////////////////////////////////////////
@@ -93,11 +15,18 @@ export function useZkVerify() {
     const [error, setError] = useState<string | null>(null);
 
     const onVerifyProof = async (
+        provider: any, /// Browser Provider, which is retrieved via ethers.js v6
+        signer: any,   /// Browser Signer, which is retrieved via ethers.js v6
+        account: any,  /// Browser Account, which is retrieved via ethers.js v6
         proof: string,
         publicSignals: any,
         vk: any
     ): Promise<void> => {
         try {
+            console.log(`provider: ${await provider}`);
+            console.log(`signer: ${await signer}`);
+            console.log(`account: ${await account}`);
+
             if (!proof || !publicSignals || !vk) {
                 throw new Error('Proof, public signals, or verification key is missing');
             }
@@ -204,17 +133,11 @@ export function useZkVerify() {
                 console.error('RPC failed:', error);
             }
 
-
             /// @dev - Retrieve the logs of above.
             console.log("NEXT_PUBLIC_EDU_CHAIN_RPC_URL: ", process.env.NEXT_PUBLIC_EDU_CHAIN_RPC_URL);
-            //const provider = new ethers.JsonRpcProvider(EDU_CHAIN_RPC_URL, null, { polling: true });
-            const provider = new ethers.providers.JsonRpcProvider(process.env.NEXT_PUBLIC_EDU_CHAIN_RPC_URL);
-            console.log("provider: ", provider);
-            const wallet = new ethers.Wallet(process.env.NEXT_PUBLIC_EDU_CHAIN_SECRET_KEY, provider);
-
 
             const abiZkvContract = [
-                "event AttestationPosted(uint256 indexed attestationId, bytes32 indexed root)"
+                "event AttestationPosted(uint256 indexed _attestationId, bytes32 indexed _proofsAttestation)"
             ];
 
             /// @dev - HealthDataSharingExecutor#submitHealthData()
@@ -222,35 +145,74 @@ export function useZkVerify() {
                 "function submitHealthData(bytes calldata proof, bytes32[] calldata publicInput, uint256 medicalResearcherId, uint256 healthDataSharingRequestId, uint256 _attestationId, bytes32 _leaf, bytes32[] calldata _merklePath, uint256 _leafCount, uint256 _index)"
             ];
 
-            const zkvContract = new ethers.Contract(NEXT_PUBLIC_EDU_CHAIN_ZKVERIFY_CONTRACT_ADDRESS, abiZkvContract, provider);
-            const appContract = new ethers.Contract(NEXT_PUBLIC_EDU_CHAIN_APP_CONTRACT_ADDRESS, abiAppContract, wallet);
+            const zkvContract = new Contract(process.env.NEXT_PUBLIC_EDU_CHAIN_ZKVERIFY_CONTRACT_ADDRESS, abiZkvContract, provider);
+            const appContract = new Contract(process.env.NEXT_PUBLIC_EDU_CHAIN_APP_CONTRACT_ADDRESS, abiAppContract, provider);
+            //const appContract = new ethers.Contract(process.env.NEXT_PUBLIC_EDU_CHAIN_APP_CONTRACT_ADDRESS, abiAppContract, wallet);
+            const appContractWithSigner = appContract.connect(signer);
+
+            
+            /// @dev - Call the HealthDataSharingExecutor#submitHealthData()
+            let medicalResearcherId = 1;        /// [TODO]: Replace with a dynamic value
+            let healthDataSharingRequestId = 1; /// [TODO]: Replace with a dynamic value
+            // After the attestation has been posted on the EVM, send a `submitHealthData` tx
+            // to the app contract, with all the necessary merkle proof details
+            const txResponse = await appContractWithSigner.submitHealthData(  // @dev - HealthDataSharingExecutor#submitHealthData()
+            //const txResponse = await appContract.submitHealthData(          // @dev - HealthDataSharingExecutor#submitHealthData()
+                proofData,
+                publicSignals,
+                medicalResearcherId,
+                healthDataSharingRequestId,
+                attestationId,
+                leafDigest,  /// leaf
+                merkleProof,
+                numberOfLeaves,
+                leafIndex
+            );
+            await txResponse.wait();
+            const { hash } = await txResponse;
+            console.log(`Tx sent to EDU Chain (Testnet), tx-hash ${hash}`);
+
+
+
+            /// @dev - Added below for retrieving the "AttestationPosted" event-emitted.
+            zkvContract.on(
+                "AttestationPosted", (_attestationId, _proofsAttestation, event) => {
+                    console.log(`attestationId: ${ _attestationId } / proofsAttestation: ${ _proofsAttestation }`);
+                    console.log(`event: ${JSON.stringify(event)}`, null, 4);
+                }
+            );
 
             const filterAttestationsById = zkvContract.filters.AttestationPosted(attestationId, null);
-            console.log(`filterAttestationsById: ${filterAttestationsById}`);
-            zkvContract.once(filterAttestationsById, async (_id, _root) => {
-                let medicalResearcherId = 1;        /// [TODO]: Replace with a dynamic value
-                let healthDataSharingRequestId = 1; /// [TODO]: Replace with a dynamic value
-                // After the attestation has been posted on the EVM, send a `submitHealthData` tx
-                // to the app contract, with all the necessary merkle proof details
-                const txResponse = await appContract.submitHealthData( // @dev - HealthDataSharingExecutor#submitHealthData()
-                    proofData,
-                    publicSignals,
-                    medicalResearcherId,
-                    healthDataSharingRequestId,
-                    attestationId,
-                    leafDigest,  /// leaf
-                    merkleProof,
-                    numberOfLeaves,
-                    leafIndex
-                );
-                const { hash } = await txResponse;
-                console.log(`Tx sent to EDU Chain (Testnet), tx-hash ${hash}`);
-            });
+            console.log(`filterAttestationsById: ${JSON.stringify(filterAttestationsById)}`, null, 4);
+            // zkvContract.once(filterAttestationsById, async (_attestationId, _proofsAttestation) => {
+            //     let medicalResearcherId = 1;        /// [TODO]: Replace with a dynamic value
+            //     let healthDataSharingRequestId = 1; /// [TODO]: Replace with a dynamic value
+            //     // After the attestation has been posted on the EVM, send a `submitHealthData` tx
+            //     // to the app contract, with all the necessary merkle proof details
+            //     const txResponse = await appContractWithSigner.submitHealthData(  // @dev - HealthDataSharingExecutor#submitHealthData()
+            //     //const txResponse = await appContract.submitHealthData(          // @dev - HealthDataSharingExecutor#submitHealthData()
+            //         proofData,
+            //         publicSignals,
+            //         medicalResearcherId,
+            //         healthDataSharingRequestId,
+            //         attestationId,
+            //         leafDigest,  /// leaf
+            //         merkleProof,
+            //         numberOfLeaves,
+            //         leafIndex
+            //     );
+            //     await txResponse.wait();
+            //     const { hash } = await txResponse;
+            //     console.log(`Tx sent to EDU Chain (Testnet), tx-hash ${hash}`);
+            // });
 
-            const filterAppEventsByCaller = appContract.filters.SuccessfulProofSubmission(evmAccount);
-            appContract.once(filterAppEventsByCaller, async () => {
-                console.log("App contract has acknowledged that you can submit health data!")
-            })
+            // const evmAccount = ethers.computeAddress(process.env.NEXT_PUBLIC_EDU_CHAIN_SECRET_KEY);
+            // const filterAppEventsByCaller = appContract.filters.SuccessfulProofSubmission(evmAccount);
+            // appContract.once(filterAppEventsByCaller, async () => {
+            //     console.log("App contract has acknowledged that you can submit health data!")
+            // })
+
+
 
             ////////////////////////////////////////////////////////////////////////
             /// End
@@ -258,7 +220,7 @@ export function useZkVerify() {
         } catch (error: unknown) {
             const errorMessage = (error as Error).message;
             setError(errorMessage);
-            setStatus('error');
+            setStatus('error'); /// @dev - This message is shown on the bottom of left on the screen (UI).
         }
     };
 

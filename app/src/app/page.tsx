@@ -11,6 +11,9 @@ import styles from './page.module.css';
 import proofData from '../../../circuits/zkVerify/final-output/ultraplonk_health_data_sharing_zkv.json';  /// @dev - For a UltraPlonk proof of Noir
 import Image from 'next/image';
 
+import { ethers, BrowserProvider, Contract } from 'ethers';
+
+
 export default function Home() {
   const [loading, setLoading] = useState(false);
   const [verificationResult, setVerificationResult] = useState<string | null>(null);
@@ -19,6 +22,71 @@ export default function Home() {
   const { selectedAccount, selectedWallet } = useAccount();
   const { onVerifyProof, status, eventData, transactionResult, error } = useZkVerify();
 
+  /////////////////////////////////////////////////////////////
+  /// Connect with a browser wallet (i.e. MetaMask)
+  /////////////////////////////////////////////////////////////
+  const [provider, setProvider] = useState();
+  const [signer, setSigner] = useState();
+  const [account, setAccount] = useState();
+  const [walletConnected, setWalletConnected] = useState<boolean>(false); // walletConnected keep track of whether the user's wallet (i.e. MetaMask) is connected or not
+
+  /*
+  *  connectWallet: Connects the MetaMask wallet
+  */
+  const connectWallet = async () => {
+    // if wallet is not connected, create a new instance of Web3Modal and connect the MetaMask wallet
+    if (typeof window !== "undefined") {
+      let browserSigner = null;
+      let browserProvider;
+      let browserAccount;
+      if (window.ethereum) {
+        browserProvider = new ethers.BrowserProvider(window.ethereum);
+        setProvider(browserProvider);
+        //const provider = new ethers.JsonRpcProvider(EDU_CHAIN_RPC_URL, null, { polling: true });
+        console.log("browserProvider: ", await browserProvider);
+
+        browserSigner = await browserProvider.getSigner(); // Assumes Metamask or similar is injected in the browser
+        setSigner(browserSigner);
+        console.log("browserSigner: ", await browserProvider);
+
+        const accounts = await browserProvider.send("eth_requestAccounts", []);
+        browserAccount = accounts[0];
+        setAccount(browserAccount);
+        console.log("browserAccount: ", await browserAccount);
+
+        setWalletConnected(true);
+      } else {
+        console.error("Please install MetaMask! (or any EVM Wallet)");
+        //console.log("MetaMask not installed; using read-only defaults")
+        browserProvider = ethers.getDefaultProvider()
+      }
+    }
+  };
+
+  // const getProviderOrSigner = async (needSigner = false) => {
+  //   // Connect to Metamask
+  //   // Since we store `web3Modal` as a reference, we need to access the `current` value to get access to the underlying object
+  //   //const provider = await web3ModalRef.current.connect();
+  //   //const web3Provider = new providers.Web3Provider(provider);
+  //   const web3Provider = provider;
+
+  //   // If user is not connected to the Rinkeby network, let them know and throw an error
+  //   const { chainId } = await web3Provider.getNetwork();
+  //   if (chainId !== 656476) {
+  //       window.alert("Change the network to EDU Chain (Open Campus) - testnet");
+  //       throw new Error("Change network to EDU Chain (Open Campus) - testnet");
+  //   }
+
+  //   if (needSigner) {
+  //       const signer = web3Provider.getSigner();
+  //       return signer;
+  //   }
+  //   return web3Provider;
+  // };
+
+  /////////////////////////////////////////////////////////////
+  /// zkVerify
+  /////////////////////////////////////////////////////////////
   const handleSubmit = async () => {
     if (!selectedAccount || !selectedWallet) {
       setVerificationResult('Please connect a wallet and select an account.');
@@ -32,7 +100,8 @@ export default function Home() {
     const { vk, publicSignals, proof } = proofData;
 
     try {
-      await onVerifyProof(proof, publicSignals, vk); /// @dev - useZkVerify.ts
+      await onVerifyProof(provider, signer, account, proof, publicSignals, vk); /// @dev - useZkVerify.ts + Web3 Provider
+      //await onVerifyProof(proof, publicSignals, vk); /// @dev - useZkVerify.ts
     } catch (error) {
       setVerificationResult(`Error: ${(error as Error).message}`);
     } finally {
@@ -53,7 +122,13 @@ export default function Home() {
     } else if (status === 'cancelled') {
       setVerificationResult('Transaction Rejected By User.');
     }
-  }, [error, status, eventData]);
+
+    if (!walletConnected) {
+      connectWallet(); /// @dev - Connetct an EVM wallet (i.e. MetaMask)
+    }
+
+  }, [error, status, eventData, walletConnected]);
+  //}, [error, status, eventData]);
 
   const blockExplorerUrl = blockHash
       ? `https://testnet-explorer.zkverify.io/v0/block/${blockHash}`
