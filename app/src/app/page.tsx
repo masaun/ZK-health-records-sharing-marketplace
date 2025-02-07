@@ -20,7 +20,8 @@ export default function Home() {
   const [blockHash, setBlockHash] = useState<string | null>(null);
   const walletButtonRef = useRef<ConnectWalletButtonHandle | null>(null);
   const { selectedAccount, selectedWallet } = useAccount();
-  const { onVerifyProof, status, eventData, transactionResult, error } = useZkVerify();
+  const { onVerifyProof, status, eventData, transactionResult, merkleProofDetails, txHash, error } = useZkVerify(); 
+  //const { onVerifyProof, status, eventData, transactionResult, error } = useZkVerify(); 
 
   /////////////////////////////////////////////////////////////
   /// Connect with a browser wallet (i.e. MetaMask)
@@ -63,26 +64,6 @@ export default function Home() {
     }
   };
 
-  // const getProviderOrSigner = async (needSigner = false) => {
-  //   // Connect to Metamask
-  //   // Since we store `web3Modal` as a reference, we need to access the `current` value to get access to the underlying object
-  //   //const provider = await web3ModalRef.current.connect();
-  //   //const web3Provider = new providers.Web3Provider(provider);
-  //   const web3Provider = provider;
-
-  //   // If user is not connected to the Rinkeby network, let them know and throw an error
-  //   const { chainId } = await web3Provider.getNetwork();
-  //   if (chainId !== 656476) {
-  //       window.alert("Change the network to EDU Chain (Open Campus) - testnet");
-  //       throw new Error("Change network to EDU Chain (Open Campus) - testnet");
-  //   }
-
-  //   if (needSigner) {
-  //       const signer = web3Provider.getSigner();
-  //       return signer;
-  //   }
-  //   return web3Provider;
-  // };
 
   /////////////////////////////////////////////////////////////
   /// zkVerify
@@ -197,6 +178,20 @@ export default function Home() {
                   <p>Attestation ID: {transactionResult.attestationId || 'N/A'}</p>
                 </div>
             )}
+
+            {merkleProofDetails && (
+                <div className={styles.transactionDetails}>
+                  <p>Merkle Proof: {merkleProofDetails.proof || 'N/A'}</p>
+                  <p>Number Of Leaves: {merkleProofDetails.numberOfLeaves || 'N/A'}</p>
+                  <p>Leaf Index: {merkleProofDetails.leafIndex || 'N/A'}</p>
+                </div>
+            )} 
+
+            {txHash && (
+                <div className={styles.transactionDetails}>
+                  <p>Tx Hash-sent to EDU Chain: {txHash || 'N/A'}</p>
+                </div>
+            )} 
           </div>
         </div>
       </div>
