@@ -24,6 +24,14 @@ export default function Home() {
   //const { onVerifyProof, status, eventData, transactionResult, error } = useZkVerify(); 
 
   /////////////////////////////////////////////////////////////
+  /// Input form
+  /////////////////////////////////////////////////////////////
+  const [inputProductIdValue, setInputProductIdValue] = useState('');
+  const [inputProviderIdValue, setInputProviderIdValue] = useState('');
+  const [inputNameValue, setInputNameValue] = useState('');
+
+
+  /////////////////////////////////////////////////////////////
   /// Connect with a browser wallet (i.e. MetaMask)
   /////////////////////////////////////////////////////////////
   const [provider, setProvider] = useState();
@@ -68,7 +76,8 @@ export default function Home() {
   /////////////////////////////////////////////////////////////
   /// zkVerify
   /////////////////////////////////////////////////////////////
-  const handleSubmit = async () => {
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+  //const handleSubmit = async () => {
     if (!selectedAccount || !selectedWallet) {
       setVerificationResult('Please connect a wallet and select an account.');
       return;
@@ -78,11 +87,27 @@ export default function Home() {
     setVerificationResult(null);
     setBlockHash(null);
 
+    /// @dev - Retrieve the input values from the input form
+    event.preventDefault();
+    console.log('Input ProductId Value:', inputProductIdValue);
+    console.log('Input ProviderId Value:', inputProviderIdValue);
+    console.log('Input Name Value:', inputNameValue);
+
     const { vk, publicSignals, proof } = proofData;
 
     try {
-      await onVerifyProof(provider, signer, account, proof, publicSignals, vk); /// @dev - useZkVerify.ts + Web3 Provider
-      //await onVerifyProof(proof, publicSignals, vk); /// @dev - useZkVerify.ts
+      //await onVerifyProof(provider, signer, account, proof, publicSignals, vk); /// @dev - useZkVerify.ts + Web3 Provider
+      await onVerifyProof(
+        provider, 
+        signer, 
+        account, 
+        inputProductIdValue,
+        inputProviderIdValue,
+        inputNameValue,
+        proof, 
+        publicSignals, 
+        vk
+      ); /// @dev - useZkVerify.ts + Web3 Provider
     } catch (error) {
       setVerificationResult(`Error: ${(error as Error).message}`);
     } finally {
@@ -127,6 +152,45 @@ export default function Home() {
 
           <ConnectWalletButton ref={walletButtonRef} onWalletConnected={() => {}} />
 
+          <form onSubmit={handleSubmit}>
+            <h4>Product ID</h4>
+            <input
+              type="text"
+              value={inputProductIdValue}
+              onChange={(e) => setInputProductIdValue(e.target.value)}
+            />
+            <br></br>
+            <h4>Provider ID</h4>
+            <input
+              type="text"
+              value={inputProviderIdValue}
+              onChange={(e) => setInputProviderIdValue(e.target.value)}
+            />
+            <br></br>
+            <h4>Name</h4>
+            <input
+              type="text"
+              value={inputNameValue}
+              onChange={(e) => setInputNameValue(e.target.value)}
+            />
+            <button
+                type="submit"
+                //onClick={handleSubmit}
+                className={`button ${styles.verifyButton}`}
+                disabled={!selectedAccount || !selectedWallet || loading}
+            >
+              {loading ? (
+                  <>
+                    Submitting...
+                    <div className="spinner"></div>
+                  </>
+              ) : (
+                  'Submit Proof'
+              )}
+            </button>
+          </form>
+
+          {/* 
           <button
               onClick={handleSubmit}
               className={`button ${styles.verifyButton}`}
@@ -140,7 +204,8 @@ export default function Home() {
             ) : (
                 'Submit Proof'
             )}
-          </button>
+          </button> 
+          */}
 
           <div className={styles.resultContainer}>
             {verificationResult && (

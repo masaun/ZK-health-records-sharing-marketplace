@@ -20,6 +20,9 @@ export function useZkVerify() {
         provider: any, /// Browser Provider, which is retrieved via ethers.js v6
         signer: any,   /// Browser Signer, which is retrieved via ethers.js v6
         account: any,  /// Browser Account, which is retrieved via ethers.js v6
+        productId: string,   /// Input value via UI
+        providerId: string,  /// Input value via UI
+        name: string,        /// Input value via UI
         proof: string,
         publicSignals: any,
         vk: any
@@ -28,6 +31,9 @@ export function useZkVerify() {
             console.log(`provider: ${JSON.stringify(provider, null, 4)}`);
             console.log(`signer: ${JSON.stringify(signer, null, 4)}`);
             console.log(`account: ${account}`);
+            console.log(`productId: ${productId}`);
+            console.log(`providerId: ${providerId}`);
+            console.log(`name: ${name}`);
 
             if (!proof || !publicSignals || !vk) {
                 throw new Error('Proof, public signals, or verification key is missing');
