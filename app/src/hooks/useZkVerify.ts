@@ -25,9 +25,9 @@ export function useZkVerify() {
         vk: any
     ): Promise<void> => {
         try {
-            console.log(`provider: ${await provider}`);
-            console.log(`signer: ${await signer}`);
-            console.log(`account: ${await account}`);
+            console.log(`provider: ${JSON.stringify(provider, null, 4)}`);
+            console.log(`signer: ${JSON.stringify(signer, null, 4)}`);
+            console.log(`account: ${account}`);
 
             if (!proof || !publicSignals || !vk) {
                 throw new Error('Proof, public signals, or verification key is missing');
