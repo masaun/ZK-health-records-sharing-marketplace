@@ -1,7 +1,9 @@
 import { useState, useEffect, useRef } from 'react';
 import { useAccount } from '@/context/AccountContext';
 
-import { ethers, providers, Contract } from 'ethers';
+import { compile, createFileManager } from "@noir-lang/noir_wasm"
+import main from "../../../circuits/src/main.nr";
+import nargoToml from "../../../circuits/Nargo.toml";
 
 
 /**
