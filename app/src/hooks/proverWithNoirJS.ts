@@ -7,7 +7,7 @@ import nargoToml from "../../../circuits/Nargo.toml";
 
 
 /**
- * This hook is used to prove (generate) a ZK proof using NoirJS
+ * @notice - This hook is used to prove (generate) a ZK proof using NoirJS
  */
 export function proverWithNoirJS() {
     const { selectedAccount, selectedWallet } = useAccount();
@@ -23,4 +23,18 @@ export function proverWithNoirJS() {
     }
     
     return { proof, onGenerateProof };
+}
+
+
+/**
+ * @notice - Get the circuit from the ZK circuit in Noir
+ */
+export async function getCircuit() {
+    const fm = createFileManager("/");
+    const { body } = await fetch(main);
+    const { body: nargoTomlBody } = await fetch(nargoToml);
+   
+    fm.writeFile("../../../circuits/src/main.nr", body);
+    fm.writeFile("../../../circuits/Nargo.toml", nargoTomlBody);
+    return await compile(fm);
 }
