@@ -12,7 +12,7 @@ const ConnectEVMWalletButton = () => {
         className={`button ${styles.walletButton}`}
       >
         {account
-                    ? `Connected: ${account.slice(0, 6)}...${account.slice(-4)}`
+                    ? `Connected EVM Wallet: ${account.slice(0, 6)}...${account.slice(-4)}`
                     : 'Connect EVM Wallet'}
       </button>
       {/* {account && <p>Connected Wallet Address: {account}</p>} */}

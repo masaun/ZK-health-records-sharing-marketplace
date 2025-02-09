@@ -44,8 +44,8 @@ const ConnectWalletButton = forwardRef<ConnectWalletButtonHandle, { onWalletConn
                 className={`button ${styles.walletButton}`}
             >
                 {selectedAccount
-                    ? `Connected: ${selectedAccount.slice(0, 6)}...${selectedAccount.slice(-4)}`
-                    : 'Connect Wallet'}
+                    ? `Connected Polkadot Wallet: ${selectedAccount.slice(0, 6)}...${selectedAccount.slice(-4)}`
+                    : 'Connect Polkadot Wallet'}
             </button>
 
             {isWalletSelectOpen && (
