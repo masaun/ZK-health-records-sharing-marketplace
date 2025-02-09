@@ -2,6 +2,8 @@
 import { useState, useRef, useEffect } from 'react';
 import { useAccount } from '@/context/AccountContext';
 import ConnectWalletButton, { ConnectWalletButtonHandle } from '../components/ConnectWalletButton';
+import ConnectEVMWalletButton from '../components/ConnectEVMWalletButton';
+import { useConnectEVMWallet } from '@/hooks/useConnectEVMWallet';
 import { useZkVerify } from '@/hooks/useZkVerify';
 import { proverWithNoirJS } from '@/hooks/proverWithNoirJS';
 import styles from './page.module.css';
@@ -21,6 +23,7 @@ export default function Home() {
   const [blockHash, setBlockHash] = useState<string | null>(null);
   const walletButtonRef = useRef<ConnectWalletButtonHandle | null>(null);
   const { selectedAccount, selectedWallet } = useAccount();
+  const { connectEVMWallet, provider, signer, account, walletConnected } = useConnectEVMWallet();  /// @dev - Connect to an EVM wallet (i.e. MetaMask)
   const { onGenerateProof, proof } = proverWithNoirJS();
   const { onVerifyProof, status, eventData, transactionResult, merkleProofDetails, txHash, error } = useZkVerify(); 
   //const { onVerifyProof, status, eventData, transactionResult, error } = useZkVerify(); 
@@ -53,49 +56,7 @@ export default function Home() {
   const [isCheckedRevealBloodType, setIsCheckedRevealBloodType] = useState(false);
   const [isCheckedRevealBloodPressure, setIsCheckedRevealBloodPressure] = useState(false);
   const [isCheckedRevealHeartRate, setIsCheckedRevealHeartRate] = useState(false);
-  const [isCheckedRevealAverageHoursOfSleep, setIsCheckedRevealAverageHoursOfSleep] = useState(false);
-
-  /////////////////////////////////////////////////////////////
-  /// Connect with a browser wallet (i.e. MetaMask)
-  /////////////////////////////////////////////////////////////
-  const [provider, setProvider] = useState();
-  const [signer, setSigner] = useState();
-  const [account, setAccount] = useState();
-  const [walletConnected, setWalletConnected] = useState<boolean>(false); // walletConnected keep track of whether the user's wallet (i.e. MetaMask) is connected or not
-
-  /*
-  *  connectWallet: Connects the MetaMask wallet
-  */
-  const connectWallet = async () => {
-    // if wallet is not connected, create a new instance of Web3Modal and connect the MetaMask wallet
-    if (typeof window !== "undefined") {
-      let browserSigner = null;
-      let browserProvider;
-      let browserAccount;
-      if (window.ethereum) {
-        browserProvider = new ethers.BrowserProvider(window.ethereum);
-        setProvider(browserProvider);
-        //const provider = new ethers.JsonRpcProvider(EDU_CHAIN_RPC_URL, null, { polling: true });
-        console.log("browserProvider: ", await browserProvider);
-
-        browserSigner = await browserProvider.getSigner(); // Assumes Metamask or similar is injected in the browser
-        setSigner(browserSigner);
-        console.log("browserSigner: ", await browserProvider);
-
-        const accounts = await browserProvider.send("eth_requestAccounts", []);
-        browserAccount = accounts[0];
-        setAccount(browserAccount);
-        console.log("browserAccount: ", await browserAccount);
-
-        setWalletConnected(true);
-      } else {
-        console.error("Please install MetaMask! (or any EVM Wallet)");
-        //console.log("MetaMask not installed; using read-only defaults")
-        browserProvider = ethers.getDefaultProvider()
-      }
-    }
-  };
-
+  const [isCheckedRevealAverageHoursOfSleep, setIsCheckedRevealAverageHoursOfSleep] = useState(false); 
 
   /////////////////////////////////////////////////////////////
   /// zkVerify
@@ -192,7 +153,7 @@ export default function Home() {
     }
 
     if (!walletConnected) {
-      connectWallet(); /// @dev - Connetct an EVM wallet (i.e. MetaMask)
+      connectEVMWallet(); /// @dev - Connetct an EVM wallet (i.e. MetaMask)
     }
 
   }, [error, status, eventData, walletConnected]);
@@ -213,6 +174,12 @@ export default function Home() {
           />
 
           <ConnectWalletButton ref={walletButtonRef} onWalletConnected={() => {}} />
+          
+          <br></br>
+
+          <ConnectEVMWalletButton />
+
+          <br></br>
 
           <form onSubmit={handleSubmit}>
             <h4>Product ID</h4>
