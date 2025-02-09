@@ -178,7 +178,7 @@ export default function Home() {
 
           <h1>HealthData Provider Page</h1>
           <Link href="/medicalResearcherPage">
-            <a>Go to the MedicalResearcherPage</a>
+            Go to the MedicalResearcherPage
           </Link>
 
           <br></br>
