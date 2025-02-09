@@ -92,7 +92,7 @@ contract HealthDataSharingExecutor {
 
 
     /** 
-     * @notice - Register functionss
+     * @notice - Register functions
      */
     function registerAsWearableDeviceHolder(address account) public returns(uint256 wearableDeviceHolderId) {
         wearableDeviceHolders[account] = wearableDeviceHolderId; 

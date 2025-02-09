@@ -56,16 +56,13 @@ export default function MedicalResearcherPage() {
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
   //const handleSubmit = async () => {
     if (!account) {
-      setVerificationResult('Please connect a wallet and select an account.');
+      setVerificationResult('Please connect a EVM wallet.');
       return;
     }
 
     setLoading(true);
     setVerificationResult(null);
     setBlockHash(null);
-
-    const { vk, publicSignals, proof } = proofData;
-    //console.log(`vk, publicSignals, proof from the proofData: ${vk}, ${publicSignals}, ${proof}`);
 
     /// @dev - Retrieve the input values from the input form
     event.preventDefault();
@@ -82,9 +79,6 @@ export default function MedicalResearcherPage() {
     try {
       //await onVerifyProof(provider, signer, account, proof, publicSignals, vk); /// @dev - useZkVerify.ts + Web3 Provider
       await onVerifyProof(
-        proof, 
-        publicSignals, 
-        vk,
         provider, 
         signer, 
         account, /// @dev - walletAddress, which is also used for an argument of ZK circuit (main.nr)
