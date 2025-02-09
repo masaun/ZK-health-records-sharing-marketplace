@@ -3,6 +3,7 @@ import { useState, useRef, useEffect } from 'react';
 import { useAccount } from '@/context/AccountContext';
 import ConnectWalletButton, { ConnectWalletButtonHandle } from '../components/ConnectWalletButton';
 import { useZkVerify } from '@/hooks/useZkVerify';
+import { proverWithNoirJS } from '@/hooks/proverWithNoirJS';
 import styles from './page.module.css';
 //import proofData from '../proofs/risc0_v1_0.json';   /// @dev - For a Groth16 proof of RISC Zero
 //import proofData from '../proofs/ultraplonk.json';   /// @dev - For a UltraPlonk proof of Noir
@@ -20,6 +21,7 @@ export default function Home() {
   const [blockHash, setBlockHash] = useState<string | null>(null);
   const walletButtonRef = useRef<ConnectWalletButtonHandle | null>(null);
   const { selectedAccount, selectedWallet } = useAccount();
+  const { onGenerateProof, proof } = proverWithNoirJS();
   const { onVerifyProof, status, eventData, transactionResult, merkleProofDetails, txHash, error } = useZkVerify(); 
   //const { onVerifyProof, status, eventData, transactionResult, error } = useZkVerify(); 
 
@@ -123,6 +125,16 @@ export default function Home() {
     console.log('Is Age checked?:', isCheckedRevealAge);
     console.log('Is Gender checked?:', isCheckedRevealGender);
 
+    /// @dev - Generate a ZK proof via NoirJS
+    try {
+      await onGenerateProof();
+    } catch (error) {
+      setVerificationResult(`Error: ${(error as Error).message}`);
+    } finally { 
+      setLoading(false);
+    }
+
+    /// @dev - Verify a ZK proof via zkVerify
     try {
       //await onVerifyProof(provider, signer, account, proof, publicSignals, vk); /// @dev - useZkVerify.ts + Web3 Provider
       await onVerifyProof(

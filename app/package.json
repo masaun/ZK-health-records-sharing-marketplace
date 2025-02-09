@@ -10,12 +10,14 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@aztec/bb.js": "0.63.1",
+    "@noir-lang/noir_js": "1.0.0-beta.0",
+    "@noir-lang/noir_wasm": "1.0.0-beta.0",
     "@talismn/connect-components": "1.1.9",
     "ethers": "^6.13.5",
     "next": "14.2.15",
     "react": "18",
     "react-dom": "18",
-    "web3modal": "^1.9.12",
     "zkverifyjs": "^0.6.0"
   },
   "devDependencies": {
