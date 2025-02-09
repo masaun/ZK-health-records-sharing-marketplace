@@ -4,14 +4,8 @@ import { useState, useRef, useEffect } from 'react';
 import ConnectWalletButton, { ConnectWalletButtonHandle } from '../src/components/ConnectWalletButton';
 import ConnectEVMWalletButton from '../src/components/ConnectEVMWalletButton';
 import { useConnectEVMWallet } from '../src/hooks/useConnectEVMWallet';
-import { useZkVerify } from '../src/hooks/useZkVerify';
-import { proverWithNoirJS } from '../src/hooks/proverWithNoirJS';
+import { useFunctionForMedicalResercher } from '../src/hooks/useFunctionForMedicalResercher';
 import styles from '../src/app/page.module.css';
-//import proofData from '../proofs/risc0_v1_0.json';   /// @dev - For a Groth16 proof of RISC Zero
-//import proofData from '../proofs/ultraplonk.json';   /// @dev - For a UltraPlonk proof of Noir
-//import proofData from '../proofs/ultraplonk_with-foundry.json';  /// @dev - For a UltraPlonk proof of Noir
-//import proofData from '../proofs/ultraplonk_zkv.json';  /// @dev - For a UltraPlonk proof of Noir
-import proofData from '../../circuits/zkVerify/final-output/ultraplonk_health_data_sharing_zkv.json';  /// @dev - For a UltraPlonk proof of Noir
 import Image from 'next/image';
 import Link from 'next/link';
 
