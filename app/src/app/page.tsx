@@ -2,7 +2,8 @@
 import { useState, useRef, useEffect } from 'react';
 import { useAccount } from '@/context/AccountContext';
 import ConnectWalletButton, { ConnectWalletButtonHandle } from '../components/ConnectWalletButton';
-import { connectEVMWalletHook } from '@/hooks/connectEVMWalletHook';
+import ConnectEVMWalletButton from '../components/ConnectEVMWalletButton';
+import { useConnectEVMWallet } from '@/hooks/useConnectEVMWallet';
 import { useZkVerify } from '@/hooks/useZkVerify';
 import { proverWithNoirJS } from '@/hooks/proverWithNoirJS';
 import styles from './page.module.css';
@@ -22,7 +23,7 @@ export default function Home() {
   const [blockHash, setBlockHash] = useState<string | null>(null);
   const walletButtonRef = useRef<ConnectWalletButtonHandle | null>(null);
   const { selectedAccount, selectedWallet } = useAccount();
-  const { connectEVMWallet, provider, signer, account, walletConnected } = connectEVMWalletHook();  /// @dev - Connect to an EVM wallet (i.e. MetaMask)
+  const { connectEVMWallet, provider, signer, account, walletConnected } = useConnectEVMWallet();  /// @dev - Connect to an EVM wallet (i.e. MetaMask)
   const { onGenerateProof, proof } = proverWithNoirJS();
   const { onVerifyProof, status, eventData, transactionResult, merkleProofDetails, txHash, error } = useZkVerify(); 
   //const { onVerifyProof, status, eventData, transactionResult, error } = useZkVerify(); 
@@ -173,6 +174,12 @@ export default function Home() {
           />
 
           <ConnectWalletButton ref={walletButtonRef} onWalletConnected={() => {}} />
+          
+          <br></br>
+
+          <ConnectEVMWalletButton />
+
+          <br></br>
 
           <form onSubmit={handleSubmit}>
             <h4>Product ID</h4>

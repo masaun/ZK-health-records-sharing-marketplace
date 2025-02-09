@@ -1,10 +1,11 @@
 import { useState, useEffect } from 'react';
+import { ethers, providers, Contract } from 'ethers';
 
 
 /**
  * @notice - This hook is used to connect to an EVM wallet.
  */
-export function connectEVMWalletHook() {
+export function useConnectEVMWallet() {
     const [provider, setProvider] = useState();
     const [signer, setSigner] = useState();
     const [account, setAccount] = useState();
