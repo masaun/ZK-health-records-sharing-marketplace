@@ -5,7 +5,7 @@ import ConnectWalletButton, { ConnectWalletButtonHandle } from '../components/Co
 import ConnectEVMWalletButton from '../components/ConnectEVMWalletButton';
 import { useConnectEVMWallet } from '@/hooks/useConnectEVMWallet';
 import { useZkVerify } from '@/hooks/useZkVerify';
-import { proverWithNoirJS } from '@/hooks/proverWithNoirJS';
+import { useProverWithNoirJS } from '@/hooks/useProverWithNoirJS';
 import styles from './page.module.css';
 //import proofData from '../proofs/risc0_v1_0.json';   /// @dev - For a Groth16 proof of RISC Zero
 //import proofData from '../proofs/ultraplonk.json';   /// @dev - For a UltraPlonk proof of Noir
@@ -25,7 +25,7 @@ export default function Home() {
   const walletButtonRef = useRef<ConnectWalletButtonHandle | null>(null);
   const { selectedAccount, selectedWallet } = useAccount();
   const { connectEVMWallet, provider, signer, account, walletConnected } = useConnectEVMWallet();  /// @dev - Connect to an EVM wallet (i.e. MetaMask)
-  const { onGenerateProof, proof } = proverWithNoirJS();
+  const { onGenerateProof, proof } = useProverWithNoirJS();
   const { onVerifyProof, status, eventData, transactionResult, merkleProofDetails, txHash, error } = useZkVerify(); 
   //const { onVerifyProof, status, eventData, transactionResult, error } = useZkVerify(); 
 
