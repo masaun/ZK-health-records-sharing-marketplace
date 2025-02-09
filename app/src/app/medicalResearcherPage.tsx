@@ -18,7 +18,7 @@ import Link from 'next/link';
 import { ethers, BrowserProvider, Contract } from 'ethers';
 
 
-export default function Home() {
+export default function MedicalResearcherPage() {
   const [loading, setLoading] = useState(false);
   const [verificationResult, setVerificationResult] = useState<string | null>(null);
   const [blockHash, setBlockHash] = useState<string | null>(null);
@@ -176,9 +176,9 @@ export default function Home() {
 
           <br></br>
 
-          <h1>HealthData Provider Page</h1>
-          <Link href="/medicalResearcherPage">
-            <a>Go to the MedicalResearcherPage</a>
+          <h1>Main Page</h1>
+          <Link href="/">
+            <a>Back to the HealthData Provider Page</a>
           </Link>
 
           <br></br>
