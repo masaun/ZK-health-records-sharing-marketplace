@@ -174,14 +174,20 @@ export default function Home() {
               height={150}
           />
 
-          <br></br>
+          <br />
 
           <h1>HealthData Provider Page</h1>
           <Link href="/medicalResearcherPage">
             Go to the MedicalResearcherPage
           </Link>
 
-          <br></br>
+          <br />
+
+          <Link href="/about">
+            Go to the About Page
+          </Link>
+
+          <br />
 
           <ConnectWalletButton ref={walletButtonRef} onWalletConnected={() => {}} />
           
