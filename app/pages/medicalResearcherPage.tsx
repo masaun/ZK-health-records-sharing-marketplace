@@ -1,33 +1,24 @@
 'use client';
 import { useState, useRef, useEffect } from 'react';
-import { useAccount } from '@/context/AccountContext';
-import ConnectWalletButton, { ConnectWalletButtonHandle } from '../components/ConnectWalletButton';
-import ConnectEVMWalletButton from '../components/ConnectEVMWalletButton';
-import { useConnectEVMWallet } from '@/hooks/useConnectEVMWallet';
-import { useZkVerify } from '@/hooks/useZkVerify';
-import { useProverWithNoirJS } from '@/hooks/useProverWithNoirJS';
-import styles from './page.module.css';
-//import proofData from '../proofs/risc0_v1_0.json';   /// @dev - For a Groth16 proof of RISC Zero
-//import proofData from '../proofs/ultraplonk.json';   /// @dev - For a UltraPlonk proof of Noir
-//import proofData from '../proofs/ultraplonk_with-foundry.json';  /// @dev - For a UltraPlonk proof of Noir
-//import proofData from '../proofs/ultraplonk_zkv.json';  /// @dev - For a UltraPlonk proof of Noir
-import proofData from '../../../circuits/zkVerify/final-output/ultraplonk_health_data_sharing_zkv.json';  /// @dev - For a UltraPlonk proof of Noir
+import ConnectEVMWalletButton from '../src/components/ConnectEVMWalletButton';
+import { useConnectEVMWallet } from '../src/hooks/useConnectEVMWallet';
+import { useFunctionForMedicalResercher } from '../src/hooks/useFunctionForMedicalResercher';
+import styles from '../src/app/page.module.css';
+import globalStyles from '../src/app/globals.css';
 import Image from 'next/image';
 import Link from 'next/link';
 
 import { ethers, BrowserProvider, Contract } from 'ethers';
 
 
-export default function Home() {
+export default function MedicalResearcherPage() {
   const [loading, setLoading] = useState(false);
   const [verificationResult, setVerificationResult] = useState<string | null>(null);
   const [blockHash, setBlockHash] = useState<string | null>(null);
   const walletButtonRef = useRef<ConnectWalletButtonHandle | null>(null);
-  const { selectedAccount, selectedWallet } = useAccount();
   const { connectEVMWallet, provider, signer, account, walletConnected } = useConnectEVMWallet();  /// @dev - Connect to an EVM wallet (i.e. MetaMask)
-  const { onGenerateProof, proof } = useProverWithNoirJS();
-  const { onVerifyProof, status, eventData, transactionResult, merkleProofDetails, txHash, error } = useZkVerify(); 
-  //const { onVerifyProof, status, eventData, transactionResult, error } = useZkVerify(); 
+  const { onVerifyProof, status, eventData, transactionResult, merkleProofDetails, txHash, error } = useConnectEVMWallet(); 
+
 
   /////////////////////////////////////////////////////////////
   /// Input form
@@ -64,17 +55,14 @@ export default function Home() {
   /////////////////////////////////////////////////////////////
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
   //const handleSubmit = async () => {
-    if (!selectedAccount || !selectedWallet) {
-      setVerificationResult('Please connect a wallet and select an account.');
+    if (!account) {
+      setVerificationResult('Please connect a EVM wallet.');
       return;
     }
 
     setLoading(true);
     setVerificationResult(null);
     setBlockHash(null);
-
-    const { vk, publicSignals, proof } = proofData;
-    //console.log(`vk, publicSignals, proof from the proofData: ${vk}, ${publicSignals}, ${proof}`);
 
     /// @dev - Retrieve the input values from the input form
     event.preventDefault();
@@ -87,22 +75,10 @@ export default function Home() {
     console.log('Is Age checked?:', isCheckedRevealAge);
     console.log('Is Gender checked?:', isCheckedRevealGender);
 
-    /// @dev - Generate a ZK proof via NoirJS
-    try {
-      await onGenerateProof();
-    } catch (error) {
-      setVerificationResult(`Error: ${(error as Error).message}`);
-    } finally { 
-      setLoading(false);
-    }
-
     /// @dev - Verify a ZK proof via zkVerify
     try {
       //await onVerifyProof(provider, signer, account, proof, publicSignals, vk); /// @dev - useZkVerify.ts + Web3 Provider
       await onVerifyProof(
-        proof, 
-        publicSignals, 
-        vk,
         provider, 
         signer, 
         account, /// @dev - walletAddress, which is also used for an argument of ZK circuit (main.nr)
@@ -168,34 +144,24 @@ export default function Home() {
       <div className={styles.page}>
         <div className={styles.main}>
           <Image
-              src="/zk_Verify_logo_full_black.png"
-              alt="zkVerify Logo"
-              width={450}
-              height={150}
+               src="/zk_Verify_logo_full_black.png"
+               alt="zkVerify Logo"
+               width={450}
+               height={150}
           />
-
+ 
           <br />
 
-          <h1>HealthData Provider Page</h1>
-          <Link href="/medicalResearcherPage">
-            Go to the MedicalResearcherPage
+          <h1>Medical Researcher Page</h1>
+          <Link href="/">
+            Go to the HealthData Provider Page
           </Link>
 
           <br />
-
-          <Link href="/about">
-            Go to the About Page
-          </Link>
-
-          <br />
-
-          <ConnectWalletButton ref={walletButtonRef} onWalletConnected={() => {}} />
-          
-          <br></br>
 
           <ConnectEVMWalletButton />
 
-          <br></br>
+          <br />
 
           <form onSubmit={handleSubmit}>
             <h4>Product ID</h4>
@@ -205,7 +171,7 @@ export default function Home() {
               onChange={(e) => setInputProductIdValue(e.target.value)}
             />
 
-            <br></br>
+            <br />
 
             <h4>Provider ID</h4>
             <input
@@ -387,7 +353,7 @@ export default function Home() {
                 type="submit"
                 //onClick={handleSubmit}
                 className={`button ${styles.verifyButton}`}
-                disabled={!selectedAccount || !selectedWallet || loading}
+                disabled={!account || loading}
             >
               {loading ? (
                   <>
@@ -400,11 +366,10 @@ export default function Home() {
             </button>
           </form>
 
-          {/* 
           <button
               onClick={handleSubmit}
               className={`button ${styles.verifyButton}`}
-              disabled={!selectedAccount || !selectedWallet || loading}
+              disabled={!account || loading}
           >
             {loading ? (
                 <>
@@ -414,8 +379,7 @@ export default function Home() {
             ) : (
                 'Submit Proof'
             )}
-          </button> 
-          */}
+          </button>
 
           <div className={styles.resultContainer}>
             {verificationResult && (
@@ -468,6 +432,7 @@ export default function Home() {
                 </div>
             )} 
           </div>
+
         </div>
       </div>
   );

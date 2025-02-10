@@ -9,7 +9,7 @@ import nargoToml from "../../../circuits/Nargo.toml";
 /**
  * @notice - This hook is used to prove (generate) a ZK proof using NoirJS
  */
-export function proverWithNoirJS() {
+export function useProverWithNoirJS() {
     const { selectedAccount, selectedWallet } = useAccount();
     const [proof, setProof] = useState<string | null>(null);
     
