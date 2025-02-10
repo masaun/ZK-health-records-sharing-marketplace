@@ -87,12 +87,20 @@ contract HealthDataSharingExecutor {
     }
 
     /**
+     * @dev - Get a publicInput (health data) from the mapping storage.
+     */
+    function getHealthData(uint256 _attestationId) public view returns(DataTypes.PublicInput memory publicInputStorage) {
+        DataTypes.PublicInput memory publicInputStorage = publicInputStorages[_attestationId];
+        return publicInputStorage;
+    }  
+
+    /**
      * @dev - a Medical Researcher would receive the health data, which was submitted by the Health Data Providers (i.e. Patients, Wearable Device holders).
      * @dev - Only a Wearable Device holder
      */
-    function receiveHealthData(uint256 healthDataSharingRequestId) public returns(bool) { /// [NOTE]: This function should be called by a medical researcher
-        /// [TODO]:
-        uint256 medicalResearcherId;
+    function receiveHealthData(uint256 _attestationId) public returns(bool) { /// [NOTE]: This function should be called by a medical researcher
+        /// @dev - Get a publicInput (health data) from the mapping storage.
+        DataTypes.PublicInput memory publicInputStorage = getHealthData(_attestationId);
 
         /// @dev - Decode publicInput, which is stored in the (mapping) storage.
         //for (uint i=0; i < publicInput.length; i++) {
