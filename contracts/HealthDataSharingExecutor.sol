@@ -105,29 +105,30 @@ contract HealthDataSharingExecutor {
         bytes32[] memory publicInput = publicInputStorage.publicInput;
 
         /// @dev - Decode publicInput, which is stored in the (mapping) storage.
-        uint64 productId;
-        uint64 providerId;  // Using the "providerId" parameter - instead of the provider's "name" parameter. 
-        uint32 name; // [NOTE]: Before an arg value is stored into here as u32, it would be converted from String ("John") -> Hash (bytes32) -> u32 (uint32)
-        address walletAddress;
-        uint8 height;
-        uint8 weight;
-        uint8 age;
-        uint8 gender;        // 1: "Male", 2: "Female", 3: "Other"
-        uint8 race_type;     // 1: "White", 2: "Black", 3: "Yello"
-        uint8 blood_type;    // 1: "A", 2: "B", 3: "AB", 4: "O" 
-        uint8 blood_pressure;
-        uint8 heart_rate;
-        uint8 average_hours_of_sleep;
-        uint64 returnValueFromZkCircuit;
-        for (uint i=0; i < publicInput.length; i++) {
-            (productId, providerId, name, walletAddress, height, weight, age, gender, race_type, blood_type, blood_pressure, heart_rate, average_hours_of_sleep, returnValueFromZkCircuit) 
-                = abi.decode(bytes32ToBytes(publicInput[i]), (uint64, uint64, uint32, address, uint8, uint8, uint8, uint8, uint8, uint8, uint8, uint8, uint8, uint64));
-        }
+        DataTypes.HealthDataDecoded memory healthDataDecoded = _decodePublicInput(_attestationId);
+        //uint64 productId;
+        //uint64 providerId;  // Using the "providerId" parameter - instead of the provider's "name" parameter. 
+        //uint32 name; // [NOTE]: Before an arg value is stored into here as u32, it would be converted from String ("John") -> Hash (bytes32) -> u32 (uint32)
+        //address walletAddress;
+        //uint8 height;
+        //uint8 weight;
+        //uint8 age;
+        //uint8 gender;        // 1: "Male", 2: "Female", 3: "Other"
+        //uint8 race_type;     // 1: "White", 2: "Black", 3: "Yello"
+        //uint8 blood_type;    // 1: "A", 2: "B", 3: "AB", 4: "O" 
+        //uint8 blood_pressure;
+        //uint8 heart_rate;
+        //uint8 average_hours_of_sleep;
+        //uint64 returnValueFromZkCircuit;
+        //for (uint i=0; i < publicInput.length; i++) {
+        //    (productId, providerId, name, walletAddress, height, weight, age, gender, race_type, blood_type, blood_pressure, heart_rate, average_hours_of_sleep, returnValueFromZkCircuit) 
+        //        = abi.decode(bytes32ToBytes(publicInput[i]), (uint64, uint64, uint32, address, uint8, uint8, uint8, uint8, uint8, uint8, uint8, uint8, uint8, uint64));
+        //}
 
         /// @dev - The RewardToken (in NativeToken (EDU)) would be distributed to the health data provider (i.e. Patient, Wearable Device holder)
         address medicalResearcher = msg.sender;
         //address medicalResearcher = healthDataSharingRequester.getMedicalResearcherById(medicalResearcherId);
-        address healthDataProvider = walletAddress;
+        address healthDataProvider = healthDataDecoded.walletAddress;
         uint256 rewardAmountPerSubmission = 1 * 1e13; /// @dev - 0.00001 EDU
         //uint256 rewardAmount = rewardPool.getRewardData(medicalResearcher).rewardAmountPerSubmission;
         //rewardPool.distributeRewardToken(medicalResearcherAccount, healthDataProvider, rewardAmount);
@@ -136,6 +137,52 @@ contract HealthDataSharingExecutor {
         (bool success, ) = healthDataProvider.call{ value: rewardAmountPerSubmission }("");
         //(bool success, ) = ealthDataProvider.call{ value: rewardAmountPerSubmission, gas: 100000}(payload);
         require(success);
+    }
+
+    /** 
+     * @notice - Decode publicInput
+     */
+    function _decodePublicInput(uint256 _attestationId) internal view returns(DataTypes.HealthDataDecoded memory _healthDataDecoded) { /// [NOTE]: This function should be called by a medical researcher
+        /// @dev - Get a publicInput (health data) from the mapping storage.
+        DataTypes.PublicInput memory publicInputStorage = getHealthData(_attestationId);
+        bytes memory proof = publicInputStorage.proof;
+        bytes32[] memory publicInput = publicInputStorage.publicInput;
+
+        /// @dev - Decode publicInput
+        DataTypes.HealthDataDecoded memory healthDataDecoded;
+        for (uint i=0; i < publicInput.length; i++) {
+            if (i == 0) {
+                (healthDataDecoded.productId) = abi.decode(bytes32ToBytes(publicInput[i]), (uint64));
+            } else if (i == 1) {
+                (healthDataDecoded.providerId) = abi.decode(bytes32ToBytes(publicInput[i]), (uint64));
+            } else if (i == 2) {
+                (healthDataDecoded.name) = abi.decode(bytes32ToBytes(publicInput[i]), (uint32));
+            } else if (i == 3) {
+                (healthDataDecoded.walletAddress) = abi.decode(bytes32ToBytes(publicInput[i]), (address));
+            } else if (i == 4) {
+                (healthDataDecoded.height) = abi.decode(bytes32ToBytes(publicInput[i]), (uint8));
+            } else if (i == 5) {
+                (healthDataDecoded.weight) = abi.decode(bytes32ToBytes(publicInput[i]), (uint8));
+            } else if (i == 6) {
+                (healthDataDecoded.age) = abi.decode(bytes32ToBytes(publicInput[i]), (uint8));
+            } else if (i == 7) {
+                (healthDataDecoded.gender) = abi.decode(bytes32ToBytes(publicInput[i]), (uint8));
+            } else if (i == 8) {
+                (healthDataDecoded.race_type) = abi.decode(bytes32ToBytes(publicInput[i]), (uint8));
+            } else if (i == 9) {
+                (healthDataDecoded.blood_type) = abi.decode(bytes32ToBytes(publicInput[i]), (uint8));
+            } else if (i == 10) {
+                (healthDataDecoded.blood_pressure) = abi.decode(bytes32ToBytes(publicInput[i]), (uint8));
+            } else if (i == 11) {
+                (healthDataDecoded.heart_rate) = abi.decode(bytes32ToBytes(publicInput[i]), (uint8));
+            } else if (i == 12) {
+                (healthDataDecoded.average_hours_of_sleep) = abi.decode(bytes32ToBytes(publicInput[i]), (uint8));
+            } else if (i == 13) {
+                (healthDataDecoded.returnValueFromZkCircuit) = abi.decode(bytes32ToBytes(publicInput[i]), (uint64));
+            }
+        }
+
+        return healthDataDecoded;
     }
 
     /** 
