@@ -78,29 +78,41 @@ contract HealthDataSharingExecutor {
         /// @dev - Check whether or not a given number of public inputs is equal to the number of items, which was requested by a Medical Researcher.
         //require(publicInput.length == healthDataSharingVerifierRequestor.getHealthDataSharingVerifierRequest(medicalResearcherId, healthDataSharingVerifierRequestId), "Invalid number of public inputs");
 
-
-        /// [TODO]: Implement the logic/function to proceed the health data to be shared.
-        /// [Actor]: a Medical Researcher and a Data Provider
-
-        /// [TODO]: After testing on Frontend, the following code should be resumed.
-        /// @dev - The RewardToken (ERC20) would be distributed to the health data provider (i.e. Wearable Device holder)
-        // address medicalResearcherAccount = healthDataSharingRequester.getMedicalResearcherById(medicalResearcherId);
-        // address healthDataProvider = msg.sender;
-        // uint256 rewardAmount = rewardPool.getRewardData(medicalResearcherAccount).rewardAmountPerSubmission;
-        // rewardPool.distributeRewardToken(medicalResearcherAccount, healthDataProvider, rewardAmount);
+        /// [TODO]: Implement the logic/function to store the publicInput (health data) to be shared.
     }
-
 
     /**
      * @dev - a Medical Researcher would receive the health data, which was submitted by the Health Data Providers (i.e. Patients, Wearable Device holders).
      * @dev - Only a Wearable Device holder
      */
     function receiveHealthData(uint256 healthDataSharingRequestId) public returns(bool) { /// [NOTE]: This function should be called by a medical researcher
-        // [TODO]:
-        uint256 medicalResearcherId, 
+        /// [TODO]:
+        uint256 medicalResearcherId;
+
+        /// @dev - Decode publicInput, which is stored in the (mapping) storage.
+        //for (uint i=0; i < publicInput.length; i++) {
+        //    uint64 productId;
+        //    uint64 returnValueFromZkCircuit;
+        //    (productId, returnValueFromZkCircuit) = abi.decode(bytes32ToBytes(publicInput[i]), (uint64, uint64));
+        //}
+
+        /// [TODO]: The RewardToken (ERC20) would be distributed to the health data provider (i.e. Patient, Wearable Device holder)
+        // address medicalResearcherAccount = healthDataSharingRequester.getMedicalResearcherById(medicalResearcherId);
+        // address healthDataProvider = msg.sender;
+        // uint256 rewardAmount = rewardPool.getRewardData(medicalResearcherAccount).rewardAmountPerSubmission;
+        // rewardPool.distributeRewardToken(medicalResearcherAccount, healthDataProvider, rewardAmount);
     }
 
-
+    /** 
+     * @notice - Convert bytes32 to bytes
+     */
+    function bytes32ToBytes(bytes32 data) public pure returns (bytes memory) {
+        bytes memory result = new bytes(32);
+        assembly {
+            mstore(add(result, 32), data)
+        }
+        return result;
+    }
 
 
 
