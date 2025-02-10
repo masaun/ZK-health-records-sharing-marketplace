@@ -50,7 +50,7 @@ contract HealthDataSharingExecutor {
     }
 
     /**
-     * @dev - a Wearable Device holder (i.e. Apple Watch holder, Pulse holder) would submit (= send) their health data to a request, which is created by a Medical Researcher.
+     * @dev - a Health Data Provider (i.e. Patient, Wearable Device holder) would submit (= send) their health data to a request, which is created by a Medical Researcher.
      * @dev - Only a Wearable Device holder
      */
     function submitHealthData(
@@ -89,6 +89,19 @@ contract HealthDataSharingExecutor {
         // uint256 rewardAmount = rewardPool.getRewardData(medicalResearcherAccount).rewardAmountPerSubmission;
         // rewardPool.distributeRewardToken(medicalResearcherAccount, healthDataProvider, rewardAmount);
     }
+
+
+    /**
+     * @dev - a Medical Researcher would receive the health data, which was submitted by the Health Data Providers (i.e. Patients, Wearable Device holders).
+     * @dev - Only a Wearable Device holder
+     */
+    function receiveHealthData(uint256 healthDataSharingRequestId) public returns(bool) { /// [NOTE]: This function should be called by a medical researcher
+        // [TODO]:
+        uint256 medicalResearcherId, 
+    }
+
+
+
 
 
     /** 
