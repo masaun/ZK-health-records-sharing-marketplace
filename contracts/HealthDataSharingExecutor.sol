@@ -99,15 +99,32 @@ contract HealthDataSharingExecutor {
      * @dev - Only a Wearable Device holder
      */
     function receiveHealthData(uint256 _attestationId) public returns(bool) { /// [NOTE]: This function should be called by a medical researcher
+        address medicalResearcher = msg.sender;
+
         /// @dev - Get a publicInput (health data) from the mapping storage.
         DataTypes.PublicInput memory publicInputStorage = getHealthData(_attestationId);
+        bytes memory proof = publicInputStorage.proof;
+        bytes32[] memory publicInput = publicInputStorage.publicInput;
 
         /// @dev - Decode publicInput, which is stored in the (mapping) storage.
-        //for (uint i=0; i < publicInput.length; i++) {
-        //    uint64 productId;
-        //    uint64 returnValueFromZkCircuit;
-        //    (productId, returnValueFromZkCircuit) = abi.decode(bytes32ToBytes(publicInput[i]), (uint64, uint64));
-        //}
+        uint64 productId;
+        uint64 providerId;  // Using the "providerId" parameter - instead of the provider's "name" parameter. 
+        uint32 name; // [NOTE]: Before an arg value is stored into here as u32, it would be converted from String ("John") -> Hash (bytes32) -> u32 (uint32)
+        address walletAddress;
+        uint8 height;
+        uint8 weight;
+        uint8 age;
+        uint8 gender;        // 1: "Male", 2: "Female", 3: "Other"
+        uint8 race_type;     // 1: "White", 2: "Black", 3: "Yello"
+        uint8 blood_type;    // 1: "A", 2: "B", 3: "AB", 4: "O" 
+        uint8 blood_pressure;
+        uint8 heart_rate;
+        uint8 average_hours_of_sleep;
+        uint64 returnValueFromZkCircuit;
+        for (uint i=0; i < publicInput.length; i++) {
+            (productId, providerId, name, walletAddress, height, weight, age, gender, race_type, blood_type, blood_pressure, heart_rate, average_hours_of_sleep, returnValueFromZkCircuit) 
+                = abi.decode(bytes32ToBytes(publicInput[i]), (uint64, uint64, uint32, address, uint8, uint8, uint8, uint8, uint8, uint8, uint8, uint8, uint8, uint64));
+        }
 
         /// [TODO]: The RewardToken (ERC20) would be distributed to the health data provider (i.e. Patient, Wearable Device holder)
         // address medicalResearcherAccount = healthDataSharingRequester.getMedicalResearcherById(medicalResearcherId);
