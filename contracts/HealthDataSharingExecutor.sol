@@ -12,8 +12,8 @@ import { RewardPool } from "./rewards/RewardPool.sol";
 
 /** 
  * @notice - HealthDataSharing Executor contract
- * @notice - Actors: Wearable Device (i.e. Apple Watch, Pulse) holder, Medical Researcher (and Hospital)
- * @notice - Scenario: a Wearable Device (i.e. Apple Watch, Pulse) holder can send their medical data (i.e. Execise Hours + Blood Presure) to the medical researcher - without revealing extra sensitive personal data on their Smart Watch.
+ * @notice - Actors: Health Data Provider (i.e. Patient, Wearable Device holder), Medical Researcher.
+ * @notice - Scenario: a Health Data Provider can send their medical data (i.e. race type, blood presure) to the medical researcher - without revealing extra sensitive personal data on their Smart Watch.
  */
 contract HealthDataSharingExecutor {
     IZkVerifyAttestation public zkVerifyAttestation;
@@ -21,12 +21,12 @@ contract HealthDataSharingExecutor {
     HealthDataSharingRequester public healthDataSharingRequester;
     RewardPool public rewardPool;
 
-    uint256 public wearableDeviceHolderId;
+    uint256 public healthDataProviderId;
 
-    mapping (address => uint256) public wearableDeviceHolders;
+    mapping (address => uint256) public healthDataProviders;
 
-    modifier onlyWearableDeviceHolder() {
-        require(wearableDeviceHolders[msg.sender] > 0, "Not registered as a wearable device holder");
+    modifier onlyHealthDataProvider() {
+        require(healthDataProviders[msg.sender] > 0, "Not registered as a health data provider");
         _;
     }
 
@@ -65,7 +65,7 @@ contract HealthDataSharingExecutor {
         uint256 _leafCount,
         uint256 _index
     ) public returns(bool) {                            /// [TODO]: After testing on Frontend, this should be removed.
-    //) public onlyWearableDeviceHolder returns(bool) { /// [TODO]: After testing on Frontend, this should be resumed.
+    //) public onlyHealthDataProvider returns(bool) { /// [TODO]: After testing on Frontend, this should be resumed.
 
         /// @dev - Validate a given proof via the Verifier contract, which was generated via the ZK circuit in Noir.
         bool result1 = _verifyHealthDataSharingProof(proof, publicInput);
@@ -94,8 +94,8 @@ contract HealthDataSharingExecutor {
     /** 
      * @notice - Register functions
      */
-    function registerAsWearableDeviceHolder(address account) public returns(uint256 wearableDeviceHolderId) {
-        wearableDeviceHolders[account] = wearableDeviceHolderId; 
-        wearableDeviceHolderId++;
+    function registerAsHealthDataProvider(address account) public returns(uint256 healthDataProviderId) {
+        healthDataProviders[account] = healthDataProviderId; 
+        healthDataProviderId++;
     }
 }

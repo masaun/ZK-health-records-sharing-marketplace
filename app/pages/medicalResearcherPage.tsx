@@ -152,7 +152,7 @@ export default function MedicalResearcherPage() {
  
           <br />
 
-          <h1>HealthData Provider Page</h1>
+          <h1>Medical Researcher Page</h1>
           <Link href="/">
             Go to the HealthData Provider Page
           </Link>
