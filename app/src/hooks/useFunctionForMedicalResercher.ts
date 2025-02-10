@@ -76,24 +76,23 @@ export function useFunctionForMedicalResercher() {
                 "event AttestationPosted(uint256 indexed _attestationId, bytes32 indexed _proofsAttestation)"
             ];
 
-            /// @dev - HealthDataSharingExecutor#submitHealthData()
+            /// @dev - HealthDataSharingRequester.sol
             const abiAppContract = [
                 "function submitHealthData(bytes calldata proof, bytes32[] calldata publicInput, uint256 medicalResearcherId, uint256 healthDataSharingRequestId, uint256 _attestationId, bytes32 _leaf, bytes32[] calldata _merklePath, uint256 _leafCount, uint256 _index)"
             ];
 
             const zkvContract = new Contract(process.env.NEXT_PUBLIC_EDU_CHAIN_ZKVERIFY_CONTRACT_ADDRESS, abiZkvContract, provider);
-            const appContract = new Contract(process.env.NEXT_PUBLIC_EDU_CHAIN_APP_CONTRACT_ADDRESS, abiAppContract, provider);
-            //const appContract = new ethers.Contract(process.env.NEXT_PUBLIC_EDU_CHAIN_APP_CONTRACT_ADDRESS, abiAppContract, wallet);
-            const appContractWithSigner = appContract.connect(signer);
-
+            const healthDataSharingRequesterContract = new Contract(process.env.NEXT_PUBLIC_EDU_CHAIN_HEALTH_DATA_SHARING_REQUESTER_CONTRACT_ADDRESS, abiAppContract, provider);
+            const healthDataSharingExecutorContract = new Contract(process.env.NEXT_PUBLIC_EDU_CHAIN_HEALTH_DATA_SHARING_EXECUTOR_CONTRACT_ADDRESS, abiAppContract, provider);
+            const healthDataSharingRequesterContractWithSigner = healthDataSharingRequesterContract.connect(signer);
+            const healthDataSharingExecutorContractWithSigner = healthDataSharingExecutorContract.connect(signer);
             
             /// @dev - Call the HealthDataSharingExecutor#submitHealthData()
             let medicalResearcherId = 1;        /// [TODO]: Replace with a dynamic value
             let healthDataSharingRequestId = 1; /// [TODO]: Replace with a dynamic value
             // After the attestation has been posted on the EVM, send a `submitHealthData` tx
             // to the app contract, with all the necessary merkle proof details
-            const txResponse = await appContractWithSigner.submitHealthData(  // @dev - HealthDataSharingExecutor#submitHealthData()
-            //const txResponse = await appContract.submitHealthData(          // @dev - HealthDataSharingExecutor#submitHealthData()
+            const txResponse = await healthDataSharingRequesterContractWithSigner.submitHealthData(  // @dev - HealthDataSharingRequester#submitHealthData()
                 proofData,
                 publicSignals,
                 medicalResearcherId,
