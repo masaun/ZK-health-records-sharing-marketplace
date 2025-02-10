@@ -8,6 +8,7 @@ import { HealthDataSharingVerifier } from "./circuits/HealthDataSharingVerifier.
 import { HealthDataSharingRequester } from "./HealthDataSharingRequester.sol";
 
 import { RewardPool } from "./rewards/RewardPool.sol";
+import { DataTypes } from "./libraries/DataTypes.sol";
 
 
 /** 
@@ -24,6 +25,7 @@ contract HealthDataSharingExecutor {
     uint256 public healthDataProviderId;
 
     mapping (address => uint256) public healthDataProviders;
+    mapping (uint256 => DataTypes.PublicInput) public publicInputStorages; /// [Key]: attestationId (uint256)
 
     modifier onlyHealthDataProvider() {
         require(healthDataProviders[msg.sender] > 0, "Not registered as a health data provider");
@@ -78,7 +80,10 @@ contract HealthDataSharingExecutor {
         /// @dev - Check whether or not a given number of public inputs is equal to the number of items, which was requested by a Medical Researcher.
         //require(publicInput.length == healthDataSharingVerifierRequestor.getHealthDataSharingVerifierRequest(medicalResearcherId, healthDataSharingVerifierRequestId), "Invalid number of public inputs");
 
-        /// [TODO]: Implement the logic/function to store the publicInput (health data) to be shared.
+        /// @dev - Store the publicInput (health data) to be shared into the mapping storage (= publicInputStorages[_attestationId]).
+        DataTypes.PublicInput storage publicInputStorage = publicInputStorages[_attestationId];
+        publicInputStorage.proof = proof;
+        publicInputStorage.publicInput = publicInput;
     }
 
     /**
