@@ -99,8 +99,6 @@ contract HealthDataSharingExecutor {
      * @dev - Only a Wearable Device holder
      */
     function receiveHealthData(uint256 _attestationId) public returns(bool) { /// [NOTE]: This function should be called by a medical researcher
-        address medicalResearcher = msg.sender;
-
         /// @dev - Get a publicInput (health data) from the mapping storage.
         DataTypes.PublicInput memory publicInputStorage = getHealthData(_attestationId);
         bytes memory proof = publicInputStorage.proof;
@@ -126,11 +124,18 @@ contract HealthDataSharingExecutor {
                 = abi.decode(bytes32ToBytes(publicInput[i]), (uint64, uint64, uint32, address, uint8, uint8, uint8, uint8, uint8, uint8, uint8, uint8, uint8, uint64));
         }
 
-        /// [TODO]: The RewardToken (ERC20) would be distributed to the health data provider (i.e. Patient, Wearable Device holder)
-        // address medicalResearcherAccount = healthDataSharingRequester.getMedicalResearcherById(medicalResearcherId);
-        // address healthDataProvider = msg.sender;
-        // uint256 rewardAmount = rewardPool.getRewardData(medicalResearcherAccount).rewardAmountPerSubmission;
-        // rewardPool.distributeRewardToken(medicalResearcherAccount, healthDataProvider, rewardAmount);
+        /// @dev - The RewardToken (in NativeToken (EDU)) would be distributed to the health data provider (i.e. Patient, Wearable Device holder)
+        address medicalResearcher = msg.sender;
+        //address medicalResearcher = healthDataSharingRequester.getMedicalResearcherById(medicalResearcherId);
+        address healthDataProvider = walletAddress;
+        uint256 rewardAmountPerSubmission = 1 * 1e13; /// @dev - 0.00001 EDU
+        //uint256 rewardAmount = rewardPool.getRewardData(medicalResearcher).rewardAmountPerSubmission;
+        //rewardPool.distributeRewardToken(medicalResearcherAccount, healthDataProvider, rewardAmount);
+
+        //bytes memory payload = abi.encodeWithSignature("deposit()");
+        (bool success, ) = healthDataProvider.call{ value: rewardAmountPerSubmission }("");
+        //(bool success, ) = ealthDataProvider.call{ value: rewardAmountPerSubmission, gas: 100000}(payload);
+        require(success);
     }
 
     /** 
