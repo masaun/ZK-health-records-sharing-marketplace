@@ -96,7 +96,6 @@ contract HealthDataSharingExecutor {
 
     /**
      * @dev - a Medical Researcher would receive the health data, which was submitted by the Health Data Providers (i.e. Patients, Wearable Device holders).
-     * @dev - Only a Wearable Device holder
      */
     function receiveHealthData(uint256 _attestationId) public returns(bool) { /// [NOTE]: This function should be called by a medical researcher
         /// @dev - Get a publicInput (health data) from the mapping storage.
@@ -124,6 +123,8 @@ contract HealthDataSharingExecutor {
         //    (productId, providerId, name, walletAddress, height, weight, age, gender, race_type, blood_type, blood_pressure, heart_rate, average_hours_of_sleep, returnValueFromZkCircuit) 
         //        = abi.decode(bytes32ToBytes(publicInput[i]), (uint64, uint64, uint32, address, uint8, uint8, uint8, uint8, uint8, uint8, uint8, uint8, uint8, uint64));
         //}
+
+        /// [TODO]: Add the event to retrieve the "healthDataDecoded" on Frontend.
 
         /// @dev - The RewardToken (in NativeToken (EDU)) would be distributed to the health data provider (i.e. Patient, Wearable Device holder)
         if (healthDataDecoded.walletAddress != address(0)) {
