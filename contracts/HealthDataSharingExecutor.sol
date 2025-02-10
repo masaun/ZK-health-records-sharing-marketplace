@@ -126,17 +126,19 @@ contract HealthDataSharingExecutor {
         //}
 
         /// @dev - The RewardToken (in NativeToken (EDU)) would be distributed to the health data provider (i.e. Patient, Wearable Device holder)
-        address medicalResearcher = msg.sender;
-        //address medicalResearcher = healthDataSharingRequester.getMedicalResearcherById(medicalResearcherId);
-        address healthDataProvider = healthDataDecoded.walletAddress;
-        uint256 rewardAmountPerSubmission = 1 * 1e13; /// @dev - 0.00001 EDU
-        //uint256 rewardAmount = rewardPool.getRewardData(medicalResearcher).rewardAmountPerSubmission;
-        //rewardPool.distributeRewardToken(medicalResearcherAccount, healthDataProvider, rewardAmount);
+        if (healthDataDecoded.walletAddress != address(0)) {
+            address healthDataProvider = healthDataDecoded.walletAddress;
+            address medicalResearcher = msg.sender;
+            //address medicalResearcher = healthDataSharingRequester.getMedicalResearcherById(medicalResearcherId);
+            uint256 rewardAmountPerSubmission = 1 * 1e13; /// @dev - 0.00001 EDU
+            //uint256 rewardAmount = rewardPool.getRewardData(medicalResearcher).rewardAmountPerSubmission;
+            //rewardPool.distributeRewardToken(medicalResearcherAccount, healthDataProvider, rewardAmount);
 
-        //bytes memory payload = abi.encodeWithSignature("deposit()");
-        (bool success, ) = healthDataProvider.call{ value: rewardAmountPerSubmission }("");
-        //(bool success, ) = ealthDataProvider.call{ value: rewardAmountPerSubmission, gas: 100000}(payload);
-        require(success);
+            //bytes memory payload = abi.encodeWithSignature("deposit()");
+            (bool success, ) = healthDataProvider.call{ value: rewardAmountPerSubmission }("");
+            //(bool success, ) = ealthDataProvider.call{ value: rewardAmountPerSubmission, gas: 100000}(payload);
+            require(success);
+        }
     }
 
     /** 
