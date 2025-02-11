@@ -139,7 +139,7 @@ contract HealthDataSharingExecutor {
      * @dev - In exchange for it, a Health Data Providers (i.e. Patients, Wearable Device holders) would claim rewards.
      */
     //function storeHealthDataAndClaimReward(uint256 _attestationId) public payable returns(bool) { /// [NOTE]: This function should be called by a health data provider
-    function receiveHealthData(uint256 _attestationId) public returns(bool) {
+    function receiveHealthData(uint256 _attestationId) public payable returns(bool) {
         /// @dev - Store a given caller address ("msg.sender") into a "medicalResearcher".
         address medicalResearcher = msg.sender; /// @dev - This caller should be a medical researcher
 
