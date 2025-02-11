@@ -33,11 +33,13 @@ library DataTypes {
     }
 
     struct RewardDataInNativeToken {
+        uint256 entranceFee;
         uint256 rewardAmountPerSubmission;
     }
 
     struct RewardDataInERC20 {
         IERC20 rewardToken;
+        uint256 entranceFee;
         uint256 rewardAmountPerSubmission;
     }
 

@@ -19,12 +19,14 @@ contract RewardPool is Ownable { /// [TODO]: Add the transferOwnership()
 
     mapping (address => bool) public depositedEntranceFees;  /// [Key]: medical researcher's address
 
-    uint256 _rewardAmountPerSubmission = 1 * 1e13; /// @dev - 0.00001 EDU
+    uint256 _entranceFee = 1 * 1e13; /// @dev - 0.00001 EDU
+    uint256 _rewardAmountPerSubmission = 1 * 1e10; /// @dev - 0.00000001 EDU
 
     /**
      * Constructor
      */
     constructor() Ownable(msg.sender) {
+        rewardDataInNativeToken.entranceFee = _entranceFee;
         rewardDataInNativeToken.rewardAmountPerSubmission = _rewardAmountPerSubmission;
         /// [TODO]: Add the transferOwnership()
     }
@@ -35,11 +37,19 @@ contract RewardPool is Ownable { /// [TODO]: Add the transferOwnership()
         address payable rewardReceiver /// @dev - Should be a HealthData provider
     ) public returns (bool) {
         DataTypes.RewardDataInNativeToken memory rewardDataInNativeToken;
-        require(msg.value == rewardDataInNativeToken.rewardAmountPerSubmission, "Insufficient amount to be deposited as the entrance fee"); 
+        require(msg.value >= rewardDataInNativeToken.entranceFee, "Insufficient amount to be deposited as the entrance fee"); 
+        depositedEntranceFees[msg.sender] = true;
+    }
+
+    /// @dev - Distribute the rewardToken (in NativeToken) to a HealthData provider
+    /// @dev - The caller (msg.sender) of this function should be 〜.
+    function distributeRewardInNativeToken(
+        address payable rewardReceiver /// @dev - Should be a HealthData provider
+    ) public returns (bool) {
+        DataTypes.RewardDataInNativeToken memory rewardDataInNativeToken;
+        require(address(this).balance == rewardDataInNativeToken.rewardAmountPerSubmission, "Insufficient NativeToken balance of this RewardPool contract for distributing the rewards"); 
         (bool success, ) = rewardReceiver.call{ value: rewardDataInNativeToken.rewardAmountPerSubmission }("");
         require(success, "Transfer failed.");
-
-        depositedEntranceFees[msg.sender] = true;
     }
 
     /// @dev - Deposit the rewardToken (ERC20) into this RewardPool contract to be distributed to HealthData providers
@@ -49,7 +59,7 @@ contract RewardPool is Ownable { /// [TODO]: Add the transferOwnership()
         uint256 amount
     ) public returns (bool) {
         DataTypes.RewardDataInERC20 memory rewardDataInERC20 = rewardDataInERC20s[rewardTokenAddress];
-        require(amount == rewardDataInERC20.rewardAmountPerSubmission, "Insufficient amount to be deposited as the entrance fee"); 
+        require(amount >= rewardDataInERC20.entranceFee, "Insufficient amount to be deposited as the entrance fee"); 
         rewardDataInERC20.rewardToken.safeTransferFrom(msg.sender, address(this), amount);
         depositedEntranceFees[msg.sender] = true;
     }

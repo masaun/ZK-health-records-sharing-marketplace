@@ -169,7 +169,7 @@ contract HealthDataSharingExecutor {
             //require(success, "Transfer failed.");
 
             /// @dev - The rewards in NativeToken ($EDU) would be distributed from the RewardPool to the health data provider (i.e. Patient, Wearable Device holder)
-            rewardPool.depositRewardInNativeToken(rewardReceiver);
+            rewardPool.distributeRewardInNativeToken(rewardReceiver);
         }
     }
 
