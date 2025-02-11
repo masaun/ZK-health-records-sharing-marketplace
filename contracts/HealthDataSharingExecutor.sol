@@ -134,13 +134,14 @@ contract HealthDataSharingExecutor {
     }  
 
     /**
-     * @dev - a Health Data Providers (i.e. Patients, Wearable Device holders) would store their health data (public input) into this platform smart contract - so that any medical researcher, who deposited the entrance fees into the RewardPool, can access it.
+     * @dev - [New design]: A medical researcher, who deposited the entrance fees into the RewardPool, can call this function to retrieve a given "attestationId" of health data (which is provided by a health data provider).
+     * @dev - [Old design / Stop this design]: a Health Data Providers (i.e. Patients, Wearable Device holders) would store their health data (public input) into this platform smart contract - so that any medical researcher, who deposited the entrance fees into the RewardPool, can access it.
      * @dev - In exchange for it, a Health Data Providers (i.e. Patients, Wearable Device holders) would claim rewards.
      */
-    function storeHealthDataAndClaimReward(uint256 _attestationId) public payable returns(bool) { /// [NOTE]: This function should be called by a health data provider
-    //function receiveHealthData(uint256 _attestationId) public returns(bool) {
+    //function storeHealthDataAndClaimReward(uint256 _attestationId) public payable returns(bool) { /// [NOTE]: This function should be called by a health data provider
+    function receiveHealthData(uint256 _attestationId) public returns(bool) {
         /// @dev - Store a given caller address ("msg.sender") into a "medicalResearcher".
-        address medicalResearcher = msg.sender;
+        address medicalResearcher = msg.sender; /// @dev - This caller should be a medical researcher
 
         /// @dev - Get a publicInput (health data) from the mapping storage.
         DataTypes.PublicInput memory publicInputStorage = getHealthData(_attestationId);
