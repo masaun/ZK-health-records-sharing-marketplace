@@ -3,6 +3,7 @@ import { useState, useRef, useEffect } from 'react';
 import ConnectEVMWalletButton from '../src/components/ConnectEVMWalletButton';
 import { useConnectEVMWallet } from '../src/hooks/useConnectEVMWallet';
 import { useReceiveHealthData } from '../src/hooks/useReceiveHealthData';
+import { useGetAvailableAttestationIds } from '../src/hooks/useGetAvailableAttestationIds';
 import styles from './page.module.css';
 //import styles from '../src/app/page.module.css';
 import globalStyles from '../src/app/globals.css';
@@ -18,8 +19,8 @@ export default function MedicalResearcherPage() {
   const [blockHash, setBlockHash] = useState<string | null>(null);
   const walletButtonRef = useRef<ConnectWalletButtonHandle | null>(null);
   const { connectEVMWallet, provider, signer, account, walletConnected } = useConnectEVMWallet();  /// @dev - Connect to an EVM wallet (i.e. MetaMask)
-  const { onReceiveHealthData, status, eventData, txHash, error } = useReceiveHealthData(); 
-
+  const { onReceiveHealthData, status, eventData, txHash, error } = useReceiveHealthData();
+  const { onGetAvailableAttestationIds, availableAttestationIds } = useGetAvailableAttestationIds();
 
   /////////////////////////////////////////////////////////////
   /// Input form
@@ -60,6 +61,20 @@ export default function MedicalResearcherPage() {
     }
   };
 
+
+  const handleGetAvailableAttestationIds = async () => {
+    try {
+      const _availableAttestationIds = await onGetAvailableAttestationIds();
+      console.log(`_availableAttestationIds: ${ _availableAttestationIds }`);
+    } catch (error) {
+      setVerificationResult(`Error: ${(error as Error).message}`);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+
+
   useEffect(() => {
     if (error) {
       setVerificationResult(error);
@@ -78,6 +93,9 @@ export default function MedicalResearcherPage() {
       connectEVMWallet(); /// @dev - Connetct an EVM wallet (i.e. MetaMask)
     }
 
+    if (!availableAttestationIds) {
+      onGetAvailableAttestationIds(); /// @dev - Get availableAttestationIds
+    }
   }, [error, status, eventData, walletConnected]);
   //}, [error, status, eventData]);
 
@@ -134,22 +152,27 @@ export default function MedicalResearcherPage() {
 
           <h4>Available (= Buyable) Attestation IDs</h4>
           
+          <button
+              onClick={handleGetAvailableAttestationIds}
+              className={`button ${styles.verifyButton}`}
+          >
+            Get Available Attestation IDs
+          </button>
+
           <div className={styles.resultContainer}>
-            {/* 
-            {verificationResult && (
+            {availableAttestationIds && (
                 <p
                     className={
-                      verificationResult.includes('failed') ||
-                      verificationResult.includes('Error') ||
-                      verificationResult.includes('Rejected')
+                      availableAttestationIds.includes('failed') ||
+                      availableAttestationIdst.includes('Error') ||
+                      availableAttestationIds.includes('Rejected')
                           ? styles.resultError
                           : styles.resultSuccess
                     }
                 >
-                  {verificationResult}
+                  {availableAttestationIds}
                 </p>
             )} 
-            */}
           </div>
 
           <br />
