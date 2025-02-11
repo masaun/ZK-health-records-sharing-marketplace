@@ -109,9 +109,11 @@ contract HealthDataSharingExecutor {
     }  
 
     /**
-     * @dev - a Medical Researcher would receive the health data, which was submitted by the Health Data Providers (i.e. Patients, Wearable Device holders).
+     * @dev - a Health Data Providers (i.e. Patients, Wearable Device holders) would store their health data (public input) into this contract - so that any medical researcher, who deposited the entrance fees into the RewardPool, can access it.
+     * @dev - In exchange for it, a Health Data Providers (i.e. Patients, Wearable Device holders) would claim rewards.
      */
-    function receiveHealthData(uint256 _attestationId) public returns(bool) { /// [NOTE]: This function should be called by a medical researcher
+    function storeHealthDataAndClaimReward(uint256 _attestationId) public returns(bool) { /// [NOTE]: This function should be called by a health data provider
+    //function receiveHealthData(uint256 _attestationId) public returns(bool) {
         /// @dev - Store a given caller address ("msg.sender") into a "medicalResearcher".
         address medicalResearcher = msg.sender;
 
