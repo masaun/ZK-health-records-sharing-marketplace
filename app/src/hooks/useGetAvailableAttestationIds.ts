@@ -23,18 +23,18 @@ export function useGetAvailableAttestationIds() {
             setStatus('verifying');
             setError(null);
 
-            console.log(`Hey!!!`);
-
             /// @dev - ABI of the HealthDataSharingExecutor.sol
             const abiHealthDataSharingExecutorContract = [
                 "function submitHealthData(bytes calldata proof, bytes32[] calldata publicInput, uint256 medicalResearcherId, uint256 healthDataSharingRequestId, uint256 _attestationId, bytes32 _leaf, bytes32[] calldata _merklePath, uint256 _leafCount, uint256 _index)",
                 "function receiveHealthData(uint256 _attestationId)",
-                "function getAvailableAttestationIds() public view returns(uint256[] memory)"
+                "function getAvailableAttestationIds() public view returns(uint256[] memory _availableAttestationIds)"
             ];
 
             const healthDataSharingExecutorContract = new Contract(process.env.NEXT_PUBLIC_EDU_CHAIN_HEALTH_DATA_SHARING_EXECUTOR_CONTRACT_ADDRESS, abiHealthDataSharingExecutorContract, provider);
             const healthDataSharingExecutorContractWithSigner = healthDataSharingExecutorContract.connect(signer);
             
+            console.log(`Hey!!!`);
+
             /// @dev - Call the HealthDataSharingRequester#receiveHealthData()
             const _availableAttestationIds = await healthDataSharingExecutorContract.getAvailableAttestationIds();
             //const _availableAttestationIds = await healthDataSharingExecutorContractWithSigner.getAvailableAttestationIds();

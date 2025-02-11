@@ -94,7 +94,13 @@ export default function MedicalResearcherPage() {
     }
 
     if (!availableAttestationIds) {
-      onGetAvailableAttestationIds(); /// @dev - Get availableAttestationIds
+      const fetchAttestationIds = async () => {
+        try {  
+          await onGetAvailableAttestationIds(); /// @dev - Get availableAttestationIds
+        } catch (error) {
+          console.error('Error fetching attestation IDs:', error);
+        }
+      };
     }
   }, [error, status, eventData, walletConnected]);
   //}, [error, status, eventData]);
