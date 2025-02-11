@@ -4,6 +4,8 @@ import { IERC20 } from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import { SafeERC20 } from "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 import { Ownable } from "@openzeppelin/contracts/access/Ownable.sol";
 
+import { DataTypes } from "../libraries/DataTypes.sol";
+
 
 /*** 
  * @notice - RewardPool Factory contract, which allow a medical researcher to create a new RewardPool contract.
@@ -12,17 +14,8 @@ contract RewardPool is Ownable { /// [TODO]: Add the transferOwnership()
 
     using SafeERC20 for IERC20;
 
-    struct RewardDataInNativeToken {
-        uint256 rewardAmountPerSubmission;
-    }
-
-    struct RewardDataInERC20 {
-        IERC20 rewardToken;
-        uint256 rewardAmountPerSubmission;
-    }
-
-    RewardDataInNativeToken public rewardDataInNativeToken;
-    mapping (address => RewardDataInERC20) public rewardDataInERC20s; /// [Key]: RewardToken Address
+    DataTypes.RewardDataInNativeToken public rewardDataInNativeToken;
+    mapping (address => DataTypes.RewardDataInERC20) public rewardDataInERC20s; /// [Key]: RewardToken Address
 
     mapping (address => bool) public depositedEntranceFees;  /// [Key]: medical researcher's address
 
@@ -41,7 +34,7 @@ contract RewardPool is Ownable { /// [TODO]: Add the transferOwnership()
     function depositRewardInNativeToken(
         address payable rewardReceiver /// @dev - Should be a HealthData provider
     ) public returns (bool) {
-        RewardDataInNativeToken memory rewardDataInNativeToken;
+        DataTypes.RewardDataInNativeToken memory rewardDataInNativeToken;
         require(msg.value == rewardDataInNativeToken.rewardAmountPerSubmission, "Insufficient amount to be deposited as the entrance fee"); 
         (bool success, ) = rewardReceiver.call{ value: rewardDataInNativeToken.rewardAmountPerSubmission }("");
         require(success, "Transfer failed.");
@@ -55,7 +48,7 @@ contract RewardPool is Ownable { /// [TODO]: Add the transferOwnership()
         address rewardTokenAddress,
         uint256 amount
     ) public returns (bool) {
-        RewardDataInERC20 memory rewardDataInERC20 = rewardDataInERC20s[rewardTokenAddress];
+        DataTypes.RewardDataInERC20 memory rewardDataInERC20 = rewardDataInERC20s[rewardTokenAddress];
         require(amount == rewardDataInERC20.rewardAmountPerSubmission, "Insufficient amount to be deposited as the entrance fee"); 
         rewardDataInERC20.rewardToken.safeTransferFrom(msg.sender, address(this), amount);
         depositedEntranceFees[msg.sender] = true;
@@ -67,12 +60,12 @@ contract RewardPool is Ownable { /// [TODO]: Add the transferOwnership()
         address rewardTokenAddress,
         address rewardReceiver /// @dev - Should be a HealthData provider
     ) public returns (bool) {
-        RewardDataInERC20 memory rewardDataInERC20 = rewardDataInERC20s[rewardTokenAddress];
+        DataTypes.RewardDataInERC20 memory rewardDataInERC20 = rewardDataInERC20s[rewardTokenAddress];
         rewardDataInERC20.rewardToken.safeTransfer(rewardReceiver, rewardDataInERC20.rewardAmountPerSubmission);
     }
 
-    function getRewardInNativeToken() public view returns (RewardDataInNativeToken memory _rewardDataInNativeToken) {
-        RewardDataInNativeToken memory rewardDataInNativeToken;
+    function getRewardInNativeToken() public view returns (DataTypes.RewardDataInNativeToken memory _rewardDataInNativeToken) {
+        DataTypes.RewardDataInNativeToken memory rewardDataInNativeToken;
         return rewardDataInNativeToken;
     }
 
