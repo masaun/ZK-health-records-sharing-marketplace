@@ -36,14 +36,13 @@ export function useGetAvailableAttestationIds() {
             console.log(`Hey!!!`);
 
             /// @dev - Call the HealthDataSharingRequester#receiveHealthData()
-            const _availableAttestationIds = await healthDataSharingExecutorContract.getAvailableAttestationIds();
-            //const _availableAttestationIds = await healthDataSharingExecutorContractWithSigner.getAvailableAttestationIds();
-            //await txResponse.wait();
-            //const { hash } = await txResponse;
-            console.log(`availableAttestationIds on EDU Chain (Testnet): ${_availableAttestationIds}`);
-            //console.log(`Tx sent to EDU Chain (Testnet), tx-hash ${hash}`);
-            setAvailableAttestationIds(_availableAttestationIds);
-            //setTxHash(hash);
+            try {
+                const _fetchedAvailableAttestationIds = await healthDataSharingExecutorContract.getAvailableAttestationIds();
+                setAvailableAttestationIds(_fetchedAvailableAttestationIds);
+                console.log(`availableAttestationIds on EDU Chain (Testnet): ${_fetchedAvailableAttestationIds}`);
+            } catch (error) {
+                console.error('Error fetching attestation IDs:', error);
+            }
         } catch (error: unknown) {
             const errorMessage = (error as Error).message;
             setError(errorMessage);
