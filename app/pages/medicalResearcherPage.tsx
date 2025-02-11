@@ -108,6 +108,52 @@ export default function MedicalResearcherPage() {
 
           <br />
 
+          <h4>Deposit</h4>
+
+          <button
+                type="submit"
+                //onClick={handleSubmit}
+                className={`button ${styles.verifyButton}`}
+                disabled={!account || loading}
+            >
+              {loading ? (
+                  <>
+                    Submitting...
+                    <div className="spinner"></div>
+                  </>
+              ) : (
+                  'Deposit the Entrance Fee'
+              )}
+            </button>
+
+          <br />
+
+          <hr />
+
+          <br />
+
+          <h4>Available (= Buyable) Attestation IDs</h4>
+          
+          <div className={styles.resultContainer}>
+            {/* 
+            {verificationResult && (
+                <p
+                    className={
+                      verificationResult.includes('failed') ||
+                      verificationResult.includes('Error') ||
+                      verificationResult.includes('Rejected')
+                          ? styles.resultError
+                          : styles.resultSuccess
+                    }
+                >
+                  {verificationResult}
+                </p>
+            )} 
+            */}
+          </div>
+
+          <br />
+
           <form onSubmit={handleSubmit}>
             <h4>Attestation ID</h4>
             <input

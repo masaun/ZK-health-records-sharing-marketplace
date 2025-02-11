@@ -35,7 +35,7 @@ contract RewardPool is Ownable { /// [TODO]: Add the transferOwnership()
     /// @dev - The caller (msg.sender) of this function must be a medical researcher, which is this RewardPool contract creator.
     function depositRewardInNativeToken(
         address payable rewardReceiver /// @dev - Should be a HealthData provider
-    ) public returns (bool) {
+    ) public payable returns (bool) {
         DataTypes.RewardDataInNativeToken memory rewardDataInNativeToken;
         require(msg.value >= rewardDataInNativeToken.entranceFee, "Insufficient amount to be deposited as the entrance fee"); 
         depositedEntranceFees[msg.sender] = true;
@@ -45,7 +45,7 @@ contract RewardPool is Ownable { /// [TODO]: Add the transferOwnership()
     /// @dev - The caller (msg.sender) of this function should be 〜.
     function distributeRewardInNativeToken(
         address payable rewardReceiver /// @dev - Should be a HealthData provider
-    ) public returns (bool) {
+    ) public payable returns (bool) {
         DataTypes.RewardDataInNativeToken memory rewardDataInNativeToken;
         require(address(this).balance == rewardDataInNativeToken.rewardAmountPerSubmission, "Insufficient NativeToken balance of this RewardPool contract for distributing the rewards"); 
         (bool success, ) = rewardReceiver.call{ value: rewardDataInNativeToken.rewardAmountPerSubmission }("");
