@@ -12,46 +12,73 @@ contract RewardPool is Ownable { /// [TODO]: Add the transferOwnership()
 
     using SafeERC20 for IERC20;
 
-    struct RewardData {
-        address poolCreator; /// @dev - a medical researcher, who create a new RewardPool contract via the RewardPoolFactory contract
+    struct RewardDataInNativeToken {
+        uint256 rewardAmountPerSubmission;
+    }
+
+    struct RewardDataInERC20 {
         IERC20 rewardToken;
         uint256 rewardAmountPerSubmission;
     }
-    mapping (address => RewardData) public rewardDatas; /// @dev - Key is "poolCreator" (medical researcher) address.
 
-    /// @param _poolCreator - a medical researcher, who create a new RewardPool contract via the RewardPoolFactory contract
-    constructor(address _poolCreator, IERC20 _rewardToken, uint256 _rewardAmountPerSubmission) Ownable(msg.sender) {
-        RewardData storage rewardData = rewardDatas[_poolCreator];
-        rewardData.poolCreator = _poolCreator;
-        rewardData.rewardToken;
-        rewardData.rewardAmountPerSubmission = _rewardAmountPerSubmission;
+    RewardDataInNativeToken public rewardDataInNativeToken;
+    mapping (address => RewardDataInERC20) public rewardDataInERC20s; /// [Key]: RewardToken Address
 
+    mapping (address => bool) public depositedEntranceFees;  /// [Key]: medical researcher's address
+
+    uint256 _rewardAmountPerSubmission = 1 * 1e13; /// @dev - 0.00001 EDU
+
+    /**
+     * Constructor
+     */
+    constructor() Ownable(msg.sender) {
+        rewardDataInNativeToken.rewardAmountPerSubmission = _rewardAmountPerSubmission;
         /// [TODO]: Add the transferOwnership()
+    }
+
+    /// @dev - Deposit the rewards in NativeToken (i.e. $EDU) into this RewardPool contract to be distributed to HealthData providers
+    /// @dev - The caller (msg.sender) of this function must be a medical researcher, which is this RewardPool contract creator.
+    function depositRewardInNativeToken(
+        address payable rewardReceiver /// @dev - Should be a HealthData provider
+    ) public returns (bool) {
+        RewardDataInNativeToken memory rewardDataInNativeToken;
+        require(msg.value == rewardDataInNativeToken.rewardAmountPerSubmission, "Insufficient amount to be deposited as the entrance fee"); 
+        (bool success, ) = rewardReceiver.call{ value: rewardDataInNativeToken.rewardAmountPerSubmission }("");
+        require(success, "Transfer failed.");
+
+        depositedEntranceFees[msg.sender] = true;
     }
 
     /// @dev - Deposit the rewardToken (ERC20) into this RewardPool contract to be distributed to HealthData providers
     /// @dev - The caller (msg.sender) of this function must be a medical researcher, which is this RewardPool contract creator.
-    function depositRewardToken(
+    function depositRewardInERC20(
+        address rewardTokenAddress,
         uint256 amount
     ) public returns (bool) {
-        RewardData memory rewardData = rewardDatas[msg.sender];
-        rewardData.rewardToken.safeTransferFrom(msg.sender, address(this), amount);
+        RewardDataInERC20 memory rewardDataInERC20 = rewardDataInERC20s[rewardTokenAddress];
+        require(amount == rewardDataInERC20.rewardAmountPerSubmission, "Insufficient amount to be deposited as the entrance fee"); 
+        rewardDataInERC20.rewardToken.safeTransferFrom(msg.sender, address(this), amount);
+        depositedEntranceFees[msg.sender] = true;
     }
 
     /// @dev - Distribute the rewardToken (ERC20) to a HealthData provider
     /// @dev - The caller (msg.sender) of this function should be 〜.
-    function distributeRewardToken(
-        address poolCreator, /// @dev - medical researcher
-        address healthDataProvider,
-        uint256 rewardAmount
-    ) public returns (bool) { /// [TODO]: Who should be this caller?
-        RewardData memory rewardData = rewardDatas[poolCreator];
-        rewardData.rewardToken.safeTransfer(healthDataProvider, rewardAmount);
+    function distributeRewardInERC20(
+        address rewardTokenAddress,
+        address rewardReceiver /// @dev - Should be a HealthData provider
+    ) public returns (bool) {
+        RewardDataInERC20 memory rewardDataInERC20 = rewardDataInERC20s[rewardTokenAddress];
+        rewardDataInERC20.rewardToken.safeTransfer(rewardReceiver, rewardDataInERC20.rewardAmountPerSubmission);
     }
 
-    function getRewardData(address poolCreator) public view returns (RewardData memory _rewardData) {
-        RewardData memory rewardData = rewardDatas[poolCreator];
-        return rewardData;
+    function getRewardInNativeToken() public view returns (RewardDataInNativeToken memory _rewardDataInNativeToken) {
+        RewardDataInNativeToken memory rewardDataInNativeToken;
+        return rewardDataInNativeToken;
+    }
+
+    /// @dev - This caller should be a medical researcher
+    function validateMedicalResearcherAlreadyPaidEntranceFee() public view returns (bool) {
+        return depositedEntranceFees[msg.sender];
     }
 
 
@@ -60,13 +87,9 @@ contract RewardPool is Ownable { /// [TODO]: Add the transferOwnership()
      */
 
     /// @dev - Update data of an existing RewardPool contract, which is called by a medical researcher.
-    function updateExistingRewardPool(
-        //IERC20 _newRewardToken, 
+    function updateExistingNativeTokenRewardPool(
         uint256 _newRewardAmountPerSubmission
-    ) public returns (bool) {
-        RewardData storage rewardData = rewardDatas[msg.sender];
-        //rewardData.poolCreator = _poolCreator;
-        //rewardData.newRewardToken = _newRewardToken;
-        rewardData.rewardAmountPerSubmission = _newRewardAmountPerSubmission;
+    ) public onlyOwner returns (bool) {
+        rewardDataInNativeToken.rewardAmountPerSubmission = _newRewardAmountPerSubmission;
     }
 }

@@ -15,7 +15,7 @@ contract RewardPoolFactory is Ownable {
 
     /// @dev - Create a new RewardPool contract, which is called by a medical researcher.
     function createNewRewardPool(IERC20 rewardToken, uint256 rewardAmountPerSubmission) public returns (RewardPool _rewardPool) {
-        RewardPool rewardPool = new RewardPool(msg.sender, rewardToken, rewardAmountPerSubmission);
+        RewardPool rewardPool = new RewardPool();
         return rewardPool;
     }
 }
