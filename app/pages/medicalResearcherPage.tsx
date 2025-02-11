@@ -2,7 +2,7 @@
 import { useState, useRef, useEffect } from 'react';
 import ConnectEVMWalletButton from '../src/components/ConnectEVMWalletButton';
 import { useConnectEVMWallet } from '../src/hooks/useConnectEVMWallet';
-import { useFunctionForMedicalResercher } from '../src/hooks/useFunctionForMedicalResercher';
+import { useReceiveHealthData } from '../src/hooks/useReceiveHealthData';
 import styles from './page.module.css';
 //import styles from '../src/app/page.module.css';
 import globalStyles from '../src/app/globals.css';
@@ -18,7 +18,7 @@ export default function MedicalResearcherPage() {
   const [blockHash, setBlockHash] = useState<string | null>(null);
   const walletButtonRef = useRef<ConnectWalletButtonHandle | null>(null);
   const { connectEVMWallet, provider, signer, account, walletConnected } = useConnectEVMWallet();  /// @dev - Connect to an EVM wallet (i.e. MetaMask)
-  const { onVerifyProof, status, eventData, transactionResult, merkleProofDetails, txHash, error } = useConnectEVMWallet(); 
+  const { onReceiveHealthData, status, eventData, txHash, error } = useReceiveHealthData(); 
 
 
   /////////////////////////////////////////////////////////////
@@ -47,8 +47,7 @@ export default function MedicalResearcherPage() {
 
     /// @dev - Verify a ZK proof via zkVerify
     try {
-      //await onVerifyProof(provider, signer, account, proof, publicSignals, vk); /// @dev - useZkVerify.ts + Web3 Provider
-      await onVerifyProof(
+      await onReceiveHealthData(
         provider, 
         signer, 
         account, /// @dev - walletAddress, which is also used for an argument of ZK circuit (main.nr)
@@ -118,7 +117,7 @@ export default function MedicalResearcherPage() {
             />
 
             <br />
-            
+
             <button
                 type="submit"
                 //onClick={handleSubmit}
@@ -131,25 +130,10 @@ export default function MedicalResearcherPage() {
                     <div className="spinner"></div>
                   </>
               ) : (
-                  'Submit Proof'
+                  'Receive Attested-Health Data'
               )}
             </button>
           </form>
-
-          <button
-              onClick={handleSubmit}
-              className={`button ${styles.verifyButton}`}
-              disabled={!account || loading}
-          >
-            {loading ? (
-                <>
-                  Submitting...
-                  <div className="spinner"></div>
-                </>
-            ) : (
-                'Submit Proof'
-            )}
-          </button>
 
           <div className={styles.resultContainer}>
             {verificationResult && (
@@ -180,21 +164,15 @@ export default function MedicalResearcherPage() {
                 </div>
             )}
 
+            {/* 
             {transactionResult && (
                 <div className={styles.transactionDetails}>
                   <p>Transaction Hash: {transactionResult.txHash || 'N/A'}</p>
                   <p>Proof Type: {transactionResult.proofType || 'N/A'}</p>
                   <p>Attestation ID: {transactionResult.attestationId || 'N/A'}</p>
                 </div>
-            )}
-
-            {merkleProofDetails && (
-                <div className={styles.transactionDetails}>
-                  <p>Merkle Proof: {merkleProofDetails.proof || 'N/A'}</p>
-                  <p>Number Of Leaves: {merkleProofDetails.numberOfLeaves || 'N/A'}</p>
-                  <p>Leaf Index: {merkleProofDetails.leafIndex || 'N/A'}</p>
-                </div>
             )} 
+            */}
 
             {txHash && (
                 <div className={styles.transactionDetails}>
