@@ -23,6 +23,7 @@ contract HealthDataSharingExecutor {
     RewardPool public rewardPool;
 
     uint256 public healthDataProviderId;
+    address[] public proofSubmittersWhoAreHealthDataProviders;
     uint256[] public availableAttestationIds;
 
     mapping (address => uint256) public healthDataProviders;
@@ -82,6 +83,11 @@ contract HealthDataSharingExecutor {
 
         /// @dev - Once a given _attestationId is validated, it will be stored into the availableAttestationIds array storage.
         availableAttestationIds.push(_attestationId);
+
+        /// @dev - Store a given caller address ("msg.sender"), who is a health data provider, into the "proofSubmittersWhoAreHealthDataProviders" array storage.s
+        //address healthDataProvider = msg.sender;
+        proofSubmittersWhoAreHealthDataProviders.push(msg.sender);
+        //proofSubmittersWhoAreHealthDataProviders.push(healthDataProvider); /// [NOTE]: Stack too deep
 
         /// @dev - Check whether or not a given number of public inputs is equal to the number of items, which was requested by a Medical Researcher.
         //require(publicInput.length == healthDataSharingVerifierRequestor.getHealthDataSharingVerifierRequest(medicalResearcherId, healthDataSharingVerifierRequestId), "Invalid number of public inputs");
