@@ -52,7 +52,8 @@ export function useReceiveHealthData() {
             const healthDataSharingExecutorContractWithSigner = healthDataSharingExecutorContract.connect(signer);
             
             /// @dev - Call the HealthDataSharingRequester#receiveHealthData()
-            const txResponse = await healthDataSharingExecutorContractWithSigner.receiveHealthData(attestationId);
+            const rewardAmountPerSubmission = ethers.parseEther('0.00001'); // 0.00001 $EDU
+            const txResponse = await healthDataSharingExecutorContractWithSigner.receiveHealthData(attestationId, { value: rewardAmountPerSubmission });
             await txResponse.wait();
             const { hash } = await txResponse;
             console.log(`Tx sent to EDU Chain (Testnet), tx-hash ${hash}`);
