@@ -25,6 +25,9 @@ library DataTypes {
         uint64 returnValueFromZkCircuit;
     }
 
+    struct HealthDataDecodedReceived {
+        HealthDataDecoded healthDataDecoded;
+    }
 
     //enum InterestRateMode { NONE, STABLE, VARIABLE }
 }

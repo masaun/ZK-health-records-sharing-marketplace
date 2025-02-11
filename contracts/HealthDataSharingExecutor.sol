@@ -26,6 +26,7 @@ contract HealthDataSharingExecutor {
 
     mapping (address => uint256) public healthDataProviders;
     mapping (uint256 => DataTypes.PublicInput) public publicInputStorages; /// [Key]: attestationId (uint256)
+    mapping (uint256 => mapping(address => DataTypes.HealthDataDecodedReceived)) public HealthDataDecodedReceivedStorages;      /// [Key]: attestationId (uint256)
 
     modifier onlyHealthDataProvider() {
         require(healthDataProviders[msg.sender] > 0, "Not registered as a health data provider");
@@ -98,6 +99,9 @@ contract HealthDataSharingExecutor {
      * @dev - a Medical Researcher would receive the health data, which was submitted by the Health Data Providers (i.e. Patients, Wearable Device holders).
      */
     function receiveHealthData(uint256 _attestationId) public returns(bool) { /// [NOTE]: This function should be called by a medical researcher
+        /// @dev - Store a given caller address ("msg.sender") into a "medicalResearcher".
+        address medicalResearcher = msg.sender;
+
         /// @dev - Get a publicInput (health data) from the mapping storage.
         DataTypes.PublicInput memory publicInputStorage = getHealthData(_attestationId);
         bytes memory proof = publicInputStorage.proof;
@@ -105,6 +109,9 @@ contract HealthDataSharingExecutor {
 
         /// @dev - Decode publicInput, which is stored in the (mapping) storage.
         DataTypes.HealthDataDecoded memory healthDataDecoded = _decodePublicInput(_attestationId);
+
+        /// @dev - Store the decoded-publicInput into the HealthDataDecodedReceived storage
+        DataTypes.HealthDataDecodedReceived storage healthDataDecodedReceivedStorage = HealthDataDecodedReceivedStorages[_attestationId][medicalResearcher]; /// @dev - medicalResearcher is "msg.sender"
         //uint64 productId;
         //uint64 providerId;  // Using the "providerId" parameter - instead of the provider's "name" parameter. 
         //uint32 name; // [NOTE]: Before an arg value is stored into here as u32, it would be converted from String ("John") -> Hash (bytes32) -> u32 (uint32)
@@ -129,7 +136,6 @@ contract HealthDataSharingExecutor {
         /// @dev - The RewardToken (in NativeToken (EDU)) would be distributed to the health data provider (i.e. Patient, Wearable Device holder)
         if (healthDataDecoded.walletAddress != address(0)) {
             address healthDataProvider = healthDataDecoded.walletAddress;
-            address medicalResearcher = msg.sender;
             //address medicalResearcher = healthDataSharingRequester.getMedicalResearcherById(medicalResearcherId);
             uint256 rewardAmountPerSubmission = 1 * 1e13; /// @dev - 0.00001 EDU
             //uint256 rewardAmount = rewardPool.getRewardData(medicalResearcher).rewardAmountPerSubmission;
