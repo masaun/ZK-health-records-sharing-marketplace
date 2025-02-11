@@ -70,7 +70,8 @@ contract RewardPool is Ownable { /// [TODO]: Add the transferOwnership()
     }
 
     /// @dev - This caller should be a medical researcher
-    function validateMedicalResearcherAlreadyPaidEntranceFee() public view returns (bool) {
+    function validateMedicalResearcherAlreadyPaidEntranceFee(address medicalResearcher) public view returns (bool) {
+        require(msg.sender == medicalResearcher, "A given medical researcher address must be same with the caller address");
         return depositedEntranceFees[msg.sender];
     }
 

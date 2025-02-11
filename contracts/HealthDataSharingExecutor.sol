@@ -115,7 +115,10 @@ contract HealthDataSharingExecutor {
      */
     function getHealthDataDecodedReceived(uint256 _attestationId) public view returns(DataTypes.HealthDataDecodedReceived memory healthDataDecodedReceivedStorage) {
         /// @dev - Store a given caller address ("msg.sender") into a "medicalResearcher".
-        //address medicalResearcher = msg.sender;
+        address medicalResearcher = msg.sender;
+        
+        /// @dev - Validate whether or not a medicalResearcher (= msg.sender) has already paid the entrance fee.
+        rewardPool.validateMedicalResearcherAlreadyPaidEntranceFee(medicalResearcher);
 
         /// @dev - Store the decoded-publicInput into the HealthDataDecodedReceived storage
         DataTypes.HealthDataDecodedReceived memory healthDataDecodedReceivedStorage = HealthDataDecodedReceivedStorages[_attestationId];
