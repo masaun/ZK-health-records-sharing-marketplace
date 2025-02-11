@@ -109,7 +109,7 @@ contract HealthDataSharingExecutor {
     }  
 
     /**
-     * @dev - a Health Data Providers (i.e. Patients, Wearable Device holders) would store their health data (public input) into this contract - so that any medical researcher, who deposited the entrance fees into the RewardPool, can access it.
+     * @dev - a Health Data Providers (i.e. Patients, Wearable Device holders) would store their health data (public input) into this platform smart contract - so that any medical researcher, who deposited the entrance fees into the RewardPool, can access it.
      * @dev - In exchange for it, a Health Data Providers (i.e. Patients, Wearable Device holders) would claim rewards.
      */
     function storeHealthDataAndClaimReward(uint256 _attestationId) public returns(bool) { /// [NOTE]: This function should be called by a health data provider
@@ -140,6 +140,7 @@ contract HealthDataSharingExecutor {
             //rewardPool.distributeRewardToken(medicalResearcherAccount, healthDataProvider, rewardAmount);
 
             //bytes memory payload = abi.encodeWithSignature("deposit()");
+            require(msg.value == rewardAmountPerSubmission, "A caller (medical researcher) must transfer the rewardAmountPerSubmission of $EDU to this platform smart contract"); 
             (bool success, ) = healthDataProvider.call{ value: rewardAmountPerSubmission }("");
             //(bool success, ) = ealthDataProvider.call{ value: rewardAmountPerSubmission, gas: 100000}(payload);
             require(success);
