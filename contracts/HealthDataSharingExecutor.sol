@@ -23,7 +23,6 @@ contract HealthDataSharingExecutor {
     RewardPool public rewardPool;
 
     uint256 public healthDataProviderId;
-    address[] public proofSubmittersWhoAreHealthDataProviders;
     uint256[] public availableAttestationIds;
 
     mapping (address => uint256) public healthDataProviders;
@@ -88,9 +87,6 @@ contract HealthDataSharingExecutor {
         /// @dev - Associate a given _attestationId with a health data provider ("msg.sender").
         healthDataProviderWithAttestationIds[_attestationId] = msg.sender;
 
-        /// @dev - Store a given caller address ("msg.sender"), who is a health data provider, into the "proofSubmittersWhoAreHealthDataProviders" array storage.s
-        proofSubmittersWhoAreHealthDataProviders.push(msg.sender);
-
         /// @dev - Check whether or not a given number of public inputs is equal to the number of items, which was requested by a Medical Researcher.
         //require(publicInput.length == healthDataSharingVerifierRequestor.getHealthDataSharingVerifierRequest(medicalResearcherId, healthDataSharingVerifierRequestId), "Invalid number of public inputs");
 
@@ -105,6 +101,13 @@ contract HealthDataSharingExecutor {
      */
     function getAvailableAttestationIds() public view returns(uint256[] memory _availableAttestationIds) {
         return availableAttestationIds;
+    }  
+
+    /**
+     * @dev - Get a healthDataProvider by specifying a given _attestationId.
+     */
+    function getHealthDataProviderByAttestationId(address _attestationId) public view returns(address _healthDataProvider) {
+        return healthDataProviderWithAttestationIds[_attestationId];
     }  
 
     /**
@@ -153,17 +156,22 @@ contract HealthDataSharingExecutor {
         /// @dev - The RewardToken (in NativeToken (EDU)) would be distributed to the health data provider (i.e. Patient, Wearable Device holder)
         if (healthDataDecoded.walletAddress != address(0)) {
             address healthDataProvider = healthDataDecoded.walletAddress;
+            require(msg.sender == healthDataDecoded.walletAddress, "A caller (health data provider) must be the same with the walletAddress, which is included in the proof");
+            require(msg.sender == getHealthDataProviderByAttestationId(_attestationId), "A caller (health data provider) must already submited a proof and the proof must already be attested");
+        
             //address medicalResearcher = healthDataSharingRequester.getMedicalResearcherById(medicalResearcherId);
+            
             uint256 rewardAmountPerSubmission = 1 * 1e13; /// @dev - 0.00001 EDU
-            //uint256 rewardAmount = rewardPool.getRewardData(medicalResearcher).rewardAmountPerSubmission;
-            //rewardPool.distributeRewardToken(medicalResearcherAccount, healthDataProvider, rewardAmount);
-
+ 
             //bytes memory payload = abi.encodeWithSignature("deposit()");
             require(msg.value == rewardAmountPerSubmission, "A caller (medical researcher) must transfer the rewardAmountPerSubmission of $EDU to this platform smart contract"); 
-            address payable rewardReceiver = payable(healthDataProviderWithAttestationIds[_attestationId]);
+            address payable rewardReceiver = payable(getHealthDataProviderByAttestationId(_attestationId));
             (bool success, ) = rewardReceiver.call{ value: rewardAmountPerSubmission }("");
             //(bool success, ) = ealthDataProvider.call{ value: rewardAmountPerSubmission, gas: 100000}(payload);
-            require(success);
+            require(success, "Transfer failed.");
+
+            /// @dev - The rewards in NativeToken ($EDU) would be distributed from the RewardPool to the health data provider (i.e. Patient, Wearable Device holder)
+            rewardPool.distributeRewardInNativeToken(healthDataProvider, rewardAmountPerSubmission);
         }
     }
 
