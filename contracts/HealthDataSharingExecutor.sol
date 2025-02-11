@@ -23,6 +23,7 @@ contract HealthDataSharingExecutor {
     RewardPool public rewardPool;
 
     uint256 public healthDataProviderId;
+    uint256[] public availableAttestationIds;
 
     mapping (address => uint256) public healthDataProviders;
     mapping (uint256 => DataTypes.PublicInput) public publicInputStorages; /// [Key]: attestationId (uint256)
@@ -79,6 +80,9 @@ contract HealthDataSharingExecutor {
         bool result2 = zkVerifyAttestation.verifyProofAttestation(_attestationId, _leaf, _merklePath, _leafCount,_index);
         require(result2 == true, "Invalid attestation of proof");
 
+        /// @dev - Once a given _attestationId is validated, it will be stored into the availableAttestationIds array storage.
+        availableAttestationIds.push(_attestationId);
+
         /// @dev - Check whether or not a given number of public inputs is equal to the number of items, which was requested by a Medical Researcher.
         //require(publicInput.length == healthDataSharingVerifierRequestor.getHealthDataSharingVerifierRequest(medicalResearcherId, healthDataSharingVerifierRequestId), "Invalid number of public inputs");
 
@@ -87,6 +91,13 @@ contract HealthDataSharingExecutor {
         publicInputStorage.proof = proof;
         publicInputStorage.publicInput = publicInput;
     }
+
+    /**
+     * @dev - Get a availableAttestationIds from the array storage.
+     */
+    function getAvailableAttestationIds() public view returns(uint256[] memory _availableAttestationIds) {
+        return availableAttestationIds;
+    }  
 
     /**
      * @dev - Get a HealthDataDecodedReceived from the mapping storage.
@@ -112,7 +123,7 @@ contract HealthDataSharingExecutor {
      * @dev - a Health Data Providers (i.e. Patients, Wearable Device holders) would store their health data (public input) into this platform smart contract - so that any medical researcher, who deposited the entrance fees into the RewardPool, can access it.
      * @dev - In exchange for it, a Health Data Providers (i.e. Patients, Wearable Device holders) would claim rewards.
      */
-    function storeHealthDataAndClaimReward(uint256 _attestationId) public returns(bool) { /// [NOTE]: This function should be called by a health data provider
+    function storeHealthDataAndClaimReward(uint256 _attestationId) public payable returns(bool) { /// [NOTE]: This function should be called by a health data provider
     //function receiveHealthData(uint256 _attestationId) public returns(bool) {
         /// @dev - Store a given caller address ("msg.sender") into a "medicalResearcher".
         address medicalResearcher = msg.sender;
