@@ -26,7 +26,8 @@ contract HealthDataSharingExecutor {
 
     mapping (address => uint256) public healthDataProviders;
     mapping (uint256 => DataTypes.PublicInput) public publicInputStorages; /// [Key]: attestationId (uint256)
-    mapping (uint256 => mapping(address => DataTypes.HealthDataDecodedReceived)) public HealthDataDecodedReceivedStorages;      /// [Key]: attestationId (uint256)
+    mapping (uint256 => DataTypes.HealthDataDecodedReceived) public HealthDataDecodedReceivedStorages;  /// [Key]: attestationId (uint256)
+    //mapping (uint256 => mapping(address => DataTypes.HealthDataDecodedReceived)) public HealthDataDecodedReceivedStorages;      /// [Key]: attestationId (uint256)
 
     modifier onlyHealthDataProvider() {
         require(healthDataProviders[msg.sender] > 0, "Not registered as a health data provider");
@@ -88,6 +89,18 @@ contract HealthDataSharingExecutor {
     }
 
     /**
+     * @dev - Get a HealthDataDecodedReceived from the mapping storage.
+     */
+    function getHealthDataDecodedReceived(uint256 _attestationId) public view returns(DataTypes.HealthDataDecodedReceived memory healthDataDecodedReceivedStorage) {
+        /// @dev - Store a given caller address ("msg.sender") into a "medicalResearcher".
+        //address medicalResearcher = msg.sender;
+
+        /// @dev - Store the decoded-publicInput into the HealthDataDecodedReceived storage
+        DataTypes.HealthDataDecodedReceived memory healthDataDecodedReceivedStorage = HealthDataDecodedReceivedStorages[_attestationId];
+        //DataTypes.HealthDataDecodedReceived memory healthDataDecodedReceivedStorage = HealthDataDecodedReceivedStorages[_attestationId][medicalResearcher]; /// @dev - medicalResearcher is "msg.sender"
+    }
+
+    /**
      * @dev - Get a publicInput (health data) from the mapping storage.
      */
     function getHealthData(uint256 _attestationId) public view returns(DataTypes.PublicInput memory publicInputStorage) {
@@ -111,7 +124,9 @@ contract HealthDataSharingExecutor {
         DataTypes.HealthDataDecoded memory healthDataDecoded = _decodePublicInput(_attestationId);
 
         /// @dev - Store the decoded-publicInput into the HealthDataDecodedReceived storage
-        DataTypes.HealthDataDecodedReceived storage healthDataDecodedReceivedStorage = HealthDataDecodedReceivedStorages[_attestationId][medicalResearcher]; /// @dev - medicalResearcher is "msg.sender"
+        DataTypes.HealthDataDecodedReceived storage healthDataDecodedReceivedStorage = HealthDataDecodedReceivedStorages[_attestationId];
+        //DataTypes.HealthDataDecodedReceived storage healthDataDecodedReceivedStorage = HealthDataDecodedReceivedStorages[_attestationId][medicalResearcher]; /// @dev - medicalResearcher is "msg.sender"
+        
         //uint64 productId;
         //uint64 providerId;  // Using the "providerId" parameter - instead of the provider's "name" parameter. 
         //uint32 name; // [NOTE]: Before an arg value is stored into here as u32, it would be converted from String ("John") -> Hash (bytes32) -> u32 (uint32)
@@ -204,7 +219,6 @@ contract HealthDataSharingExecutor {
         }
         return result;
     }
-
 
 
     /** 
