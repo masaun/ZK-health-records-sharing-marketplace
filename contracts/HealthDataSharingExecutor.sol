@@ -27,6 +27,7 @@ contract HealthDataSharingExecutor {
     uint256[] public availableAttestationIds;
 
     mapping (address => uint256) public healthDataProviders;
+    mapping (uint256 => address) public healthDataProviderWithAttestationIds;
     mapping (uint256 => DataTypes.PublicInput) public publicInputStorages; /// [Key]: attestationId (uint256)
     mapping (uint256 => DataTypes.HealthDataDecodedReceived) public HealthDataDecodedReceivedStorages;  /// [Key]: attestationId (uint256)
     //mapping (uint256 => mapping(address => DataTypes.HealthDataDecodedReceived)) public HealthDataDecodedReceivedStorages;      /// [Key]: attestationId (uint256)
@@ -84,10 +85,11 @@ contract HealthDataSharingExecutor {
         /// @dev - Once a given _attestationId is validated, it will be stored into the availableAttestationIds array storage.
         availableAttestationIds.push(_attestationId);
 
+        /// @dev - Associate a given _attestationId with a health data provider ("msg.sender").
+        healthDataProviderWithAttestationIds[_attestationId] = msg.sender;
+
         /// @dev - Store a given caller address ("msg.sender"), who is a health data provider, into the "proofSubmittersWhoAreHealthDataProviders" array storage.s
-        //address healthDataProvider = msg.sender;
         proofSubmittersWhoAreHealthDataProviders.push(msg.sender);
-        //proofSubmittersWhoAreHealthDataProviders.push(healthDataProvider); /// [NOTE]: Stack too deep
 
         /// @dev - Check whether or not a given number of public inputs is equal to the number of items, which was requested by a Medical Researcher.
         //require(publicInput.length == healthDataSharingVerifierRequestor.getHealthDataSharingVerifierRequest(medicalResearcherId, healthDataSharingVerifierRequestId), "Invalid number of public inputs");
@@ -158,7 +160,8 @@ contract HealthDataSharingExecutor {
 
             //bytes memory payload = abi.encodeWithSignature("deposit()");
             require(msg.value == rewardAmountPerSubmission, "A caller (medical researcher) must transfer the rewardAmountPerSubmission of $EDU to this platform smart contract"); 
-            (bool success, ) = healthDataProvider.call{ value: rewardAmountPerSubmission }("");
+            address payable rewardReceiver = payable(healthDataProviderWithAttestationIds[_attestationId]);
+            (bool success, ) = rewardReceiver.call{ value: rewardAmountPerSubmission }("");
             //(bool success, ) = ealthDataProvider.call{ value: rewardAmountPerSubmission, gas: 100000}(payload);
             require(success);
         }
