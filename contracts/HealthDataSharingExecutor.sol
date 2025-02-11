@@ -126,25 +126,6 @@ contract HealthDataSharingExecutor {
         /// @dev - Store the decoded-publicInput into the HealthDataDecodedReceived storage
         DataTypes.HealthDataDecodedReceived storage healthDataDecodedReceivedStorage = HealthDataDecodedReceivedStorages[_attestationId];
         //DataTypes.HealthDataDecodedReceived storage healthDataDecodedReceivedStorage = HealthDataDecodedReceivedStorages[_attestationId][medicalResearcher]; /// @dev - medicalResearcher is "msg.sender"
-        
-        //uint64 productId;
-        //uint64 providerId;  // Using the "providerId" parameter - instead of the provider's "name" parameter. 
-        //uint32 name; // [NOTE]: Before an arg value is stored into here as u32, it would be converted from String ("John") -> Hash (bytes32) -> u32 (uint32)
-        //address walletAddress;
-        //uint8 height;
-        //uint8 weight;
-        //uint8 age;
-        //uint8 gender;        // 1: "Male", 2: "Female", 3: "Other"
-        //uint8 race_type;     // 1: "White", 2: "Black", 3: "Yello"
-        //uint8 blood_type;    // 1: "A", 2: "B", 3: "AB", 4: "O" 
-        //uint8 blood_pressure;
-        //uint8 heart_rate;
-        //uint8 average_hours_of_sleep;
-        //uint64 returnValueFromZkCircuit;
-        //for (uint i=0; i < publicInput.length; i++) {
-        //    (productId, providerId, name, walletAddress, height, weight, age, gender, race_type, blood_type, blood_pressure, heart_rate, average_hours_of_sleep, returnValueFromZkCircuit) 
-        //        = abi.decode(bytes32ToBytes(publicInput[i]), (uint64, uint64, uint32, address, uint8, uint8, uint8, uint8, uint8, uint8, uint8, uint8, uint8, uint64));
-        //}
 
         /// [TODO]: Add the event to retrieve the "healthDataDecoded" on Frontend.
 
