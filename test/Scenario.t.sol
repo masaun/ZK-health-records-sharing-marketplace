@@ -136,7 +136,7 @@ contract ScenarioTest is Test {
         console.logString("3/ A medical researcher would create a reward pool and deposit the reward token into the reward pool");
         uint256 amount = 10 * 1e18;
         rewardToken.safeIncreaseAllowance(address(rewardPool), amount);
-        rewardPool.depositRewardToken(amount);
+        //rewardPool.depositRewardToken(amount);
         console.log("%s: %s", "medicalResearcher.balance", medicalResearcher.balance);
         console.log("%s: %s", "address(rewardPool).balance", address(rewardPool).balance);
         vm.stopPrank();

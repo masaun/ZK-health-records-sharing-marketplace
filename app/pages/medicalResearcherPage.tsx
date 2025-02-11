@@ -3,7 +3,8 @@ import { useState, useRef, useEffect } from 'react';
 import ConnectEVMWalletButton from '../src/components/ConnectEVMWalletButton';
 import { useConnectEVMWallet } from '../src/hooks/useConnectEVMWallet';
 import { useFunctionForMedicalResercher } from '../src/hooks/useFunctionForMedicalResercher';
-import styles from '../src/app/page.module.css';
+import styles from './page.module.css';
+//import styles from '../src/app/page.module.css';
 import globalStyles from '../src/app/globals.css';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -23,33 +24,9 @@ export default function MedicalResearcherPage() {
   /////////////////////////////////////////////////////////////
   /// Input form
   /////////////////////////////////////////////////////////////
-  const [inputProductIdValue, setInputProductIdValue] = useState('');
-  const [inputProviderIdValue, setInputProviderIdValue] = useState('');
-  const [inputNameValue, setInputNameValue] = useState('');
-  const [inputHeightValue, setInputHeightValue] = useState('');
-  const [inputWeightValue, setInputWeightValue] = useState('');
-  const [inputAgeValue, setInputAgeValue] = useState('');
-  const [inputGenderValue, setInputGenderValue] = useState('');
-  const [inputRaceTypeValue, setInputRaceTypeValue] = useState('');
-  const [inputBloodTypeValue, setInputBloodTypeValue] = useState('');
-  const [inputBloodPressureValue, setInputBloodPressureValue] = useState('');
-  const [inputHeartRateValue, setInputHeartRateValue] = useState('');
-  const [inputAverageHoursOfSleepValue, setInputAverageHoursOfSleepValue] = useState('');
-  
-  /// @dev - Below are "Selective Disclose" (NOTE: isCheckedRevealProductId is not needed)
-  const [isCheckedRevealProviderId, setIsCheckedRevealProviderId] = useState(false);
-  const [isCheckedRevealName, setIsCheckedRevealName] = useState(false);
-  const [isCheckedRevealWalletAddress, setIsCheckedRevealWalletAddress] = useState(false);
-  const [isCheckedRevealAge, setIsCheckedRevealAge] = useState(false);
-  const [isCheckedRevealGender, setIsCheckedRevealGender] = useState(false);
-  const [isCheckedRevealHeight, setIsCheckedRevealHeight] = useState(false);
-  const [isCheckedRevealWeight, setIsCheckedRevealWeight] = useState(false);
-  const [isCheckedRevealRaceType, setIsCheckedRevealRaceType] = useState(false);
-  const [isCheckedRevealBloodType, setIsCheckedRevealBloodType] = useState(false);
-  const [isCheckedRevealBloodPressure, setIsCheckedRevealBloodPressure] = useState(false);
-  const [isCheckedRevealHeartRate, setIsCheckedRevealHeartRate] = useState(false);
-  const [isCheckedRevealAverageHoursOfSleep, setIsCheckedRevealAverageHoursOfSleep] = useState(false); 
+  const [inputAttestationIdValue, setInputAttestationIdValue] = useState('');
 
+  
   /////////////////////////////////////////////////////////////
   /// zkVerify
   /////////////////////////////////////////////////////////////
@@ -66,14 +43,7 @@ export default function MedicalResearcherPage() {
 
     /// @dev - Retrieve the input values from the input form
     event.preventDefault();
-    console.log('Input ProductId Value:', inputProductIdValue);
-    console.log('Input ProviderId Value:', inputProviderIdValue);
-    console.log('Input Name Value:', inputNameValue);
-    console.log('Is Provider ID checked?:', isCheckedRevealProviderId);
-    console.log('Is Name checked?:', isCheckedRevealName);
-    console.log('Is WalletAddress checked?:', isCheckedRevealWalletAddress);
-    console.log('Is Age checked?:', isCheckedRevealAge);
-    console.log('Is Gender checked?:', isCheckedRevealGender);
+    console.log('Input AttestationId Value:', inputAttestationIdValue);
 
     /// @dev - Verify a ZK proof via zkVerify
     try {
@@ -82,31 +52,7 @@ export default function MedicalResearcherPage() {
         provider, 
         signer, 
         account, /// @dev - walletAddress, which is also used for an argument of ZK circuit (main.nr)
-        inputProductIdValue,
-        inputProviderIdValue,
-        inputNameValue,
-        inputHeightValue,
-        inputWeightValue,
-        inputAgeValue,
-        inputGenderValue,
-        inputRaceTypeValue,
-        inputBloodTypeValue,
-        inputBloodPressureValue,
-        inputHeartRateValue,
-        inputAverageHoursOfSleepValue,
-        /// @dev - Below are "Selective Disclose" (NOTE: isCheckedRevealProductId is not needed)
-        isCheckedRevealProviderId,
-        isCheckedRevealName,
-        isCheckedRevealWalletAddress,
-        isCheckedRevealAge,
-        isCheckedRevealGender,
-        isCheckedRevealHeight,
-        isCheckedRevealWeight,
-        isCheckedRevealRaceType,
-        isCheckedRevealBloodType,
-        isCheckedRevealBloodPressure,
-        isCheckedRevealHeartRate,
-        isCheckedRevealAverageHoursOfSleep
+        inputAttestationIdValue
       );
     } catch (error) {
       setVerificationResult(`Error: ${(error as Error).message}`);
@@ -164,191 +110,15 @@ export default function MedicalResearcherPage() {
           <br />
 
           <form onSubmit={handleSubmit}>
-            <h4>Product ID</h4>
+            <h4>Attestation ID</h4>
             <input
               type="text"
-              value={inputProductIdValue}
-              onChange={(e) => setInputProductIdValue(e.target.value)}
+              value={inputAttestationIdValue}
+              onChange={(e) => setInputAttestationIdValue(e.target.value)}
             />
 
             <br />
-
-            <h4>Provider ID</h4>
-            <input
-              type="text"
-              value={inputProviderIdValue}
-              onChange={(e) => setInputProviderIdValue(e.target.value)}
-            />
-
-            <h4>Is Provider ID Revealed?</h4>
-            <input
-              type="checkbox"
-              checked={isCheckedRevealProviderId}
-              onChange={(e) => setIsCheckedRevealProviderId(e.target.checked)}
-            />
-
-            <br></br>
-
-            <h4>Name</h4>
-            <input
-              type="text"
-              value={inputNameValue}
-              onChange={(e) => setInputNameValue(e.target.value)}
-            />
-
-            <h4>Is Name Revealed?</h4>
-            <input
-              type="checkbox"
-              checked={isCheckedRevealName}
-              onChange={(e) => setIsCheckedRevealName(e.target.checked)}
-            />
-
-            <br></br>
-
-            <h4>Height</h4>
-            <input
-              type="text"
-              value={inputHeightValue}
-              onChange={(e) => setInputHeightValue(e.target.value)}
-            />
             
-            <h4>Is Height Revealed?</h4>
-            <input
-              type="checkbox"
-              checked={isCheckedRevealHeight}
-              onChange={(e) => setIsCheckedRevealHeight(e.target.checked)}
-            />
-
-            <br></br>
-
-            <h4>Weight</h4>
-            <input
-              type="text"
-              value={inputWeightValue}
-              onChange={(e) => setInputWeightValue(e.target.value)}
-            />
-
-            <h4>Is Weight Revealed?</h4>
-            <input
-              type="checkbox"
-              checked={isCheckedRevealWeight}
-              onChange={(e) => setIsCheckedRevealWeight(e.target.checked)}
-            />
-
-            <br></br>
-
-            <h4>Age</h4>
-            <input
-              type="text"
-              value={inputAgeValue}
-              onChange={(e) => setInputAgeValue(e.target.value)}
-            />
-
-            <h4>Is Age Revealed?</h4>
-            <input
-              type="checkbox"
-              checked={isCheckedRevealAge}
-              onChange={(e) => setIsCheckedRevealAge(e.target.checked)}
-            />
-
-            <br></br>
-
-            <h4>Gender</h4>
-            <input
-              type="text"
-              value={inputGenderValue}
-              onChange={(e) => setInputGenderValue(e.target.value)}
-            />
-
-            <h4>Is Gender Revealed?</h4>
-            <input
-              type="checkbox"
-              checked={isCheckedRevealGender}
-              onChange={(e) => setIsCheckedRevealGender(e.target.checked)}
-            />
-
-            <br></br>
-
-            <h4>Race Type</h4>
-            <input
-              type="text"
-              value={inputRaceTypeValue}
-              onChange={(e) => setInputRaceTypeValue(e.target.value)}
-            />
-
-            <h4>Is Race Type Revealed?</h4>
-            <input
-              type="checkbox"
-              checked={isCheckedRevealRaceType}
-              onChange={(e) => setIsCheckedRevealRaceType(e.target.checked)}
-            />
-
-            <br></br>
-
-            <h4>Blood Type</h4>
-            <input
-              type="text"
-              value={inputBloodTypeValue}
-              onChange={(e) => setInputBloodTypeValue(e.target.value)}
-            />
-
-            <h4>Is Blood Type Revealed?</h4>
-            <input
-              type="checkbox"
-              checked={isCheckedRevealBloodType}
-              onChange={(e) => setIsCheckedRevealBloodType(e.target.checked)}
-            />
-
-            <br></br>
-
-            <h4>Blood Pressure</h4>
-            <input
-              type="text"
-              value={inputBloodPressureValue}
-              onChange={(e) => setInputBloodPressureValue(e.target.value)}
-            />
-
-            <h4>Is Blood Pressure Revealed?</h4>
-            <input
-              type="checkbox"
-              checked={isCheckedRevealBloodPressure}
-              onChange={(e) => setIsCheckedRevealBloodPressure(e.target.checked)}
-            />
-
-            <br></br>
-
-            <h4>Heart Rate</h4>
-            <input
-              type="text"
-              value={inputHeartRateValue}
-              onChange={(e) => setInputHeartRateValue(e.target.value)}
-            />
-
-            <h4>Is Heart Rate Revealed?</h4>
-            <input
-              type="checkbox"
-              checked={isCheckedRevealHeartRate}
-              onChange={(e) => setIsCheckedRevealHeartRate(e.target.checked)}
-            />
-
-            <br></br>
-
-            <h4>Average Hours Of Sleep</h4>
-            <input
-              type="text"
-              value={inputAverageHoursOfSleepValue}
-              onChange={(e) => setInputAverageHoursOfSleepValue(e.target.value)}
-            />
-
-            <h4>Is Average Hours Of Sleep Revealed?</h4>
-            <input
-              type="checkbox"
-              checked={isCheckedRevealAverageHoursOfSleep}
-              onChange={(e) => setIsCheckedRevealAverageHoursOfSleep(e.target.checked)}
-            />
-
-            <br></br>
-
             <button
                 type="submit"
                 //onClick={handleSubmit}

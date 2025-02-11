@@ -32,18 +32,7 @@ export function useFunctionForMedicalResercher() {
         blood_pressure: string,
         heart_rate: string,
         average_hours_of_sleep: string,
-        revealProviderId: boolean,
-        revealName: boolean,
-        revealWalletAddress: boolean,
-        revealAge: boolean,
-        revealGender: boolean,
-        revealHeight: boolean,
-        revealWeight: boolean,
-        revealRaceType: boolean,
-        revealBloodType: boolean,
-        revealBloodPressure: boolean,
-        revealHeartRate: boolean,
-        revealAverageHoursOfSleep: boolean
+
     ): Promise<void> => {
         try {
             console.log(`provider: ${JSON.stringify(provider, null, 4)}`);
