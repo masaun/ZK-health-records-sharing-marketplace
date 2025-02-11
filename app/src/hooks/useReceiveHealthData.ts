@@ -43,13 +43,15 @@ export function useReceiveHealthData() {
                 "event AttestationPosted(uint256 indexed _attestationId, bytes32 indexed _proofsAttestation)"
             ];
 
-            /// @dev - HealthDataSharingRequester.sol
-            const abiAppContract = [
-                "function submitHealthData(bytes calldata proof, bytes32[] calldata publicInput, uint256 medicalResearcherId, uint256 healthDataSharingRequestId, uint256 _attestationId, bytes32 _leaf, bytes32[] calldata _merklePath, uint256 _leafCount, uint256 _index)"
+            /// @dev - ABI of HealthDataSharingExecutor.sol
+            const abiHealthDataSharingExecutorContract = [
+                "function submitHealthData(bytes calldata proof, bytes32[] calldata publicInput, uint256 medicalResearcherId, uint256 healthDataSharingRequestId, uint256 _attestationId, bytes32 _leaf, bytes32[] calldata _merklePath, uint256 _leafCount, uint256 _index)",
+                "function receiveHealthData(uint256 _attestationId)",
+                "getAvailableAttestationIds()"
             ];
 
             const zkvContract = new Contract(process.env.NEXT_PUBLIC_EDU_CHAIN_ZKVERIFY_CONTRACT_ADDRESS, abiZkvContract, provider);
-            const healthDataSharingExecutorContract = new Contract(process.env.NEXT_PUBLIC_EDU_CHAIN_HEALTH_DATA_SHARING_EXECUTOR_CONTRACT_ADDRESS, abiAppContract, provider);
+            const healthDataSharingExecutorContract = new Contract(process.env.NEXT_PUBLIC_EDU_CHAIN_HEALTH_DATA_SHARING_EXECUTOR_CONTRACT_ADDRESS, abiHealthDataSharingExecutorContract, provider);
             const healthDataSharingExecutorContractWithSigner = healthDataSharingExecutorContract.connect(signer);
             
             /// @dev - Call the HealthDataSharingRequester#receiveHealthData()
