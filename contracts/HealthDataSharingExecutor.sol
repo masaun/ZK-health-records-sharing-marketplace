@@ -164,12 +164,13 @@ contract HealthDataSharingExecutor {
             require(msg.sender == getHealthDataProviderByAttestationId(_attestationId), "A caller (health data provider) must already submited a proof and the proof must already be attested");
                      
             address payable rewardReceiver = payable(getHealthDataProviderByAttestationId(_attestationId));
-            //require(msg.value == rewardAmountPerSubmission, "A caller (medical researcher) must transfer the rewardAmountPerSubmission of $EDU to this platform smart contract"); 
-            //(bool success, ) = rewardReceiver.call{ value: rewardAmountPerSubmission }("");
-            //require(success, "Transfer failed.");
+            uint256 rewardAmountPerSubmission = 1 * 1e13;  /// [NOTE]: 0.00001 $EDU
+            require(msg.value == rewardAmountPerSubmission, "A caller (medical researcher) must transfer the rewardAmountPerSubmission of $EDU to this platform smart contract"); 
+            (bool success, ) = rewardReceiver.call{ value: rewardAmountPerSubmission }("");
+            require(success, "Transfer failed.");
 
             /// @dev - The rewards in NativeToken ($EDU) would be distributed from the RewardPool to the health data provider (i.e. Patient, Wearable Device holder)
-            rewardPool.distributeRewardInNativeToken(rewardReceiver);
+            //rewardPool.distributeRewardInNativeToken(rewardReceiver);
         }
     }
 
