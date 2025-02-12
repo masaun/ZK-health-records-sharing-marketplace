@@ -5,9 +5,9 @@ import { IZkVerifyAttestation } from "./zkv-attestation-contracts/interfaces/IZk
 
 /// @dev - ZK (Ultraplonk) circuit, which is generated in Noir.
 import { HealthDataSharingVerifier } from "./circuits/HealthDataSharingVerifier.sol"; /// @dev - Deployed-Verifier SC, which was generated based on the main.nr
-import { HealthDataSharingRequester } from "./HealthDataSharingRequester.sol";
+//import { HealthDataSharingRequester } from "./HealthDataSharingRequester.sol";
 
-import { RewardPool } from "./rewards/RewardPool.sol";
+//import { RewardPool } from "./rewards/RewardPool.sol";
 
 import { DataTypes } from "./libraries/DataTypes.sol";
 import { Converter } from "./libraries/Converter.sol";
@@ -21,8 +21,8 @@ import { Converter } from "./libraries/Converter.sol";
 contract HealthDataSharingExecutor {
     IZkVerifyAttestation public zkVerifyAttestation;
     HealthDataSharingVerifier public healthDataSharingVerifier;
-    HealthDataSharingRequester public healthDataSharingRequester;
-    RewardPool public rewardPool;
+    //HealthDataSharingRequester public healthDataSharingRequester;
+    //RewardPool public rewardPool;
 
     uint256 public healthDataProviderId;
     uint256[] public availableAttestationIds;
@@ -42,14 +42,14 @@ contract HealthDataSharingExecutor {
 
     constructor(
         IZkVerifyAttestation _zkVerifyAttestation,
-        HealthDataSharingVerifier _healthDataSharingVerifier, 
-        HealthDataSharingRequester _healthDataSharingRequester,
-        RewardPool _rewardPool
+        HealthDataSharingVerifier _healthDataSharingVerifier
+        //HealthDataSharingRequester _healthDataSharingRequester,
+        //RewardPool _rewardPool
     ) {
         zkVerifyAttestation = _zkVerifyAttestation; /// @dev - The ZkVerifyAttestation contract-deployed on EDU Chain
         healthDataSharingVerifier = _healthDataSharingVerifier;
-        healthDataSharingRequester = _healthDataSharingRequester;
-        rewardPool = _rewardPool;
+        //healthDataSharingRequester = _healthDataSharingRequester;
+        //rewardPool = _rewardPool;
     }
 
     /**

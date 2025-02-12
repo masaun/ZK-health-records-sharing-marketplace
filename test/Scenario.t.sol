@@ -60,7 +60,7 @@ contract ScenarioTest is Test {
         verifier = new UltraVerifier();
         healthDataSharingVerifier = new HealthDataSharingVerifier(verifier);
         healthDataSharingRequester = new HealthDataSharingRequester(healthDataSharingVerifier);
-        healthDataSharingExecutor = new HealthDataSharingExecutor(zkVerifyAttestation, healthDataSharingVerifier, healthDataSharingRequester, rewardPool);
+        //healthDataSharingExecutor = new HealthDataSharingExecutor(zkVerifyAttestation, healthDataSharingVerifier, healthDataSharingRequester, rewardPool);
         noirHelper = new NoirHelper();
 
         /// @dev - Set actors and charge the ETH balance of a medical researcher
