@@ -24,7 +24,7 @@ export default function MedicalResearcherPage() {
   const { connectEVMWallet, provider, signer, account, walletConnected } = useConnectEVMWallet();  /// @dev - Connect to an EVM wallet (i.e. MetaMask)
   const { onGetNativeTokenBalance, nativeTokenBalance } = useGetBalance();
   const { onReceiveHealthData, status, error, txHash, healthDataDecodedReceived } = useReceiveHealthData();
-  const { productId, onGetHealthDataDecodedReceived } = useGetHealthDataDecodedReceived();
+  const { onGetHealthDataDecodedReceived, publicInputInHealthDataReceived, productId, providerId, name, walletAddress, height, weight, age, gender, raceType, bloodType, bloodPressure, heartRate, averageHoursOfSleep } = useGetHealthDataDecodedReceived();
   //const { _healthDataDecodedReceived, onGetHealthDataDecodedReceived } = useGetHealthDataDecodedReceived();
   const { onGetAvailableAttestationIds, availableAttestationIds } = useGetAvailableAttestationIds();
   const [fetchedAvailableAttestationIds, setFetchedAvailableAttestationIds] = useState<string | null>(null);
@@ -345,9 +345,81 @@ export default function MedicalResearcherPage() {
           </form>
 
           <div className={styles.resultContainer}>
-            {productId && (
+            {publicInputInHealthDataReceived && (
                 <div className={styles.transactionDetails}>
-                  <p>Product ID: { String(productId) || 'N/A' }</p>
+                  <p>Product ID: { String(productId) || 'Not Revealed' }</p>
+                </div>
+            )}
+
+            {publicInputInHealthDataReceived && (
+                <div className={styles.transactionDetails}>
+                  <p>Provider ID: { String(providerId) || 'Not Revealed' }</p>
+                </div>
+            )}
+
+            {publicInputInHealthDataReceived && (
+                <div className={styles.transactionDetails}>
+                  <p>Name: { String(name) || 'Not Revealed' }</p>
+                </div>
+            )}
+
+            {publicInputInHealthDataReceived && (
+                <div className={styles.transactionDetails}>
+                  <p>Wallet Address: { String(walletAddress) || 'Not Revealed' }</p>
+                </div>
+            )}
+
+            {publicInputInHealthDataReceived && (
+                <div className={styles.transactionDetails}>
+                  <p>Height: { String(height) || 'Not Revealed' }</p>
+                </div>
+            )}
+
+            {publicInputInHealthDataReceived && (
+                <div className={styles.transactionDetails}>
+                  <p>Weight: { String(weight) || 'Not Revealed' }</p>
+                </div>
+            )}
+
+            {publicInputInHealthDataReceived && (
+                <div className={styles.transactionDetails}>
+                  <p>Age: { String(age) || 'Not Revealed' }</p>
+                </div>
+            )}
+
+            {publicInputInHealthDataReceived && (
+                <div className={styles.transactionDetails}>
+                  <p>Gender: { String(gender) || 'Not Revealed' }</p>
+                </div>
+            )}
+
+            {publicInputInHealthDataReceived && (
+                <div className={styles.transactionDetails}>
+                  <p>Race Type: { String(raceType) || 'Not Revealed' }</p>
+                </div>
+            )}
+
+            {publicInputInHealthDataReceived && (
+                <div className={styles.transactionDetails}>
+                  <p>Blood Type: { String(bloodType) || 'Not Revealed' }</p>
+                </div>
+            )}
+
+            {publicInputInHealthDataReceived && (
+                <div className={styles.transactionDetails}>
+                  <p>Blood Pressure: { String(bloodPressure) || 'Not Revealed' }</p>
+                </div>
+            )}
+
+            {publicInputInHealthDataReceived && (
+                <div className={styles.transactionDetails}>
+                  <p>Heart Rate: { String(heartRate) || 'Not Revealed' }</p>
+                </div>
+            )}
+
+            {publicInputInHealthDataReceived && (
+                <div className={styles.transactionDetails}>
+                  <p>Average Hours Of Sleep: { String(averageHoursOfSleep) || 'Not Revealed' }</p>
                 </div>
             )}
           </div>
