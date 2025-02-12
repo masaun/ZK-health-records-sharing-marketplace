@@ -1,16 +1,5 @@
-// Hash methods: https://noir-lang.org/docs/noir/standard_library/cryptographic_primitives/hashes
-use dep::std::hash::pedersen_hash; // Enable to use the pedersen_hash() function
-use dep::std::hash::keccak256;     // Enable to use the keccak() function
-use dep::std::hash::sha256;        // Enable to use the sha() function
-use dep::std::hash::blake2s;       // Enable to use the blake2s() function
-use dep::std::hash::hash_to_field; // Enable to use the hash_to_field() function
-
-use dep::std::convert::From::from;        // https://noir-lang.org/docs/noir/standard_library/traits#stdconvertfrom
-use dep::std::convert::Into::into;       // https://noir-lang.org/docs/noir/standard_library/traits#stdconvertinto
-
-
 /***
- * @notice - Revealed Data
+ * @notice - Revealed Data to "Selective Disclosure" in ZK circuit
  **/
 pub struct RevealedData {
     name: u32, // [NOTE]: Before an arg value is stored into here as u32, it would be converted from String ("John") -> Hash (bytes32) -> u32 (uint32)
@@ -26,16 +15,10 @@ pub struct RevealedData {
     average_hours_of_sleep: u8
 }
 
-
 /***
- * @notice - Assume that this ZK circuit is run by both a Medical Researcher's request and a provider's request
- * @notice - However, the Verifier contract will be deployed based on the zkProof-generated for a Medical Researcher's request
- * @notice - a Medical Researcher can choose which parameter (input) should be "public" and which constraint(s) is included.
- * @dev - "providerId" parameter (u64) - This is used instead of "name" parameter (str<>)
- * @dev - "blood_type" parameter (u8) - "A" is "1", "B" is "2", "AB" is "3", "O" is "4"
- * @dev - [TODO]: "productId" parameter - This may be better to replace with the "medical_researcher_id"
+ * @notice - Assume that this ZK circuit is run by a health data provider
  **/
-fn main(  // [TODO]: Move the following parameters into the convert_health_data_to_hash() - To use the "dynamic" size of array ([u32; N]) and convert HealthData to "Hash" type of data. After that, the converted-"Hash" type of HealthData should be stored into here. (In this case, only 1 Field type of parameter is needed in the main() function here)
+fn main(
     name: u32, // [NOTE]: Before an arg value is stored into here as u32, it would be converted from String ("John") -> Hash (bytes32) -> u32 (uint32)
     walletAddress: Field,
     height: u8,
@@ -60,11 +43,7 @@ fn main(  // [TODO]: Move the following parameters into the convert_health_data_
     revealHeartRate: bool,
     revealAverageHoursOfSleep: bool
 ) -> pub RevealedData {
-    // Extracting data from the Helper
-    // 46829 Gates
-    //let healthData = extractor();
-
-    // @dev - Selective Disclosure
+    // @dev - "Selective Disclosure". A health data provider can choose which data should be revealed.
     let outputName = if revealName { name } else { 0 };
     let outputWalletAddress = if revealWalletAddress { walletAddress } else { 0 };
     let outputHeight = if revealHeight { height } else { 0 };
@@ -77,17 +56,13 @@ fn main(  // [TODO]: Move the following parameters into the convert_health_data_
     let outputHeartRate = if revealHeartRate { heart_rate } else { 0 };
     let outputAverageHoursOfSleep = if revealAverageHoursOfSleep { average_hours_of_sleep } else { 0 };
 
-    // @dev - [TODO]: Dynamic number of elements for Array type of Integer like this:
-    // location_data: Field,   // i.e. "New York" -> Field type -> Slice it + Measure length of it -> Array Field type ([u8; N])
-
     // @dev - Validate a given "age" is over 18.
     assert(age >= 18);
-
-    // @dev - a Medical Researcher can choose which constraint(s) is included.
     if (revealAge) {
         assert(outputAge >= 18);
     }
 
+    // @dev - Validate a given "blood_type" is 1, 2, 3, or 4
     let mut blood_type_flag: bool = false;
     if (outputBloodType == 1) | (outputBloodType == 2) | (outputBloodType == 3) | (outputBloodType == 4) {
     //if (blood_type == 1) | (blood_type == 2) | (blood_type == 3) | (blood_type == 4) {
@@ -95,14 +70,8 @@ fn main(  // [TODO]: Move the following parameters into the convert_health_data_
     }
     assert(blood_type_flag == true);
 
-    assert(outputHeight >= 150);
-    //assert(height >= 150);
-    assert(outputWeight >= 40);
-    //assert(weight >= 40);
-
+    // @dev - Validate a given "walletAddress" is correct size
     outputWalletAddress.assert_max_bit_size::<160>();
-    //walletAddress.assert_max_bit_size::<160>();
-    //walletAddress.assert_max_bit_size(160);
 
     // @dev - Return data as a "RevealedData" struct data
     RevealedData {
@@ -122,40 +91,7 @@ fn main(  // [TODO]: Move the following parameters into the convert_health_data_
 
 
 #[test]
-fn test_main() { // nargo test --show-output
-
-    // @dev - Convert String to Hex in Rust's way
-    //let hex_string = hex::encode("Hello world!"); // Reference from "Rust" documentation
-    //println(hex_string);    
-
-    // @dev - std::convert::From::from
-    //let result: bool = true;
-    //println(from<bool>(result)); 
-
-    let mut true_flag: [u8; 1] = [1];
-    let mut false_flag: [u8; 1] = [2];
-    let mut true_flag_2: [u8; 1] = "1".as_bytes();
-    let mut false_flag_2: [u8; 1] = "2".as_bytes();
-    println(true_flag_2);  // [49]
-    println(false_flag_2); // [50]    
-
-    let _name: str<4> = "John";
-    let _name_bytes: [u8; 4] = _name.as_bytes();  // [74, 111, 104, 110]
-    println(_name);                    
-    println(_name_bytes.as_str_unchecked());     // John
-    println(_name_bytes.as_slice());             // &[74, 111, 104, 110]
-
-    let _b: [u8; 1] = "b".as_bytes();
-    println(_b);
-    println(_b.as_str_unchecked());
-
-    println("a".as_bytes());     // [97]
-    println("a".as_bytes()[0]);  // 97
-    println(15);                 // 0x0f
-
-    /***
-     * @notice - The actual args for being stored into the parameters
-     **/
+fn test_main() { // [CLI]: nargo test --show-output
     let name: u32 = 3763487194; // uint32, which is converted from Bytes32 - SHA256 hash (from "John")
     //let name_hash: u32 = 0xa8cfcd74832004951b4408cdb0a5dbcd8c7e52d43f7fe244bf720582e05241da; // Bytes32 - SHA256 hash (from "John") - But, an error of "too large"
     let walletAddress: Field = 0x2e315a7650eD5FaF4F909EdaF6a8C5908c568F04;
