@@ -65,7 +65,7 @@ export default function MedicalResearcherPage() {
 
   const handleGetNativeTokenBalance = async () => {
     try {
-      const _nativeTokenBalance = await onGetNativeTokenBalance(account);
+      const _nativeTokenBalance = await onGetNativeTokenBalance(provider, signer, account);
       console.log(`_nativeTokenBalance of account: ${ _nativeTokenBalance }`);
     } catch (error) {
       setVerificationResult(`Error: ${(error as Error).message}`);
@@ -76,7 +76,7 @@ export default function MedicalResearcherPage() {
 
   const handleGetAvailableAttestationIds = async () => {
     try {
-      const _availableAttestationIds = await onGetAvailableAttestationIds();
+      const _availableAttestationIds = await onGetAvailableAttestationIds(provider, signer, account);
       console.log(`_availableAttestationIds: ${ _availableAttestationIds }`);
     } catch (error) {
       setVerificationResult(`Error: ${(error as Error).message}`);
