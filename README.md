@@ -116,6 +116,8 @@ sh ./test/hashing/runningTest_hash_2.sh
 ## SC Deployment
 - Deploy all contracts on EDU Chain (testnet) by running the `script/DeploymentAllContracts.s.sol` 
 ```shell
+/// [NOTE]: Execute the following at the root directory.
+
 forge script script/DeploymentAllContracts.s.sol --broadcast --private-key <PK> \
     ./contracts/zkv-attestation-contracts/interfaces/IZkVerifyAttestation.sol:ZkVerifyAttestation \
     ./circuits/target/contract.sol:UltraVerifier \

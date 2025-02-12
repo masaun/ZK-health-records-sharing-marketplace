@@ -121,8 +121,8 @@ contract HealthDataSharingExecutor {
         //rewardPool.validateMedicalResearcherAlreadyPaidEntranceFee(medicalResearcher);
 
         /// @dev - Store the decoded-publicInput into the HealthDataDecodedReceived storage
-        DataTypes.HealthDataDecodedReceived memory healthDataDecodedReceivedStorage = HealthDataDecodedReceivedStorages[_attestationId][medicalResearcher]; /// @dev - medicalResearcher is "msg.sender"
-        //DataTypes.HealthDataDecodedReceived memory healthDataDecodedReceivedStorage = HealthDataDecodedReceivedStorages[_attestationId];
+        DataTypes.HealthDataDecodedReceived memory healthDataDecodedReceivedStorage = healthDataDecodedReceivedStorages[_attestationId][medicalResearcher]; /// @dev - medicalResearcher is "msg.sender"
+        //DataTypes.HealthDataDecodedReceived memory healthDataDecodedReceivedStorage = healthDataDecodedReceivedStorages[_attestationId];
     }
 
     /**
@@ -152,8 +152,8 @@ contract HealthDataSharingExecutor {
         DataTypes.HealthDataDecoded memory healthDataDecoded = _decodePublicInput(_attestationId);
 
         /// @dev - Store the decoded-publicInput into the HealthDataDecodedReceived storage
-        DataTypes.HealthDataDecodedReceived storage healthDataDecodedReceivedStorage = HealthDataDecodedReceivedStorages[_attestationId][medicalResearcher]; /// @dev - medicalResearcher is "msg.sender"
-        //DataTypes.HealthDataDecodedReceived storage healthDataDecodedReceivedStorage = HealthDataDecodedReceivedStorages[_attestationId];
+        DataTypes.HealthDataDecodedReceived storage healthDataDecodedReceivedStorage = healthDataDecodedReceivedStorages[_attestationId][medicalResearcher]; /// @dev - medicalResearcher is "msg.sender"
+        //DataTypes.HealthDataDecodedReceived storage healthDataDecodedReceivedStorage = healthDataDecodedReceivedStorages[_attestationId];
 
         /// [TODO]: Add the event to retrieve the "healthDataDecoded" on Frontend.
 

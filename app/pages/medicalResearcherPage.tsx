@@ -21,7 +21,7 @@ export default function MedicalResearcherPage() {
   const walletButtonRef = useRef<ConnectWalletButtonHandle | null>(null);
   const { connectEVMWallet, provider, signer, account, walletConnected } = useConnectEVMWallet();  /// @dev - Connect to an EVM wallet (i.e. MetaMask)
   const { onGetNativeTokenBalance, nativeTokenBalance } = useGetBalance();
-  const { onReceiveHealthData, status, eventData, txHash, error } = useReceiveHealthData();
+  const { onReceiveHealthData, status, error, txHash, healthDataDecodedReceived } = useReceiveHealthData();
   const { onGetAvailableAttestationIds, availableAttestationIds } = useGetAvailableAttestationIds();
   const [fetchedAvailableAttestationIds, setFetchedAvailableAttestationIds] = useState<string | null>(null);
 
@@ -129,7 +129,7 @@ export default function MedicalResearcherPage() {
         }
       };
     }
-  }, [error, status, eventData, walletConnected]);
+  }, [error, status, walletConnected]);
   //}, [error, status, eventData]);
 
   const blockExplorerUrl = blockHash
@@ -266,7 +266,7 @@ export default function MedicalResearcherPage() {
                 </p>
             )}
 
-            {eventData && status === 'includedInBlock' && (
+            {status === 'includedInBlock' && (
                 <div className={styles.resultSection}>
                   <p>Block Hash: {eventData.blockHash || 'N/A'}</p>
                 </div>

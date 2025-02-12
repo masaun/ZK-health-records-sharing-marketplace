@@ -8,6 +8,7 @@ export function useReceiveHealthData() {
     const [status, setStatus] = useState<string | null>(null);
     const [eventData, setEventData] = useState<any>(null);
     const [txHash, setTxHash] = useState<any>(null);
+    const [healthDataDecodedReceived, setHealthDataDecodedReceived] = useState<any>(null);
     const [error, setError] = useState<string | null>(null);
 
     const onReceiveHealthData = async (
@@ -44,7 +45,8 @@ export function useReceiveHealthData() {
             const abiHealthDataSharingExecutorContract = [
                 "function submitHealthData(bytes calldata proof, bytes32[] calldata publicInput, uint256 medicalResearcherId, uint256 healthDataSharingRequestId, uint256 _attestationId, bytes32 _leaf, bytes32[] calldata _merklePath, uint256 _leafCount, uint256 _index)",
                 "function receiveHealthData(uint256 _attestationId)",
-                "function getAvailableAttestationIds() public view returns(uint256[] memory)"
+                "function getAvailableAttestationIds() public view returns(uint256[] memory _availableAttestationIds)",
+                "function getHealthDataDecodedReceived(uint256 _attestationId) public view returns(DataTypes.HealthDataDecodedReceived memory healthDataDecodedReceivedStorage)"
             ];
 
             const zkvContract = new Contract(process.env.NEXT_PUBLIC_EDU_CHAIN_ZKVERIFY_CONTRACT_ADDRESS, abiZkvContract, provider);
@@ -58,6 +60,11 @@ export function useReceiveHealthData() {
             const { hash } = await txResponse;
             console.log(`Tx sent to EDU Chain (Testnet), tx-hash ${hash}`);
             setTxHash(hash);
+
+            /// @dev - Retrieve the decoded publicInput
+            const healthDataDecodedReceivedStorage = await getHealthDataDecodedReceived(attestationId);
+            setHealthDataDecodedReceived(healthDataDecodedReceivedStorage);
+            console.log(`healthDataDecodedReceivedStorage: ${healthDataDecodedReceivedStorage}`);
         } catch (error: unknown) {
             const errorMessage = (error as Error).message;
             setError(errorMessage);
@@ -65,7 +72,7 @@ export function useReceiveHealthData() {
         }
     };
 
-    return { status, eventData, txHash, error, onReceiveHealthData };
+    return { status, error, txHash, healthDataDecodedReceived, onReceiveHealthData };
 }
 
 
