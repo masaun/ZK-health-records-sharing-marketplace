@@ -312,7 +312,13 @@ export default function MedicalResearcherPage() {
                 <div className={styles.transactionDetails}>
                   <p>Tx Hash-sent to EDU Chain: {txHash || 'N/A'}</p>
                 </div>
-            )}  
+            )}
+
+            {healthDataDecodedReceived && (
+                <div className={styles.transactionDetails}>
+                  <p>Decoded-Attested Health Data: { healthDataDecodedReceived || 'N/A' }</p>
+                </div>
+            )}
           </div>
 
           <br />
