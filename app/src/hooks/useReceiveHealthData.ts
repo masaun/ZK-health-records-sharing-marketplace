@@ -64,7 +64,8 @@ export function useReceiveHealthData() {
             /// @dev - Retrieve the decoded publicInput
             const healthDataDecodedReceivedStorage = await healthDataSharingExecutorContract.getHealthDataDecodedReceived(attestationId);
             setHealthDataDecodedReceived(healthDataDecodedReceivedStorage);
-            console.log(`healthDataDecodedReceivedStorage: ${JSON.stringify(healthDataDecodedReceivedStorage, null, 4)}`);
+            console.log(`healthDataDecodedReceivedStorage: ${ healthDataDecodedReceivedStorage }`);
+            //console.log(`healthDataDecodedReceivedStorage: ${JSON.stringify(healthDataDecodedReceivedStorage, null, 4)}`);
         } catch (error: unknown) {
             const errorMessage = (error as Error).message;
             setError(errorMessage);
