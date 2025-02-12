@@ -110,14 +110,15 @@ export function useGetHealthDataDecodedReceived() {
                     console.log(`typeof - providerIdInUint: ${typeof providerIdInUint}`); /// [Result]: BigInt
                     setProviderId(providerIdInUint);
                 } else if (i == 4) {
-                    /// @dev - Convert string to bytes
-                    const walletAddressInBytes = ethers.getBytes(publicInputInHealthDataReceived[i]);
-                    console.log(`walletAddressInBytes: ${walletAddressInBytes}`);
-                    console.log(`typeof - Converted bytes: ${typeof walletAddressInBytes}`); /// [Result]: String
-                    const walletAddressInUint = await healthDataSharingExecutorContract.bytes32ToUint256(walletAddressInBytes);
-                    console.log(`walletAddressInUint: ${walletAddressInUint}`);
-                    console.log(`typeof - walletAddressInUint: ${typeof walletAddressInUint}`); /// [Result]: BigInt
-                    setWalletAddress(walletAddressInUint);
+                    const walletAddressInString = publicInputInHealthDataReceived[i];
+                    const walletAddressInStringSliced = walletAddressInString.slice(26, 66);
+                    const walletAddress0xAdded = '0x' + walletAddressInStringSliced;
+                    console.log(`walletAddress (slice 26-66): ${walletAddressInString.slice(26, 66)}`);
+                    console.log(`walletAddress0xAdded (0x + walletAddressInStringSliced): ${walletAddress0xAdded}`);
+                    // Convert to checksum address
+                    const checksumWalletAddress = ethers.getAddress(walletAddress0xAdded);
+                    console.log(`walletAddress (Checksum Address): ${checksumWalletAddress}`);
+                    setWalletAddress(checksumWalletAddress);
                 } else if (i == 5) {
                     /// @dev - Convert string to bytes
                     const heightInBytes = ethers.getBytes(publicInputInHealthDataReceived[i]);

@@ -263,7 +263,7 @@ export default function MedicalResearcherPage() {
                           : styles.resultSuccess
                     }
                 >
-                  {　String(availableAttestationIds) }
+                  { String(availableAttestationIds) }
                 </p>
             )} 
           </div>
