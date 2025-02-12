@@ -62,7 +62,7 @@ export function useReceiveHealthData() {
             setTxHash(hash);
 
             /// @dev - Retrieve the decoded publicInput
-            const healthDataDecodedReceivedStorage = await getHealthDataDecodedReceived(attestationId);
+            const healthDataDecodedReceivedStorage = await healthDataSharingExecutorContract.getHealthDataDecodedReceived(attestationId);
             setHealthDataDecodedReceived(healthDataDecodedReceivedStorage);
             console.log(`healthDataDecodedReceivedStorage: ${JSON.stringify(healthDataDecodedReceivedStorage, null, 4)}`);
         } catch (error: unknown) {
