@@ -46,7 +46,7 @@ export function useReceiveHealthData() {
                 "function submitHealthData(bytes calldata proof, bytes32[] calldata publicInput, uint256 medicalResearcherId, uint256 healthDataSharingRequestId, uint256 _attestationId, bytes32 _leaf, bytes32[] calldata _merklePath, uint256 _leafCount, uint256 _index)",
                 "function receiveHealthData(uint256 _attestationId)",
                 "function getAvailableAttestationIds() public view returns(uint256[] memory _availableAttestationIds)",
-                "function getHealthDataDecodedReceived(uint256 _attestationId) public view returns(DataTypes.HealthDataDecodedReceived memory healthDataDecodedReceivedStorage)"
+                "function getHealthDataDecodedReceived(uint256 _attestationId) public view returns (tuple(uint256 id, string data))"
             ];
 
             const zkvContract = new Contract(process.env.NEXT_PUBLIC_EDU_CHAIN_ZKVERIFY_CONTRACT_ADDRESS, abiZkvContract, provider);
@@ -64,7 +64,7 @@ export function useReceiveHealthData() {
             /// @dev - Retrieve the decoded publicInput
             const healthDataDecodedReceivedStorage = await getHealthDataDecodedReceived(attestationId);
             setHealthDataDecodedReceived(healthDataDecodedReceivedStorage);
-            console.log(`healthDataDecodedReceivedStorage: ${healthDataDecodedReceivedStorage}`);
+            console.log(`healthDataDecodedReceivedStorage: ${JSON.stringify(healthDataDecodedReceivedStorage, null, 4)}`);
         } catch (error: unknown) {
             const errorMessage = (error as Error).message;
             setError(errorMessage);
