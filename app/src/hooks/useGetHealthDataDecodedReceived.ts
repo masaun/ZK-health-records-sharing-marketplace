@@ -53,6 +53,12 @@ export function useGetHealthDataDecodedReceived() {
             const publicInputInHealthDataReceived = await healthDataSharingExecutorContract.getPublicInputInHealthData(attestationId);
             console.log(`publicInputInHealthDataReceived ("publicInput" before decoded): ${ publicInputInHealthDataReceived }`);
             console.log(`publicInputInHealthDataReceived[0] ("publicInput" before decoded): ${ publicInputInHealthDataReceived[0] }`);
+            console.log(`typeof - publicInputInHealthDataReceived[0] ("publicInput" before decoded): ${ typeof publicInputInHealthDataReceived[0] }`); /// [Result]: String
+
+            /// @dev - Convert string to bytes
+            const bytes = ethers.getBytes(publicInputInHealthDataReceived[0]);
+            console.log(`Converted bytes: ${bytes}`);
+            console.log(`typeof - Converted bytes: ${typeof bytes}`); /// [Result]: String
         } catch (error: unknown) {
             const errorMessage = (error as Error).message;
             setError(errorMessage);
