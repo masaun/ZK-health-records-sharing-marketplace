@@ -2,7 +2,6 @@ import { useState, useEffect, useRef } from 'react';
 import { useAccount } from '@/context/AccountContext';
 
 import { ethers, providers, Contract } from 'ethers';
-import { on } from 'events';
 
 
 export function useGetAvailableAttestationIds() {
@@ -32,14 +31,13 @@ export function useGetAvailableAttestationIds() {
 
             const healthDataSharingExecutorContract = new Contract(process.env.NEXT_PUBLIC_EDU_CHAIN_HEALTH_DATA_SHARING_EXECUTOR_CONTRACT_ADDRESS, abiHealthDataSharingExecutorContract, provider);
             const healthDataSharingExecutorContractWithSigner = healthDataSharingExecutorContract.connect(signer);
-            
-            console.log(`Hey!!!`);
 
             /// @dev - Call the HealthDataSharingRequester#receiveHealthData()
             try {
                 const _fetchedAvailableAttestationIds = await healthDataSharingExecutorContract.getAvailableAttestationIds();
                 setAvailableAttestationIds(_fetchedAvailableAttestationIds);
-                console.log(`availableAttestationIds on EDU Chain (Testnet): ${_fetchedAvailableAttestationIds}`);
+                console.log(`_fetchedAvailableAttestationIds (on EDU Chain): ${_fetchedAvailableAttestationIds}`);
+                console.log(`availableAttestationIds (on EDU Chain): ${availableAttestationIds}`);
             } catch (error) {
                 console.error('Error fetching attestation IDs:', error);
             }
@@ -50,7 +48,7 @@ export function useGetAvailableAttestationIds() {
         }
     };
 
-    return { status, error, availableAttestationIds, onGetAvailableAttestationIds };
+    return { availableAttestationIds, onGetAvailableAttestationIds };
 }
 
 

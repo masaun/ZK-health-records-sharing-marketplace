@@ -26,9 +26,9 @@ export function useGetBalance() {
       // Get the balance of the account
       const balanceBigInt = await provider.getBalance(account);
       const balanceNativeToken = ethers.formatEther(balanceBigInt);
-      setNativeTokenBalance(nativeTokenBalance);
-
-      console.log(`$EDU Balance: ${nativeTokenBalance} EDU`);
+      setNativeTokenBalance(balanceNativeToken);
+      console.log(`$EDU Balance (balanceNativeToken): ${balanceNativeToken} EDU`);
+      console.log(`$EDU Balance (nativeTokenBalance): ${nativeTokenBalance} EDU`);
 
       // Add your contract interaction logic here
 

@@ -65,8 +65,8 @@ export default function MedicalResearcherPage() {
 
   const handleGetNativeTokenBalance = async () => {
     try {
-      const _nativeTokenBalance = await onGetNativeTokenBalance(provider, signer, account);
-      console.log(`_nativeTokenBalance of account: ${ _nativeTokenBalance }`);
+      await onGetNativeTokenBalance(provider, signer, account);
+      console.log(`nativeTokenBalance: ${ nativeTokenBalance } EDU`);
     } catch (error) {
       setVerificationResult(`Error: ${(error as Error).message}`);
     } finally {
@@ -76,8 +76,8 @@ export default function MedicalResearcherPage() {
 
   const handleGetAvailableAttestationIds = async () => {
     try {
-      const _availableAttestationIds = await onGetAvailableAttestationIds(provider, signer, account);
-      console.log(`_availableAttestationIds: ${ _availableAttestationIds }`);
+      await onGetAvailableAttestationIds(provider, signer, account);
+      console.log(`availableAttestationIds: ${ availableAttestationIds }`);
     } catch (error) {
       setVerificationResult(`Error: ${(error as Error).message}`);
     } finally {
@@ -106,7 +106,7 @@ export default function MedicalResearcherPage() {
     if (!nativeTokenBalance) {
       const fetchAttestationIds = async () => {
         try {  
-          await onGetNativeTokenBalance(account); /// @dev - Get $EDU balance of a given account
+          await onGetNativeTokenBalance(provider, signer, account); /// @dev - Get $EDU balance of a given account
         } catch (error) {
           console.error('Error fetching $EDU balance of a given account:', error);
         }
@@ -116,7 +116,7 @@ export default function MedicalResearcherPage() {
     if (!availableAttestationIds) {
       const fetchAttestationIds = async () => {
         try {  
-          await onGetAvailableAttestationIds(); /// @dev - Get availableAttestationIds
+          await onGetAvailableAttestationIds(provider, signer, account); /// @dev - Get availableAttestationIds
         } catch (error) {
           console.error('Error fetching attestation IDs:', error);
         }
@@ -150,7 +150,7 @@ export default function MedicalResearcherPage() {
 
           <ConnectEVMWalletButton />
 
-          <h4>$EDU balance of account: { nativeTokenBalance }</h4>
+          <h4>$EDU balance of account: { nativeTokenBalance } EDU</h4>
 
           <button
               onClick={handleGetNativeTokenBalance}
@@ -187,7 +187,7 @@ export default function MedicalResearcherPage() {
 
           <br />
 
-          <h4>Available (= Buyable) Attestation IDs</h4>
+          <h4>Available (= Buyable) Attestation IDs</h4> 
           
           <button
               onClick={handleGetAvailableAttestationIds}
@@ -196,12 +196,14 @@ export default function MedicalResearcherPage() {
             Get Available Attestation IDs
           </button>
 
+          <h4>Available Attestation IDs: { availableAttestationIds }</h4>
+
           <div className={styles.resultContainer}>
             {availableAttestationIds && (
                 <p
                     className={
                       availableAttestationIds.includes('failed') ||
-                      availableAttestationIdst.includes('Error') ||
+                      availableAttestationIds.includes('Error') ||
                       availableAttestationIds.includes('Rejected')
                           ? styles.resultError
                           : styles.resultSuccess
