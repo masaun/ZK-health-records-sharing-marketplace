@@ -13,9 +13,7 @@ use dep::std::convert::Into::into;       // https://noir-lang.org/docs/noir/stan
  * @notice - Revealed Data
  **/
 pub struct RevealedData {
-    providerId: u64,  // Using the "providerId" parameter - instead of the provider's "name" parameter. 
     name: u32, // [NOTE]: Before an arg value is stored into here as u32, it would be converted from String ("John") -> Hash (bytes32) -> u32 (uint32)
-    productId: u64,
     walletAddress: Field,
     height: u8,
     weight: u8,
@@ -38,8 +36,6 @@ pub struct RevealedData {
  * @dev - [TODO]: "productId" parameter - This may be better to replace with the "medical_researcher_id"
  **/
 fn main(  // [TODO]: Move the following parameters into the convert_health_data_to_hash() - To use the "dynamic" size of array ([u32; N]) and convert HealthData to "Hash" type of data. After that, the converted-"Hash" type of HealthData should be stored into here. (In this case, only 1 Field type of parameter is needed in the main() function here)
-    productId: pub u64,
-    providerId: u64,  // Using the "providerId" parameter - instead of the provider's "name" parameter. 
     name: u32, // [NOTE]: Before an arg value is stored into here as u32, it would be converted from String ("John") -> Hash (bytes32) -> u32 (uint32)
     walletAddress: Field,
     height: u8,
@@ -64,15 +60,11 @@ fn main(  // [TODO]: Move the following parameters into the convert_health_data_
     revealHeartRate: bool,
     revealAverageHoursOfSleep: bool
 ) -> pub RevealedData {
-//) -> pub u64 {
-
     // Extracting data from the Helper
     // 46829 Gates
     //let healthData = extractor();
 
     // @dev - Selective Disclosure
-    let outputProductId = productId;
-    let outputProviderId = if revealProviderId { providerId } else { 0 };
     let outputName = if revealName { name } else { 0 };
     let outputWalletAddress = if revealWalletAddress { walletAddress } else { 0 };
     let outputHeight = if revealHeight { height } else { 0 };
@@ -114,8 +106,6 @@ fn main(  // [TODO]: Move the following parameters into the convert_health_data_
 
     // @dev - Return data as a "RevealedData" struct data
     RevealedData {
-        productId: outputProductId,
-        providerId: outputProviderId,
         name: outputName,
         walletAddress: outputWalletAddress,
         height: outputHeight,
@@ -128,15 +118,11 @@ fn main(  // [TODO]: Move the following parameters into the convert_health_data_
         heart_rate: outputHeartRate,
         average_hours_of_sleep: outputAverageHoursOfSleep
     }
-    //};
-
-    //productId
 }
 
 
 #[test]
 fn test_main() { // nargo test --show-output
-    //let _providerId: u64 = 1;
 
     // @dev - Convert String to Hex in Rust's way
     //let hex_string = hex::encode("Hello world!"); // Reference from "Rust" documentation
@@ -170,8 +156,6 @@ fn test_main() { // nargo test --show-output
     /***
      * @notice - The actual args for being stored into the parameters
      **/
-    let productId: u64 = 1;
-    let providerId: u64 = 1;
     let name: u32 = 3763487194; // uint32, which is converted from Bytes32 - SHA256 hash (from "John")
     //let name_hash: u32 = 0xa8cfcd74832004951b4408cdb0a5dbcd8c7e52d43f7fe244bf720582e05241da; // Bytes32 - SHA256 hash (from "John") - But, an error of "too large"
     let walletAddress: Field = 0x2e315a7650eD5FaF4F909EdaF6a8C5908c568F04;
@@ -199,8 +183,6 @@ fn test_main() { // nargo test --show-output
     let revealAverageHoursOfSleep: bool = true;
 
     let revealed_data = main(
-        productId, 
-        providerId, 
         name, 
         walletAddress, 
         height, 
@@ -227,16 +209,32 @@ fn test_main() { // nargo test --show-output
     );
 
     // @dev - For when the return value is "RevealedData (struct data)"  - Validate the return value
+    assert(revealed_data.name == 0, "Name should not be revealed (0)");
+    assert(revealed_data.walletAddress == 0x2e315a7650eD5FaF4F909EdaF6a8C5908c568F04, "walletAddress should be 0x2e315a7650eD5FaF4F909EdaF6a8C5908c568F04");
+    assert(revealed_data.height == 180, "Height should be 180");
+    assert(revealed_data.weight == 70, "Height should be 70");
     assert(revealed_data.age == 21, "Age should be 21");
     assert(revealed_data.gender == 1, "Gender should Male (1)");
+    assert(revealed_data.race_type == 1, "Race Type should 'White' (1)");
+    assert(revealed_data.blood_type == 1, "Blood Type should 'A' (1)");
+    assert(revealed_data.blood_pressure == 110, "Blood Pressure should 110");
+    assert(revealed_data.heart_rate == 75, "Heart Rate should be 75");
+    assert(revealed_data.average_hours_of_sleep == 8, "Average hours of sleep should be 8 hours");
+    println(revealed_data.name);
+    println(revealed_data.walletAddress);
+    println(revealed_data.height);
+    println(revealed_data.weight);
     println(revealed_data.age);
     println(revealed_data.gender);
+    println(revealed_data.race_type);
+    println(revealed_data.blood_type);
+    println(revealed_data.blood_pressure);
+    println(revealed_data.heart_rate);
+    println(revealed_data.average_hours_of_sleep);
 
     // @dev - For when the return value is "productId (u64)"  - Validate the return value
     // assert(
     //     main(
-    //         providerId, 
-    //         productId, 
     //         name, 
     //         walletAddress, 
     //         height, 
@@ -263,15 +261,3 @@ fn test_main() { // nargo test --show-output
     //     ) == 1
     // );
 }
-
-
-// #[test]
-// fn main(x: Field, y: pub Field) -> pub Field {
-//     assert(x == y);
-//     y
-// }
-
-#[export]
-// fn exported() -> Field {
-//     3
-// }
