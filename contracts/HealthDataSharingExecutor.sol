@@ -28,7 +28,8 @@ contract HealthDataSharingExecutor {
     mapping (address => uint256) public healthDataProviders;
     mapping (uint256 => address) public healthDataProviderWithAttestationIds;
     mapping (uint256 => DataTypes.ProofAndPublicInput) public proofAndPublicInputStorages; /// [Key]: attestationId (uint256)
-    mapping (uint256 => DataTypes.PublicInput) internal publicInputStorages;                 /// [Key]: attestationId (uint256)
+    mapping (uint256 => DataTypes.PublicInput) public publicInputStorages;                 /// [Key]: attestationId (uint256)
+    //mapping (uint256 => DataTypes.PublicInput) internal publicInputStorages;                 /// [Key]: attestationId (uint256)
     mapping (uint256 => mapping(address => DataTypes.HealthDataDecodedReceived)) public healthDataDecodedReceivedStorages;      /// [Key]: attestationId (uint256)
     //mapping (uint256 => DataTypes.HealthDataDecodedReceived) public healthDataDecodedReceivedStorages;  /// [Key]: attestationId (uint256)
 
@@ -98,7 +99,7 @@ contract HealthDataSharingExecutor {
 
         /// @dev - Store only "publicInput" (health data) to be shared into the mapping storage (= publicInputStorages[_attestationId]).
         DataTypes.PublicInput storage publicInputStorage = publicInputStorages[_attestationId];
-        proofAndPublicInputStorage.publicInput = publicInput;
+        publicInputStorage.publicInput = publicInput;
     }
 
     /**
