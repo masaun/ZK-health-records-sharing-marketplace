@@ -5,8 +5,15 @@ import { IERC20 } from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 
 library DataTypes {
 
-    struct PublicInput {
+    /////////////////////////////////////////////////////////
+    /// zkVerify and ZK circuit (in Noir) related sturcts ///
+    /////////////////////////////////////////////////////////
+    struct ProofAndPublicInput {
         bytes proof;
+        bytes32[] publicInput;
+    }
+
+    struct PublicInput { /// @dev - Only publicInput is stored into here.
         bytes32[] publicInput;
     }
 
@@ -32,6 +39,9 @@ library DataTypes {
         HealthDataDecoded healthDataDecoded;
     }
 
+    /////////////////////////////////////////
+    /// Rewards (Payment) related sturcts ///
+    /////////////////////////////////////////
     struct RewardDataInNativeToken {
         uint256 entranceFee;
         uint256 rewardAmountPerSubmission;

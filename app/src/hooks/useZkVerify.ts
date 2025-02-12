@@ -210,6 +210,8 @@ export function useZkVerify() {
             console.log(`Tx sent to EDU Chain (Testnet), tx-hash ${hash}`);
             setTxHash(hash);
 
+            /// @dev - Wait 60 seconds (2 block + 6 seconds) to wait for retrieving the "AttestationPosted" event-emitted.
+            await asyncTimeout(60000);
 
             /// @dev - Added below for retrieving the "AttestationPosted" event-emitted.
             zkvContract.on(

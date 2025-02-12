@@ -2,7 +2,10 @@
 import { useState, useRef, useEffect } from 'react';
 import ConnectEVMWalletButton from '../src/components/ConnectEVMWalletButton';
 import { useConnectEVMWallet } from '../src/hooks/useConnectEVMWallet';
-import { useFunctionForMedicalResercher } from '../src/hooks/useFunctionForMedicalResercher';
+import { useGetBalance } from '../src/hooks/useGetBalance';
+import { useReceiveHealthData } from '../src/hooks/useReceiveHealthData';
+import { useGetHealthDataDecodedReceived } from '../src/hooks/useGetHealthDataDecodedReceived';
+import { useGetAvailableAttestationIds } from '../src/hooks/useGetAvailableAttestationIds';
 import styles from './page.module.css';
 //import styles from '../src/app/page.module.css';
 import globalStyles from '../src/app/globals.css';
@@ -10,6 +13,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 
 import { ethers, BrowserProvider, Contract } from 'ethers';
+import { stringify } from 'querystring';
 
 
 export default function MedicalResearcherPage() {
@@ -18,13 +22,19 @@ export default function MedicalResearcherPage() {
   const [blockHash, setBlockHash] = useState<string | null>(null);
   const walletButtonRef = useRef<ConnectWalletButtonHandle | null>(null);
   const { connectEVMWallet, provider, signer, account, walletConnected } = useConnectEVMWallet();  /// @dev - Connect to an EVM wallet (i.e. MetaMask)
-  const { onVerifyProof, status, eventData, transactionResult, merkleProofDetails, txHash, error } = useConnectEVMWallet(); 
+  const { onGetNativeTokenBalance, nativeTokenBalance } = useGetBalance();
+  const { onReceiveHealthData, status, error, txHash, healthDataDecodedReceived } = useReceiveHealthData();
+  const { productId, onGetHealthDataDecodedReceived } = useGetHealthDataDecodedReceived();
+  //const { _healthDataDecodedReceived, onGetHealthDataDecodedReceived } = useGetHealthDataDecodedReceived();
+  const { onGetAvailableAttestationIds, availableAttestationIds } = useGetAvailableAttestationIds();
+  const [fetchedAvailableAttestationIds, setFetchedAvailableAttestationIds] = useState<string | null>(null);
 
 
   /////////////////////////////////////////////////////////////
   /// Input form
   /////////////////////////////////////////////////////////////
   const [inputAttestationIdValue, setInputAttestationIdValue] = useState('');
+  const [inputAttestationIdValueForGetHealthDataDecodedReceived, setInputAttestationIdValueForGetHealthDataDecodedReceived] = useState('');
 
   
   /////////////////////////////////////////////////////////////
@@ -47,13 +57,52 @@ export default function MedicalResearcherPage() {
 
     /// @dev - Verify a ZK proof via zkVerify
     try {
-      //await onVerifyProof(provider, signer, account, proof, publicSignals, vk); /// @dev - useZkVerify.ts + Web3 Provider
-      await onVerifyProof(
+      await onReceiveHealthData(
         provider, 
         signer, 
         account, /// @dev - walletAddress, which is also used for an argument of ZK circuit (main.nr)
         inputAttestationIdValue
       );
+    } catch (error) {
+      setVerificationResult(`Error: ${(error as Error).message}`);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleGetNativeTokenBalance = async () => {
+    try {
+      await onGetNativeTokenBalance(provider, signer, account);
+      console.log(`nativeTokenBalance: ${ nativeTokenBalance } EDU`);
+    } catch (error) {
+      setVerificationResult(`Error: ${(error as Error).message}`);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleGetHealthDataDecodedReceived = async () => {
+    /// @dev - Retrieve the input values from the input form
+    event.preventDefault();
+    console.log('Input AttestationId Value (for GetHealthDataDecodedReceived):', inputAttestationIdValueForGetHealthDataDecodedReceived);
+
+    try {
+      await onGetHealthDataDecodedReceived(provider, signer, account, inputAttestationIdValueForGetHealthDataDecodedReceived);
+      console.log(`productId (on the MR page): ${ productId }`);
+      //console.log(`_healthDataDecodedReceived (on the MR page): ${ _healthDataDecodedReceived }`);
+    } catch (error) {
+      setVerificationResult(`Error: ${(error as Error).message}`);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleGetAvailableAttestationIds = async () => {
+    try {
+      await onGetAvailableAttestationIds(provider, signer, account);
+      console.log(`availableAttestationIds: ${ availableAttestationIds }`);
+      setFetchedAvailableAttestationIds(availableAttestationIds);
+      console.log(`fetchedAvailableAttestationIds: ${ fetchedAvailableAttestationIds }`);
     } catch (error) {
       setVerificationResult(`Error: ${(error as Error).message}`);
     } finally {
@@ -79,7 +128,29 @@ export default function MedicalResearcherPage() {
       connectEVMWallet(); /// @dev - Connetct an EVM wallet (i.e. MetaMask)
     }
 
-  }, [error, status, eventData, walletConnected]);
+    if (!nativeTokenBalance) {
+      const fetchAttestationIds = async () => {
+        try {  
+          await onGetNativeTokenBalance(provider, signer, account); /// @dev - Get $EDU balance of a given account
+        } catch (error) {
+          console.error('Error fetching $EDU balance of a given account:', error);
+        }
+      };
+    }
+  
+    if (!availableAttestationIds) {
+      const fetchAttestationIds = async () => {
+        try {  
+          await onGetAvailableAttestationIds(provider, signer, account); /// @dev - Get availableAttestationIds
+          console.log(`availableAttestationIds: ${ availableAttestationIds }`);
+          setFetchedAvailableAttestationIds(availableAttestationIds);
+          console.log(`fetchedAvailableAttestationIds: ${ fetchedAvailableAttestationIds }`);
+        } catch (error) {
+          console.error('Error fetching attestation IDs:', error);
+        }
+      };
+    }
+  }, [error, status, walletConnected]);
   //}, [error, status, eventData]);
 
   const blockExplorerUrl = blockHash
@@ -103,9 +174,71 @@ export default function MedicalResearcherPage() {
             Go to the HealthData Provider Page
           </Link>
 
+          {/* <br /> */}
+
+          {/* <h4>Deposit</h4> */}
+
+          {/*
+          <button
+                type="submit"
+                //onClick={handleSubmit}
+                className={`button ${styles.verifyButton}`}
+                disabled={!account || loading}
+            >
+              {loading ? (
+                  <>
+                    Submitting...
+                    <div className="spinner"></div>
+                  </>
+              ) : (
+                  'Deposit the Entrance Fee'
+              )}
+          </button>
+          */}
+
           <br />
 
           <ConnectEVMWalletButton />
+
+          <h4>$EDU balance of account: { String(nativeTokenBalance) } EDU</h4>
+
+          <button
+              onClick={handleGetNativeTokenBalance}
+              className={`button ${styles.verifyButton}`}
+          >
+            Get $EDU balance of account
+          </button>
+
+          <br />
+
+          <hr />
+
+          <br />
+
+          <h4>Available (= Buyable) Attestation IDs</h4> 
+          
+          <button
+              onClick={handleGetAvailableAttestationIds}
+              className={`button ${styles.verifyButton}`}
+          >
+            Get Available Attestation IDs
+          </button>
+
+          <div className={styles.resultContainer}>
+            {availableAttestationIds && (
+                <p
+                    className={
+                      availableAttestationIds.includes('failed') ||
+                      availableAttestationIds.includes('Error') ||
+                      availableAttestationIds.includes('Rejected')
+                          ? styles.resultError
+                          : styles.resultSuccess
+                    }
+                >
+                  {　String(availableAttestationIds) }
+                </p>
+            )} 
+          </div>
 
           <br />
 
@@ -118,7 +251,7 @@ export default function MedicalResearcherPage() {
             />
 
             <br />
-            
+
             <button
                 type="submit"
                 //onClick={handleSubmit}
@@ -131,25 +264,10 @@ export default function MedicalResearcherPage() {
                     <div className="spinner"></div>
                   </>
               ) : (
-                  'Submit Proof'
+                  'Receive Attested-Health Data'
               )}
             </button>
           </form>
-
-          <button
-              onClick={handleSubmit}
-              className={`button ${styles.verifyButton}`}
-              disabled={!account || loading}
-          >
-            {loading ? (
-                <>
-                  Submitting...
-                  <div className="spinner"></div>
-                </>
-            ) : (
-                'Submit Proof'
-            )}
-          </button>
 
           <div className={styles.resultContainer}>
             {verificationResult && (
@@ -166,7 +284,7 @@ export default function MedicalResearcherPage() {
                 </p>
             )}
 
-            {eventData && status === 'includedInBlock' && (
+            {status === 'includedInBlock' && (
                 <div className={styles.resultSection}>
                   <p>Block Hash: {eventData.blockHash || 'N/A'}</p>
                 </div>
@@ -180,29 +298,59 @@ export default function MedicalResearcherPage() {
                 </div>
             )}
 
+            {/* 
             {transactionResult && (
                 <div className={styles.transactionDetails}>
                   <p>Transaction Hash: {transactionResult.txHash || 'N/A'}</p>
                   <p>Proof Type: {transactionResult.proofType || 'N/A'}</p>
                   <p>Attestation ID: {transactionResult.attestationId || 'N/A'}</p>
                 </div>
-            )}
-
-            {merkleProofDetails && (
-                <div className={styles.transactionDetails}>
-                  <p>Merkle Proof: {merkleProofDetails.proof || 'N/A'}</p>
-                  <p>Number Of Leaves: {merkleProofDetails.numberOfLeaves || 'N/A'}</p>
-                  <p>Leaf Index: {merkleProofDetails.leafIndex || 'N/A'}</p>
-                </div>
             )} 
+            */}
 
             {txHash && (
                 <div className={styles.transactionDetails}>
                   <p>Tx Hash-sent to EDU Chain: {txHash || 'N/A'}</p>
                 </div>
-            )} 
+            )}
           </div>
 
+          <br />
+
+          <form onSubmit={handleGetHealthDataDecodedReceived}>
+            <h4>Attestation ID</h4>
+            <input
+              type="text"
+              value={inputAttestationIdValueForGetHealthDataDecodedReceived}
+              onChange={(e) => setInputAttestationIdValueForGetHealthDataDecodedReceived(e.target.value)}
+            />
+
+            <br />
+
+            <button
+                type="submit"
+                //onClick={handleSubmit}
+                className={`button ${styles.verifyButton}`}
+                disabled={!account || loading}
+            >
+              {loading ? (
+                  <>
+                    Submitting...
+                    <div className="spinner"></div>
+                  </>
+              ) : (
+                  'Receive decoded-attested Health Data'
+              )}
+            </button>
+          </form>
+
+          <div className={styles.resultContainer}>
+            {productId && (
+                <div className={styles.transactionDetails}>
+                  <p>Product ID: { String(productId) || 'N/A' }</p>
+                </div>
+            )}
+          </div>
         </div>
       </div>
   );

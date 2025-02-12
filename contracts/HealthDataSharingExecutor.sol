@@ -8,7 +8,9 @@ import { HealthDataSharingVerifier } from "./circuits/HealthDataSharingVerifier.
 import { HealthDataSharingRequester } from "./HealthDataSharingRequester.sol";
 
 import { RewardPool } from "./rewards/RewardPool.sol";
+
 import { DataTypes } from "./libraries/DataTypes.sol";
+import { Converter } from "./libraries/Converter.sol";
 
 
 /** 
@@ -27,9 +29,11 @@ contract HealthDataSharingExecutor {
 
     mapping (address => uint256) public healthDataProviders;
     mapping (uint256 => address) public healthDataProviderWithAttestationIds;
-    mapping (uint256 => DataTypes.PublicInput) public publicInputStorages; /// [Key]: attestationId (uint256)
-    mapping (uint256 => DataTypes.HealthDataDecodedReceived) public HealthDataDecodedReceivedStorages;  /// [Key]: attestationId (uint256)
-    //mapping (uint256 => mapping(address => DataTypes.HealthDataDecodedReceived)) public HealthDataDecodedReceivedStorages;      /// [Key]: attestationId (uint256)
+    mapping (uint256 => DataTypes.ProofAndPublicInput) public proofAndPublicInputStorages; /// [Key]: attestationId (uint256)
+    //mapping (uint256 => DataTypes.PublicInput) public publicInputStorages;                 /// [Key]: attestationId (uint256)
+    mapping (uint256 => DataTypes.PublicInput) internal publicInputStorages;                 /// [Key]: attestationId (uint256)
+    mapping (uint256 => mapping(address => DataTypes.HealthDataDecodedReceived)) public healthDataDecodedReceivedStorages;      /// [Key]: attestationId (uint256)
+    //mapping (uint256 => DataTypes.HealthDataDecodedReceived) public healthDataDecodedReceivedStorages;  /// [Key]: attestationId (uint256)
 
     modifier onlyHealthDataProvider() {
         require(healthDataProviders[msg.sender] > 0, "Not registered as a health data provider");
@@ -90,9 +94,13 @@ contract HealthDataSharingExecutor {
         /// @dev - Check whether or not a given number of public inputs is equal to the number of items, which was requested by a Medical Researcher.
         //require(publicInput.length == healthDataSharingVerifierRequestor.getHealthDataSharingVerifierRequest(medicalResearcherId, healthDataSharingVerifierRequestId), "Invalid number of public inputs");
 
-        /// @dev - Store the publicInput (health data) to be shared into the mapping storage (= publicInputStorages[_attestationId]).
+        /// @dev - Store both the "proof" and "publicInput" (health data) to be shared into the mapping storage (= proofAndPublicInputStorages[_attestationId]).
+        DataTypes.ProofAndPublicInput storage proofAndPublicInputStorage = proofAndPublicInputStorages[_attestationId];
+        proofAndPublicInputStorage.proof = proof;
+        proofAndPublicInputStorage.publicInput = publicInput;
+
+        /// @dev - Store only "publicInput" (health data) to be shared into the mapping storage (= publicInputStorages[_attestationId]).
         DataTypes.PublicInput storage publicInputStorage = publicInputStorages[_attestationId];
-        publicInputStorage.proof = proof;
         publicInputStorage.publicInput = publicInput;
     }
 
@@ -118,20 +126,29 @@ contract HealthDataSharingExecutor {
         address medicalResearcher = msg.sender;
         
         /// @dev - Validate whether or not a medicalResearcher (= msg.sender) has already paid the entrance fee.
-        rewardPool.validateMedicalResearcherAlreadyPaidEntranceFee(medicalResearcher);
+        //rewardPool.validateMedicalResearcherAlreadyPaidEntranceFee(medicalResearcher);
 
         /// @dev - Store the decoded-publicInput into the HealthDataDecodedReceived storage
-        DataTypes.HealthDataDecodedReceived memory healthDataDecodedReceivedStorage = HealthDataDecodedReceivedStorages[_attestationId];
-        //DataTypes.HealthDataDecodedReceived memory healthDataDecodedReceivedStorage = HealthDataDecodedReceivedStorages[_attestationId][medicalResearcher]; /// @dev - medicalResearcher is "msg.sender"
+        DataTypes.HealthDataDecodedReceived memory healthDataDecodedReceivedStorage = healthDataDecodedReceivedStorages[_attestationId][medicalResearcher]; /// @dev - medicalResearcher is "msg.sender"
+        //DataTypes.HealthDataDecodedReceived memory healthDataDecodedReceivedStorage = healthDataDecodedReceivedStorages[_attestationId];
     }
 
     /**
      * @dev - Get a publicInput (health data) from the mapping storage.
      */
-    function getHealthData(uint256 _attestationId) public view returns(DataTypes.PublicInput memory publicInputStorage) {
+    function getHealthData(uint256 _attestationId) public view returns(DataTypes.ProofAndPublicInput memory proofAndPublicInputStorage) {
+        DataTypes.ProofAndPublicInput memory proofAndPublicInputStorage = proofAndPublicInputStorages[_attestationId];
+        return proofAndPublicInputStorage;
+    }
+
+    /**
+     * @dev - Get a publicInput (health data) from the mapping storage.
+     */
+    function getPublicInputInHealthData(uint256 _attestationId) public view returns(bytes32[] memory _publicInput) {
         DataTypes.PublicInput memory publicInputStorage = publicInputStorages[_attestationId];
-        return publicInputStorage;
-    }  
+        bytes32[] memory _publicInput = publicInputStorage.publicInput;
+        return _publicInput;
+    }
 
     /**
      * @dev - [New design]: A medical researcher, who deposited the entrance fees into the RewardPool, can call this function to retrieve a given "attestationId" of health data (which is provided by a health data provider).
@@ -139,38 +156,47 @@ contract HealthDataSharingExecutor {
      * @dev - In exchange for it, a Health Data Providers (i.e. Patients, Wearable Device holders) would claim rewards.
      */
     //function storeHealthDataAndClaimReward(uint256 _attestationId) public payable returns(bool) { /// [NOTE]: This function should be called by a health data provider
-    function receiveHealthData(uint256 _attestationId) public returns(bool) {
+    function receiveHealthData(uint256 _attestationId) public payable returns(bool) {
         /// @dev - Store a given caller address ("msg.sender") into a "medicalResearcher".
         address medicalResearcher = msg.sender; /// @dev - This caller should be a medical researcher
 
         /// @dev - Get a publicInput (health data) from the mapping storage.
-        DataTypes.PublicInput memory publicInputStorage = getHealthData(_attestationId);
-        bytes memory proof = publicInputStorage.proof;
-        bytes32[] memory publicInput = publicInputStorage.publicInput;
+        DataTypes.ProofAndPublicInput memory proofAndPublicInputStorage = getHealthData(_attestationId);
+        bytes memory proof = proofAndPublicInputStorage.proof;
+        bytes32[] memory publicInput = proofAndPublicInputStorage.publicInput;
 
         /// @dev - Decode publicInput, which is stored in the (mapping) storage.
         DataTypes.HealthDataDecoded memory healthDataDecoded = _decodePublicInput(_attestationId);
 
         /// @dev - Store the decoded-publicInput into the HealthDataDecodedReceived storage
-        DataTypes.HealthDataDecodedReceived storage healthDataDecodedReceivedStorage = HealthDataDecodedReceivedStorages[_attestationId];
-        //DataTypes.HealthDataDecodedReceived storage healthDataDecodedReceivedStorage = HealthDataDecodedReceivedStorages[_attestationId][medicalResearcher]; /// @dev - medicalResearcher is "msg.sender"
+        DataTypes.HealthDataDecodedReceived storage healthDataDecodedReceivedStorage = healthDataDecodedReceivedStorages[_attestationId][medicalResearcher]; /// @dev - medicalResearcher is "msg.sender"
 
         /// [TODO]: Add the event to retrieve the "healthDataDecoded" on Frontend.
 
         /// @dev - The RewardToken (in NativeToken (EDU)) would be distributed to the health data provider (i.e. Patient, Wearable Device holder)
-        if (healthDataDecoded.walletAddress != address(0)) {
-            address healthDataProvider = healthDataDecoded.walletAddress;
-            require(msg.sender == healthDataDecoded.walletAddress, "A caller (health data provider) must be the same with the walletAddress, which is included in the proof");
-            require(msg.sender == getHealthDataProviderByAttestationId(_attestationId), "A caller (health data provider) must already submited a proof and the proof must already be attested");
-                     
-            address payable rewardReceiver = payable(getHealthDataProviderByAttestationId(_attestationId));
-            //require(msg.value == rewardAmountPerSubmission, "A caller (medical researcher) must transfer the rewardAmountPerSubmission of $EDU to this platform smart contract"); 
-            //(bool success, ) = rewardReceiver.call{ value: rewardAmountPerSubmission }("");
-            //require(success, "Transfer failed.");
-
-            /// @dev - The rewards in NativeToken ($EDU) would be distributed from the RewardPool to the health data provider (i.e. Patient, Wearable Device holder)
-            rewardPool.distributeRewardInNativeToken(rewardReceiver);
-        }
+        address healthDataProvider = healthDataDecoded.walletAddress;
+        //require(msg.sender == healthDataDecoded.walletAddress, "A caller (health data provider) must be the same with the walletAddress, which is included in the proof");
+        require(msg.sender == getHealthDataProviderByAttestationId(_attestationId), "A caller (health data provider) must already submited a proof and the proof must already be attested");
+                    
+        address payable rewardReceiver = payable(getHealthDataProviderByAttestationId(_attestationId));
+        uint256 rewardAmountPerSubmission = 1 * 1e13;  /// [NOTE]: 0.00001 $EDU
+        require(msg.value == rewardAmountPerSubmission, "A caller (medical researcher) must transfer the rewardAmountPerSubmission of $EDU to this platform smart contract"); 
+        (bool success, ) = rewardReceiver.call{ value: rewardAmountPerSubmission }("");
+        require(success, "Transfer failed.");
+        //if (healthDataDecoded.walletAddress != address(0)) {
+        //    address healthDataProvider = healthDataDecoded.walletAddress;
+        //    require(msg.sender == healthDataDecoded.walletAddress, "A caller (health data provider) must be the same with the walletAddress, which is included in the proof");
+        //    require(msg.sender == getHealthDataProviderByAttestationId(_attestationId), "A caller (health data provider) must already submited a proof and the proof must already be attested");
+        //             
+        //    address payable rewardReceiver = payable(getHealthDataProviderByAttestationId(_attestationId));
+        //    uint256 rewardAmountPerSubmission = 1 * 1e13;  /// [NOTE]: 0.00001 $EDU
+        //    require(msg.value == rewardAmountPerSubmission, "A caller (medical researcher) must transfer the rewardAmountPerSubmission of $EDU to this platform smart contract"); 
+        //    (bool success, ) = rewardReceiver.call{ value: rewardAmountPerSubmission }("");
+        //    require(success, "Transfer failed.");
+        //
+        //    /// @dev - The rewards in NativeToken ($EDU) would be distributed from the RewardPool to the health data provider (i.e. Patient, Wearable Device holder)
+        //    //rewardPool.distributeRewardInNativeToken(rewardReceiver);
+        //}
     }
 
     /** 
@@ -178,9 +204,9 @@ contract HealthDataSharingExecutor {
      */
     function _decodePublicInput(uint256 _attestationId) internal view returns(DataTypes.HealthDataDecoded memory _healthDataDecoded) { /// [NOTE]: This function should be called by a medical researcher
         /// @dev - Get a publicInput (health data) from the mapping storage.
-        DataTypes.PublicInput memory publicInputStorage = getHealthData(_attestationId);
-        bytes memory proof = publicInputStorage.proof;
-        bytes32[] memory publicInput = publicInputStorage.publicInput;
+        DataTypes.ProofAndPublicInput memory proofAndPublicInputStorage = getHealthData(_attestationId);
+        bytes memory proof = proofAndPublicInputStorage.proof;
+        bytes32[] memory publicInput = proofAndPublicInputStorage.publicInput;
 
         /// @dev - Decode publicInput
         DataTypes.HealthDataDecoded memory healthDataDecoded;
@@ -219,6 +245,11 @@ contract HealthDataSharingExecutor {
         return healthDataDecoded;
     }
 
+
+    ////////////////////////////////////////
+    /// Converter functions
+    ////////////////////////////////////////
+
     /** 
      * @notice - Convert bytes32 to bytes
      */
@@ -230,6 +261,13 @@ contract HealthDataSharingExecutor {
         return result;
     }
 
+    /** 
+     * @notice - Convert bytes32 to bytes
+     */
+    function bytes32ToUint256(bytes32 data) public pure returns (uint256) {
+        return uint256(data);
+        //return Converter.bytes32ToUint256(data);
+    }
 
     /** 
      * @notice - Register functions
