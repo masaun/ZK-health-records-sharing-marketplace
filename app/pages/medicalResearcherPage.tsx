@@ -200,7 +200,7 @@ export default function MedicalResearcherPage() {
 
           <ConnectEVMWalletButton />
 
-          <h4>$EDU balance of account: { nativeTokenBalance } EDU</h4>
+          <h4>$EDU balance of account: { String(nativeTokenBalance) } EDU</h4>
 
           <button
               onClick={handleGetNativeTokenBalance}
@@ -224,9 +224,6 @@ export default function MedicalResearcherPage() {
             Get Available Attestation IDs
           </button>
 
-          <h4>Available Attestation IDs: { availableAttestationIds }</h4>
-          <h4>Available Attestation IDs: { fetchedAvailableAttestationIds }</h4>
-
           <div className={styles.resultContainer}>
             {availableAttestationIds && (
                 <p
@@ -238,7 +235,7 @@ export default function MedicalResearcherPage() {
                           : styles.resultSuccess
                     }
                 >
-                  {availableAttestationIds}
+                  {　String(availableAttestationIds) }
                 </p>
             )} 
           </div>
