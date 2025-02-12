@@ -161,8 +161,9 @@ export default function MedicalResearcherPage() {
 
           <br />
 
-          <h4>Deposit</h4>
+          {/* <h4>Deposit</h4> */}
 
+          {/*
           <button
                 type="submit"
                 //onClick={handleSubmit}
@@ -177,9 +178,10 @@ export default function MedicalResearcherPage() {
               ) : (
                   'Deposit the Entrance Fee'
               )}
-            </button>
+          </button>
+          */}
 
-          <br />
+          {/* <br /> */}
 
           <hr />
 
