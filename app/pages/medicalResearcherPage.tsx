@@ -157,6 +157,34 @@ export default function MedicalResearcherPage() {
       ? `https://testnet-explorer.zkverify.io/v0/block/${blockHash}`
       : null;
 
+  /////////////////////////////////////////////////////////////
+  /// Conditional Branches for certain "publicInput" 
+  ///////////////////////////////////////////////////////////// 
+  const genderMapping: { [key: string]: string } = {
+    "1": "Male",
+    "2": "Female",
+    "3": "Other",
+  };
+  const genderString = genderMapping[String(gender)] || "Not Revealed";
+
+  const raceTypeMapping: { [key: string]: string } = {
+    "1": "White",
+    "2": "Black",
+    "3": "Yellow",
+  };
+  const raceTypeString = raceTypeMapping[String(raceType)] || "Not Revealed";
+
+  const bloodTypeMapping: { [key: string]: string } = {
+    "1": "A",
+    "2": "B",
+    "3": "O",
+    "4": "AB"
+  };
+  const bloodTypeString = bloodTypeMapping[String(bloodType)] || "Not Revealed";
+  
+  /////////////////////////////////////////////////////////////
+  /// Render HTML
+  ///////////////////////////////////////////////////////////// 
   return (
       <div className={styles.page}>
         <div className={styles.main}>
@@ -396,21 +424,24 @@ export default function MedicalResearcherPage() {
 
             {publicInputInHealthDataReceived && (
                 <div className={styles.transactionDetails}>
-                  <p>Gender: { String(gender) != "0" ? String(gender) : 'Not Revealed' }</p>
+                  <p>Gender: { genderString }</p>                  
+                  {/* <p>Gender: { String(gender) != "0" ? String(gender) : 'Not Revealed' }</p> */}
                   {/* <p>Gender: { String(gender) || 'Not Revealed' }</p> */}
                 </div>
             )}
 
             {publicInputInHealthDataReceived && (
-                <div className={styles.transactionDetails}>                  
-                  <p>Race Type: { String(raceType) != "0" ? String(raceType) : 'Not Revealed' }</p>
+                <div className={styles.transactionDetails}>
+                  <p>Race Type: { raceTypeString }</p>
+                  {/* <p>Race Type: { String(raceType) != "0" ? String(raceType) : 'Not Revealed' }</p> */}
                   {/* <p>Race Type: { String(raceType) || 'Not Revealed' }</p> */}
                 </div>
             )}
 
             {publicInputInHealthDataReceived && (
                 <div className={styles.transactionDetails}>
-                  <p>Blood Type: { String(bloodType) != "0" ? String(bloodType) : 'Not Revealed' }</p>
+                  <p>Blood Type: { bloodTypeString }</p>
+                  {/* <p>Blood Type: { String(bloodType) != "0" ? String(bloodType) : 'Not Revealed' }</p> */}
                   {/* <p>Blood Type: { String(bloodType) || 'Not Revealed' }</p> */}
                 </div>
             )}
