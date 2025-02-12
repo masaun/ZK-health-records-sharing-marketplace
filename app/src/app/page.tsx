@@ -196,7 +196,8 @@ export default function Home() {
           <ConnectEVMWalletButton />
 
           <br></br>
-
+            
+          {/* 
           <form onSubmit={handleSubmit}>
             <h4>Product ID</h4>
             <input
@@ -399,8 +400,8 @@ export default function Home() {
               )}
             </button>
           </form>
+          */}
 
-          {/* 
           <button
               onClick={handleSubmit}
               className={`button ${styles.verifyButton}`}
@@ -412,10 +413,9 @@ export default function Home() {
                   <div className="spinner"></div>
                 </>
             ) : (
-                'Submit Proof'
+                'Submit a Health Data Proof'
             )}
-          </button> 
-          */}
+          </button>
 
           <div className={styles.resultContainer}>
             {verificationResult && (

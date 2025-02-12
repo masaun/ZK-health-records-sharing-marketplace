@@ -23,8 +23,6 @@ export function useZkVerify() {
         provider: any, /// Browser Provider, which is retrieved via ethers.js v6
         signer: any,   /// Browser Signer, which is retrieved via ethers.js v6
         account: any,        /// This is also used as a "walletAddress" 
-        productId: string,   /// Input value via UI
-        providerId: string,  /// Input value via UI
         name: string,        /// Input value via UI
         height: string,
         weight: string,
@@ -35,7 +33,6 @@ export function useZkVerify() {
         blood_pressure: string,
         heart_rate: string,
         average_hours_of_sleep: string,
-        revealProviderId: boolean,
         revealName: boolean,
         revealWalletAddress: boolean,
         revealAge: boolean,
@@ -52,8 +49,6 @@ export function useZkVerify() {
             console.log(`provider: ${JSON.stringify(provider, null, 4)}`);
             console.log(`signer: ${JSON.stringify(signer, null, 4)}`);
             console.log(`account: ${account}`);
-            console.log(`productId: ${productId}`);
-            console.log(`providerId: ${providerId}`);
             console.log(`name: ${name}`);
             console.log(`revealProviderId: ${revealProviderId}`);
             console.log(`revealName: ${revealName}`);
@@ -187,18 +182,13 @@ export function useZkVerify() {
             //const appContract = new ethers.Contract(process.env.NEXT_PUBLIC_EDU_CHAIN_APP_CONTRACT_ADDRESS, abiAppContract, wallet);
             const appContractWithSigner = appContract.connect(signer);
 
-            
             /// @dev - Call the HealthDataSharingExecutor#submitHealthData()
-            let medicalResearcherId = 1;        /// [TODO]: Replace with a dynamic value
-            let healthDataSharingRequestId = 1; /// [TODO]: Replace with a dynamic value
             // After the attestation has been posted on the EVM, send a `submitHealthData` tx
             // to the app contract, with all the necessary merkle proof details
             const txResponse = await appContractWithSigner.submitHealthData(  // @dev - HealthDataSharingExecutor#submitHealthData()
             //const txResponse = await appContract.submitHealthData(          // @dev - HealthDataSharingExecutor#submitHealthData()
                 proofData,
                 publicSignals,
-                medicalResearcherId,
-                healthDataSharingRequestId,
                 attestationId,
                 leafDigest,  /// leaf
                 merkleProof,
@@ -209,9 +199,6 @@ export function useZkVerify() {
             const { hash } = await txResponse;
             console.log(`Tx sent to EDU Chain (Testnet), tx-hash ${hash}`);
             setTxHash(hash);
-
-            /// @dev - Wait 60 seconds (2 block + 6 seconds) to wait for retrieving the "AttestationPosted" event-emitted.
-            await asyncTimeout(60000);
 
             /// @dev - Added below for retrieving the "AttestationPosted" event-emitted.
             zkvContract.on(

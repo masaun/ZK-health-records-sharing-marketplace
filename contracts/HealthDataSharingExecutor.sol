@@ -66,8 +66,6 @@ contract HealthDataSharingExecutor {
     function submitHealthData(
         bytes calldata proof, 
         bytes32[] calldata publicInput, 
-        uint256 medicalResearcherId, 
-        uint256 healthDataSharingRequestId,
         /// @dev - The parameters below are for the zkVerifyAttestation# verifyProofAttestation()
         uint256 _attestationId,
         bytes32 _leaf,
