@@ -8,7 +8,7 @@ library DataTypes {
     /////////////////////////////////////////////////////////
     /// zkVerify and ZK circuit (in Noir) related sturcts ///
     /////////////////////////////////////////////////////////
-    struct PublicInput {
+    struct ProofAndPublicInput {
         bytes proof;
         bytes32[] publicInput;
     }

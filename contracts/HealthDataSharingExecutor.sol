@@ -27,7 +27,7 @@ contract HealthDataSharingExecutor {
 
     mapping (address => uint256) public healthDataProviders;
     mapping (uint256 => address) public healthDataProviderWithAttestationIds;
-    mapping (uint256 => DataTypes.PublicInput) public publicInputStorages; /// [Key]: attestationId (uint256)
+    mapping (uint256 => DataTypes.ProofAndPublicInput) public proofAndPublicInputStorages; /// [Key]: attestationId (uint256)
     mapping (uint256 => mapping(address => DataTypes.HealthDataDecodedReceived)) public healthDataDecodedReceivedStorages;      /// [Key]: attestationId (uint256)
     //mapping (uint256 => DataTypes.HealthDataDecodedReceived) public healthDataDecodedReceivedStorages;  /// [Key]: attestationId (uint256)
 
@@ -91,9 +91,9 @@ contract HealthDataSharingExecutor {
         //require(publicInput.length == healthDataSharingVerifierRequestor.getHealthDataSharingVerifierRequest(medicalResearcherId, healthDataSharingVerifierRequestId), "Invalid number of public inputs");
 
         /// @dev - Store the publicInput (health data) to be shared into the mapping storage (= publicInputStorages[_attestationId]).
-        DataTypes.PublicInput storage publicInputStorage = publicInputStorages[_attestationId];
-        publicInputStorage.proof = proof;
-        publicInputStorage.publicInput = publicInput;
+        DataTypes.ProofAndPublicInput storage proofAndPublicInputStorage = proofAndPublicInputStorages[_attestationId];
+        proofAndPublicInputStorage.proof = proof;
+        proofAndPublicInputStorage.publicInput = publicInput;
     }
 
     /**
@@ -128,9 +128,9 @@ contract HealthDataSharingExecutor {
     /**
      * @dev - Get a publicInput (health data) from the mapping storage.
      */
-    function getHealthData(uint256 _attestationId) public view returns(DataTypes.PublicInput memory publicInputStorage) {
-        DataTypes.PublicInput memory publicInputStorage = publicInputStorages[_attestationId];
-        return publicInputStorage;
+    function getHealthData(uint256 _attestationId) public view returns(DataTypes.ProofAndPublicInput memory proofAndPublicInputStorage) {
+        DataTypes.ProofAndPublicInput memory proofAndPublicInputStorage = proofAndPublicInputStorages[_attestationId];
+        return proofAndPublicInputStorage;
     }  
 
     /**
@@ -144,16 +144,15 @@ contract HealthDataSharingExecutor {
         address medicalResearcher = msg.sender; /// @dev - This caller should be a medical researcher
 
         /// @dev - Get a publicInput (health data) from the mapping storage.
-        DataTypes.PublicInput memory publicInputStorage = getHealthData(_attestationId);
-        bytes memory proof = publicInputStorage.proof;
-        bytes32[] memory publicInput = publicInputStorage.publicInput;
+        DataTypes.ProofAndPublicInput memory proofAndPublicInputStorage = getHealthData(_attestationId);
+        bytes memory proof = proofAndPublicInputStorage.proof;
+        bytes32[] memory publicInput = proofAndPublicInputStorage.publicInput;
 
         /// @dev - Decode publicInput, which is stored in the (mapping) storage.
         DataTypes.HealthDataDecoded memory healthDataDecoded = _decodePublicInput(_attestationId);
 
         /// @dev - Store the decoded-publicInput into the HealthDataDecodedReceived storage
         DataTypes.HealthDataDecodedReceived storage healthDataDecodedReceivedStorage = healthDataDecodedReceivedStorages[_attestationId][medicalResearcher]; /// @dev - medicalResearcher is "msg.sender"
-        //DataTypes.HealthDataDecodedReceived storage healthDataDecodedReceivedStorage = healthDataDecodedReceivedStorages[_attestationId];
 
         /// [TODO]: Add the event to retrieve the "healthDataDecoded" on Frontend.
 
@@ -188,9 +187,9 @@ contract HealthDataSharingExecutor {
      */
     function _decodePublicInput(uint256 _attestationId) internal view returns(DataTypes.HealthDataDecoded memory _healthDataDecoded) { /// [NOTE]: This function should be called by a medical researcher
         /// @dev - Get a publicInput (health data) from the mapping storage.
-        DataTypes.PublicInput memory publicInputStorage = getHealthData(_attestationId);
-        bytes memory proof = publicInputStorage.proof;
-        bytes32[] memory publicInput = publicInputStorage.publicInput;
+        DataTypes.ProofAndPublicInput memory proofAndPublicInputStorage = getHealthData(_attestationId);
+        bytes memory proof = proofAndPublicInputStorage.proof;
+        bytes32[] memory publicInput = proofAndPublicInputStorage.publicInput;
 
         /// @dev - Decode publicInput
         DataTypes.HealthDataDecoded memory healthDataDecoded;
