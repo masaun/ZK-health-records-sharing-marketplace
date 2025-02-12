@@ -4,6 +4,7 @@ import ConnectEVMWalletButton from '../src/components/ConnectEVMWalletButton';
 import { useConnectEVMWallet } from '../src/hooks/useConnectEVMWallet';
 import { useGetBalance } from '../src/hooks/useGetBalance';
 import { useReceiveHealthData } from '../src/hooks/useReceiveHealthData';
+import { useGetHealthDataDecodedReceived } from '../src/hooks/useGetHealthDataDecodedReceived';
 import { useGetAvailableAttestationIds } from '../src/hooks/useGetAvailableAttestationIds';
 import styles from './page.module.css';
 //import styles from '../src/app/page.module.css';
@@ -22,6 +23,7 @@ export default function MedicalResearcherPage() {
   const { connectEVMWallet, provider, signer, account, walletConnected } = useConnectEVMWallet();  /// @dev - Connect to an EVM wallet (i.e. MetaMask)
   const { onGetNativeTokenBalance, nativeTokenBalance } = useGetBalance();
   const { onReceiveHealthData, status, error, txHash, healthDataDecodedReceived } = useReceiveHealthData();
+  const { _healthDataDecodedReceived, onGetHealthDataDecodedReceived } = useGetHealthDataDecodedReceived();
   const { onGetAvailableAttestationIds, availableAttestationIds } = useGetAvailableAttestationIds();
   const [fetchedAvailableAttestationIds, setFetchedAvailableAttestationIds] = useState<string | null>(null);
 
@@ -30,6 +32,7 @@ export default function MedicalResearcherPage() {
   /// Input form
   /////////////////////////////////////////////////////////////
   const [inputAttestationIdValue, setInputAttestationIdValue] = useState('');
+  const [inputAttestationIdValueForGetHealthDataDecodedReceived, setInputAttestationIdValueForGetHealthDataDecodedReceived] = useState('');
 
   
   /////////////////////////////////////////////////////////////
@@ -69,6 +72,21 @@ export default function MedicalResearcherPage() {
     try {
       await onGetNativeTokenBalance(provider, signer, account);
       console.log(`nativeTokenBalance: ${ nativeTokenBalance } EDU`);
+    } catch (error) {
+      setVerificationResult(`Error: ${(error as Error).message}`);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleGetHealthDataDecodedReceived = async () => {
+    /// @dev - Retrieve the input values from the input form
+    event.preventDefault();
+    console.log('Input AttestationId Value (for GetHealthDataDecodedReceived):', inputAttestationIdValueForGetHealthDataDecodedReceived);
+
+    try {
+      await onGetHealthDataDecodedReceived(provider, signer, account, inputAttestationIdValueForGetHealthDataDecodedReceived);
+      console.log(`_healthDataDecodedReceived (on the MR page): ${ _healthDataDecodedReceived }`);
     } catch (error) {
       setVerificationResult(`Error: ${(error as Error).message}`);
     } finally {
@@ -293,6 +311,43 @@ export default function MedicalResearcherPage() {
             {txHash && (
                 <div className={styles.transactionDetails}>
                   <p>Tx Hash-sent to EDU Chain: {txHash || 'N/A'}</p>
+                </div>
+            )}  
+          </div>
+
+          <br />
+
+          <form onSubmit={handleGetHealthDataDecodedReceived}>
+            <h4>Attestation ID</h4>
+            <input
+              type="text"
+              value={inputAttestationIdValueForGetHealthDataDecodedReceived}
+              onChange={(e) => setInputAttestationIdValueForGetHealthDataDecodedReceived(e.target.value)}
+            />
+
+            <br />
+
+            <button
+                type="submit"
+                //onClick={handleSubmit}
+                className={`button ${styles.verifyButton}`}
+                disabled={!account || loading}
+            >
+              {loading ? (
+                  <>
+                    Submitting...
+                    <div className="spinner"></div>
+                  </>
+              ) : (
+                  'Receive decoded-attested Health Data'
+              )}
+            </button>
+          </form>
+
+          <div className={styles.resultContainer}>
+            {_healthDataDecodedReceived && (
+                <div className={styles.transactionDetails}>
+                  <p>Decoded-Attested Health Data: { _healthDataDecodedReceived || 'N/A' }</p>
                 </div>
             )} 
           </div>
