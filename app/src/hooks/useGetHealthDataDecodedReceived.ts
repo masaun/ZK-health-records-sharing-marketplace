@@ -51,7 +51,8 @@ export function useGetHealthDataDecodedReceived() {
 
             /// @dev - Retrieve the publicInput (before decoded)
             const publicInputInHealthDataReceived = await healthDataSharingExecutorContract.getPublicInputInHealthData(attestationId);
-            console.log(`publicInputInHealthDataReceived ("publicInput" before decoded): ${ publicInputInHealthDataReceived }`); /// [Result]: Successful to retrieve the publicInput before decoded (in bytes).
+            console.log(`publicInputInHealthDataReceived ("publicInput" before decoded): ${ publicInputInHealthDataReceived }`);
+            console.log(`publicInputInHealthDataReceived[0] ("publicInput" before decoded): ${ publicInputInHealthDataReceived[0] }`);
         } catch (error: unknown) {
             const errorMessage = (error as Error).message;
             setError(errorMessage);
