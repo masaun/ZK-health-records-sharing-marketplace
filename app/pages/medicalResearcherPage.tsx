@@ -2,6 +2,7 @@
 import { useState, useRef, useEffect } from 'react';
 import ConnectEVMWalletButton from '../src/components/ConnectEVMWalletButton';
 import { useConnectEVMWallet } from '../src/hooks/useConnectEVMWallet';
+import { useGetBalance } from '../src/hooks/useGetBalance';
 import { useReceiveHealthData } from '../src/hooks/useReceiveHealthData';
 import { useGetAvailableAttestationIds } from '../src/hooks/useGetAvailableAttestationIds';
 import styles from './page.module.css';
@@ -19,6 +20,7 @@ export default function MedicalResearcherPage() {
   const [blockHash, setBlockHash] = useState<string | null>(null);
   const walletButtonRef = useRef<ConnectWalletButtonHandle | null>(null);
   const { connectEVMWallet, provider, signer, account, walletConnected } = useConnectEVMWallet();  /// @dev - Connect to an EVM wallet (i.e. MetaMask)
+  const { onGetNativeTokenBalance, nativeTokenBalance } = useGetBalance();
   const { onReceiveHealthData, status, eventData, txHash, error } = useReceiveHealthData();
   const { onGetAvailableAttestationIds, availableAttestationIds } = useGetAvailableAttestationIds();
 
@@ -61,6 +63,16 @@ export default function MedicalResearcherPage() {
     }
   };
 
+  const handleGetNativeTokenBalance = async () => {
+    try {
+      const _nativeTokenBalance = await onGetNativeTokenBalance(account);
+      console.log(`_nativeTokenBalance of account: ${ _nativeTokenBalance }`);
+    } catch (error) {
+      setVerificationResult(`Error: ${(error as Error).message}`);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const handleGetAvailableAttestationIds = async () => {
     try {
@@ -72,8 +84,6 @@ export default function MedicalResearcherPage() {
       setLoading(false);
     }
   };
-
-
 
   useEffect(() => {
     if (error) {
@@ -93,6 +103,16 @@ export default function MedicalResearcherPage() {
       connectEVMWallet(); /// @dev - Connetct an EVM wallet (i.e. MetaMask)
     }
 
+    if (!nativeTokenBalance) {
+      const fetchAttestationIds = async () => {
+        try {  
+          await onGetNativeTokenBalance(account); /// @dev - Get $EDU balance of a given account
+        } catch (error) {
+          console.error('Error fetching $EDU balance of a given account:', error);
+        }
+      };
+    }
+  
     if (!availableAttestationIds) {
       const fetchAttestationIds = async () => {
         try {  
@@ -129,6 +149,15 @@ export default function MedicalResearcherPage() {
           <br />
 
           <ConnectEVMWalletButton />
+
+          <h4>$EDU balance of account: { nativeTokenBalance }</h4>
+
+          <button
+              onClick={handleGetNativeTokenBalance}
+              className={`button ${styles.verifyButton}`}
+          >
+            Get $EDU balance of account
+          </button>
 
           <br />
 
