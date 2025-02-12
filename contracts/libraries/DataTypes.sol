@@ -13,6 +13,10 @@ library DataTypes {
         bytes32[] publicInput;
     }
 
+    struct PublicInput { /// @dev - Only publicInput is stored into here.
+        bytes32[] publicInput;
+    }
+
     /// @dev - Decode publicInput, which is stored in the (mapping) storage.
     struct HealthDataDecoded {
         uint64 productId;

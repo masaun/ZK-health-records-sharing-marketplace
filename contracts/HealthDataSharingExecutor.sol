@@ -28,6 +28,7 @@ contract HealthDataSharingExecutor {
     mapping (address => uint256) public healthDataProviders;
     mapping (uint256 => address) public healthDataProviderWithAttestationIds;
     mapping (uint256 => DataTypes.ProofAndPublicInput) public proofAndPublicInputStorages; /// [Key]: attestationId (uint256)
+    mapping (uint256 => DataTypes.PublicInput) internal publicInputStorages;                 /// [Key]: attestationId (uint256)
     mapping (uint256 => mapping(address => DataTypes.HealthDataDecodedReceived)) public healthDataDecodedReceivedStorages;      /// [Key]: attestationId (uint256)
     //mapping (uint256 => DataTypes.HealthDataDecodedReceived) public healthDataDecodedReceivedStorages;  /// [Key]: attestationId (uint256)
 
@@ -90,9 +91,13 @@ contract HealthDataSharingExecutor {
         /// @dev - Check whether or not a given number of public inputs is equal to the number of items, which was requested by a Medical Researcher.
         //require(publicInput.length == healthDataSharingVerifierRequestor.getHealthDataSharingVerifierRequest(medicalResearcherId, healthDataSharingVerifierRequestId), "Invalid number of public inputs");
 
-        /// @dev - Store the publicInput (health data) to be shared into the mapping storage (= publicInputStorages[_attestationId]).
+        /// @dev - Store both the "proof" and "publicInput" (health data) to be shared into the mapping storage (= proofAndPublicInputStorages[_attestationId]).
         DataTypes.ProofAndPublicInput storage proofAndPublicInputStorage = proofAndPublicInputStorages[_attestationId];
         proofAndPublicInputStorage.proof = proof;
+        proofAndPublicInputStorage.publicInput = publicInput;
+
+        /// @dev - Store only "publicInput" (health data) to be shared into the mapping storage (= publicInputStorages[_attestationId]).
+        DataTypes.PublicInput storage publicInputStorage = publicInputStorages[_attestationId];
         proofAndPublicInputStorage.publicInput = publicInput;
     }
 
@@ -131,7 +136,15 @@ contract HealthDataSharingExecutor {
     function getHealthData(uint256 _attestationId) public view returns(DataTypes.ProofAndPublicInput memory proofAndPublicInputStorage) {
         DataTypes.ProofAndPublicInput memory proofAndPublicInputStorage = proofAndPublicInputStorages[_attestationId];
         return proofAndPublicInputStorage;
-    }  
+    }
+
+    /**
+     * @dev - Get a publicInput (health data) from the mapping storage.
+     */
+    function getPublicInputInHealthData(uint256 _attestationId) public view returns(DataTypes.PublicInput memory publicInputStorage) {
+        DataTypes.PublicInput memory publicInputStorage = publicInputStorages[_attestationId];
+        return publicInputStorage;
+    }
 
     /**
      * @dev - [New design]: A medical researcher, who deposited the entrance fees into the RewardPool, can call this function to retrieve a given "attestationId" of health data (which is provided by a health data provider).
