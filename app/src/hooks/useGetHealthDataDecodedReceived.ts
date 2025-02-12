@@ -31,8 +31,9 @@ export function useGetHealthDataDecodedReceived() {
                 "function getAvailableAttestationIds() public view returns(uint256[] memory _availableAttestationIds)",
                 "function getHealthDataDecodedReceived(uint256 _attestationId) public view returns (tuple(uint256 id, string data))",
                 "function getHealthData(uint256 _attestationId) public view returns(tuple(bytes proof, bytes32[] publicInput))",
-                "function getPublicInputInHealthData(uint256 _attestationId) public view returns(bytes32[] memory _publicInput)"
-                //"function getPublicInputInHealthData(uint256 _attestationId) public view returns(tuple(bytes32[] publicInput))"
+                "function getPublicInputInHealthData(uint256 _attestationId) public view returns(bytes32[] memory _publicInput)",
+                //"function getPublicInputInHealthData(uint256 _attestationId) public view returns(tuple(bytes32[] publicInput))",
+                "function bytes32ToUint256(bytes32 data) public pure returns (uint256)"
             ];
 
             const healthDataSharingExecutorContract = new Contract(process.env.NEXT_PUBLIC_EDU_CHAIN_HEALTH_DATA_SHARING_EXECUTOR_CONTRACT_ADDRESS, abiHealthDataSharingExecutorContract, provider);
@@ -59,6 +60,9 @@ export function useGetHealthDataDecodedReceived() {
             const bytes = ethers.getBytes(publicInputInHealthDataReceived[0]);
             console.log(`Converted bytes: ${bytes}`);
             console.log(`typeof - Converted bytes: ${typeof bytes}`); /// [Result]: String
+            const uint256Value = await healthDataSharingExecutorContract.bytes32ToUint256(bytes);
+            console.log(`uint256Value: ${uint256Value}`);
+            console.log(`typeof - uint256Value: ${typeof uint256Value}`); /// [Result]: Number
         } catch (error: unknown) {
             const errorMessage = (error as Error).message;
             setError(errorMessage);

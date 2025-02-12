@@ -8,7 +8,9 @@ import { HealthDataSharingVerifier } from "./circuits/HealthDataSharingVerifier.
 import { HealthDataSharingRequester } from "./HealthDataSharingRequester.sol";
 
 import { RewardPool } from "./rewards/RewardPool.sol";
+
 import { DataTypes } from "./libraries/DataTypes.sol";
+import { Converter } from "./libraries/Converter.sol";
 
 
 /** 
@@ -243,6 +245,11 @@ contract HealthDataSharingExecutor {
         return healthDataDecoded;
     }
 
+
+    ////////////////////////////////////////
+    /// Converter functions
+    ////////////////////////////////////////
+
     /** 
      * @notice - Convert bytes32 to bytes
      */
@@ -254,6 +261,13 @@ contract HealthDataSharingExecutor {
         return result;
     }
 
+    /** 
+     * @notice - Convert bytes32 to bytes
+     */
+    function bytes32ToUint256(bytes32 data) public pure returns (uint256) {
+        return uint256(data);
+        //return Converter.bytes32ToUint256(data);
+    }
 
     /** 
      * @notice - Register functions
