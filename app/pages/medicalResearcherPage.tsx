@@ -359,7 +359,8 @@ export default function MedicalResearcherPage() {
 
             {publicInputInHealthDataReceived && (
                 <div className={styles.transactionDetails}>
-                  <p>Name: { String(name) || 'Not Revealed' }</p>
+                  <p>Name: { String(name) != "0" ? String(name) : 'Not Revealed' }</p>
+                  {/* <p>Name: { String(name) || 'Not Revealed' }</p> */}
                 </div>
             )}
 
