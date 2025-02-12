@@ -13,6 +13,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 
 import { ethers, BrowserProvider, Contract } from 'ethers';
+import { stringify } from 'querystring';
 
 
 export default function MedicalResearcherPage() {
@@ -346,12 +347,10 @@ export default function MedicalResearcherPage() {
             </button>
           </form>
 
-          <p>Product ID: { productId || 'N/A' }</p>
-
           <div className={styles.resultContainer}>
             {productId && (
                 <div className={styles.transactionDetails}>
-                  <p>Product ID: { productId || 'N/A' }</p>
+                  <p>Product ID: { String(productId) || 'N/A' }</p>
                 </div>
             )}
           </div>
