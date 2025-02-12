@@ -30,11 +30,11 @@ contract DeploymentAllContracts is Script {
 
     UltraVerifier public verifier;
     HealthDataSharingVerifier public healthDataSharingVerifier;
-    HealthDataSharingRequester public healthDataSharingRequester;
+    //HealthDataSharingRequester public healthDataSharingRequester;
     HealthDataSharingExecutor public healthDataSharingExecutor;
-    RewardPoolFactory public rewardPoolFactory;
-    RewardPool public rewardPool;
-    MockRewardToken public rewardToken;
+    //RewardPoolFactory public rewardPoolFactory;
+    //RewardPool public rewardPool;
+    //MockRewardToken public rewardToken;
 
     /// @dev - Deployed-SC address on EDU Chain
     address _zkVerifyAttestation = 0x147AD899D1773f5De5e064C33088b58c7acb7acf; /// @dev - Source: https://docs.zkverify.io/relevant_links#zkverify-links
@@ -49,36 +49,37 @@ contract DeploymentAllContracts is Script {
         //vm.startBroadcast(deployerPrivateKey);
 
         vm.startBroadcast();
-        rewardPoolFactory = new RewardPoolFactory();
-        rewardToken = new MockRewardToken();
+        //rewardPoolFactory = new RewardPoolFactory();
+        //rewardToken = new MockRewardToken();
 
         /// @dev - Create new RwardPool contract
-        uint256 rewardAmountPerSubmission = 5 * 1e18; /// @dev - 5 RewardToken
-        rewardPool = rewardPoolFactory.createNewRewardPool(rewardToken, rewardAmountPerSubmission);
+        //uint256 rewardAmountPerSubmission = 5 * 1e18; /// @dev - 5 RewardToken
+        //rewardPool = rewardPoolFactory.createNewRewardPool(rewardToken, rewardAmountPerSubmission);
 
         zkVerifyAttestation = IZkVerifyAttestation(_zkVerifyAttestation); /// @dev - The ZkVerifyAttestation contract-deployed on EDU Chain
         verifier = new UltraVerifier();
         healthDataSharingVerifier = new HealthDataSharingVerifier(verifier);
-        healthDataSharingRequester = new HealthDataSharingRequester(healthDataSharingVerifier);
-        healthDataSharingExecutor = new HealthDataSharingExecutor(zkVerifyAttestation, healthDataSharingVerifier, healthDataSharingRequester, rewardPool);
+        //healthDataSharingRequester = new HealthDataSharingRequester(healthDataSharingVerifier);
+        healthDataSharingExecutor = new HealthDataSharingExecutor(zkVerifyAttestation, healthDataSharingVerifier);
+        //healthDataSharingExecutor = new HealthDataSharingExecutor(zkVerifyAttestation, healthDataSharingVerifier, healthDataSharingRequester, rewardPool);
 
         vm.stopBroadcast();
 
         /// @dev - Logs of the deployed-contracts on EDU Chain (testnet)
         console.logString("Logs of the deployed-contracts on EDU Chain (testnet)");
         console.logString("\n");
-        console.log("%s: %s", "RewardPoolFactory SC", address(rewardPoolFactory));
-        console.logString("\n");
-        console.log("%s: %s", "RewardPool SC", address(rewardPool));
-        console.logString("\n");
+        //console.log("%s: %s", "RewardPoolFactory SC", address(rewardPoolFactory));
+        //console.logString("\n");
+        //console.log("%s: %s", "RewardPool SC", address(rewardPool));
+        //console.logString("\n");
         console.log("%s: %s", "ZkVerifyAttestation SC (on EDU Chain's testnet)", address(zkVerifyAttestation));
         console.logString("\n");
         console.log("%s: %s", "UltraVerifier SC", address(verifier));
         console.logString("\n");
         console.log("%s: %s", "HealthDataSharingVerifier SC", address(healthDataSharingVerifier));
         console.logString("\n");
-        console.log("%s: %s", "HealthDataSharingRequester SC", address(healthDataSharingRequester));
-        console.logString("\n");
+        //console.log("%s: %s", "HealthDataSharingRequester SC", address(healthDataSharingRequester));
+        //console.logString("\n");
         console.log("%s: %s", "HealthDataSharingExecutor SC", address(healthDataSharingExecutor));
         console.logString("\n");
     }
@@ -86,9 +87,21 @@ contract DeploymentAllContracts is Script {
 
 
 
-////////////////////////////
-/// CLI (icl. SC sources)
-////////////////////////////
+/////////////////////////////////////////
+/// CLI (icl. SC sources) - New version
+//////////////////////////////////////
+
+// forge script script/DeploymentAllContracts.s.sol --broadcast --private-key <EDU_CHAIN_PRIVATE_KEY> \
+//     ./contracts/zkv-attestation-contracts/interfaces/IZkVerifyAttestation.sol:ZkVerifyAttestation \
+//     ./circuits/target/contract.sol:UltraVerifier \
+//     ./contracts/circuits/HealthDataSharingVerifier.sol:HealthDataSharingVerifier \
+//     ./contracts/HealthDataSharingExecutor.sol:HealthDataSharingExecutor --skip-simulation
+
+
+
+/////////////////////////////////////////
+/// CLI (icl. SC sources) - Old version
+//////////////////////////////////////
 
 // forge script script/DeploymentAllContracts.s.sol --broadcast --private-key <EDU_CHAIN_PRIVATE_KEY> \
 //     ./contracts/zkv-attestation-contracts/interfaces/IZkVerifyAttestation.sol:ZkVerifyAttestation \
