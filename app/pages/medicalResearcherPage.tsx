@@ -347,13 +347,15 @@ export default function MedicalResearcherPage() {
           <div className={styles.resultContainer}>
             {publicInputInHealthDataReceived && (
                 <div className={styles.transactionDetails}>
-                  <p>Product ID: { String(productId) || 'Not Revealed' }</p>
+                  <p>Product ID: { String(productId) != "0" ? String(productId) : 'Not Revealed' }</p>
+                  {/* <p>Product ID: { String(productId) || 'Not Revealed' }</p> */}
                 </div>
             )}
 
             {publicInputInHealthDataReceived && (
                 <div className={styles.transactionDetails}>
-                  <p>Provider ID: { String(providerId) || 'Not Revealed' }</p>
+                  <p>Provider ID: { String(providerId) != "0" ? String(providerId) : 'Not Revealed' }</p>
+                  {/* <p>Provider ID: { String(providerId) || 'Not Revealed' }</p> */}
                 </div>
             )}
 
@@ -366,61 +368,71 @@ export default function MedicalResearcherPage() {
 
             {publicInputInHealthDataReceived && (
                 <div className={styles.transactionDetails}>
-                  <p>Wallet Address: { String(walletAddress) || 'Not Revealed' }</p>
+                  <p>Wallet Address: { String(walletAddress) != "0" ? String(walletAddress) : 'Not Revealed' }</p>
+                  {/* <p>Wallet Address: { String(walletAddress) || 'Not Revealed' }</p> */}
                 </div>
             )}
 
             {publicInputInHealthDataReceived && (
                 <div className={styles.transactionDetails}>
-                  <p>Height: { String(height) || 'Not Revealed' }</p>
+                  <p>Height: { String(height) != "0" ? String(height) : 'Not Revealed' }</p>
+                  {/* <p>Height: { String(height) || 'Not Revealed' }</p> */}
                 </div>
             )}
 
             {publicInputInHealthDataReceived && (
                 <div className={styles.transactionDetails}>
-                  <p>Weight: { String(weight) || 'Not Revealed' }</p>
+                  <p>Weight: { String(weight) != "0" ? String(weight) : 'Not Revealed' }</p>
+                  {/* <p>Weight: { String(weight) || 'Not Revealed' }</p> */}
                 </div>
             )}
 
             {publicInputInHealthDataReceived && (
                 <div className={styles.transactionDetails}>
-                  <p>Age: { String(age) || 'Not Revealed' }</p>
+                  <p>Age: { String(age) != "0" ? String(age) : 'Not Revealed' }</p>
+                  {/* <p>Age: { String(age) || 'Not Revealed' }</p> */}
                 </div>
             )}
 
             {publicInputInHealthDataReceived && (
                 <div className={styles.transactionDetails}>
-                  <p>Gender: { String(gender) || 'Not Revealed' }</p>
+                  <p>Gender: { String(gender) != "0" ? String(gender) : 'Not Revealed' }</p>
+                  {/* <p>Gender: { String(gender) || 'Not Revealed' }</p> */}
+                </div>
+            )}
+
+            {publicInputInHealthDataReceived && (
+                <div className={styles.transactionDetails}>                  
+                  <p>Race Type: { String(raceType) != "0" ? String(raceType) : 'Not Revealed' }</p>
+                  {/* <p>Race Type: { String(raceType) || 'Not Revealed' }</p> */}
                 </div>
             )}
 
             {publicInputInHealthDataReceived && (
                 <div className={styles.transactionDetails}>
-                  <p>Race Type: { String(raceType) || 'Not Revealed' }</p>
+                  <p>Blood Type: { String(bloodType) != "0" ? String(bloodType) : 'Not Revealed' }</p>
+                  {/* <p>Blood Type: { String(bloodType) || 'Not Revealed' }</p> */}
                 </div>
             )}
 
             {publicInputInHealthDataReceived && (
                 <div className={styles.transactionDetails}>
-                  <p>Blood Type: { String(bloodType) || 'Not Revealed' }</p>
+                  <p>Blood Pressure: { String(bloodPressure) != "0" ? String(bloodPressure) : 'Not Revealed' }</p>
+                  {/* <p>Blood Pressure: { String(bloodPressure) || 'Not Revealed' }</p> */}
                 </div>
             )}
 
             {publicInputInHealthDataReceived && (
                 <div className={styles.transactionDetails}>
-                  <p>Blood Pressure: { String(bloodPressure) || 'Not Revealed' }</p>
+                  <p>Heart Rate: { String(heartRate) != "0" ? String(heartRate) : 'Not Revealed' }</p>
+                  {/* <p>Heart Rate: { String(heartRate) || 'Not Revealed' }</p> */}
                 </div>
             )}
 
             {publicInputInHealthDataReceived && (
                 <div className={styles.transactionDetails}>
-                  <p>Heart Rate: { String(heartRate) || 'Not Revealed' }</p>
-                </div>
-            )}
-
-            {publicInputInHealthDataReceived && (
-                <div className={styles.transactionDetails}>
-                  <p>Average Hours Of Sleep: { String(averageHoursOfSleep) || 'Not Revealed' }</p>
+                  <p>Average Hours Of Sleep: { String(averageHoursOfSleep) != "0" ? String(averageHoursOfSleep) : 'Not Revealed' }</p>
+                  {/* <p>Average Hours Of Sleep: { String(averageHoursOfSleep) || 'Not Revealed' }</p> */}
                 </div>
             )}
           </div>
