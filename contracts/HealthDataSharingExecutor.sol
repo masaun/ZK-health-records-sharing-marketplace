@@ -28,8 +28,8 @@ contract HealthDataSharingExecutor {
     mapping (address => uint256) public healthDataProviders;
     mapping (uint256 => address) public healthDataProviderWithAttestationIds;
     mapping (uint256 => DataTypes.PublicInput) public publicInputStorages; /// [Key]: attestationId (uint256)
-    mapping (uint256 => DataTypes.HealthDataDecodedReceived) public HealthDataDecodedReceivedStorages;  /// [Key]: attestationId (uint256)
-    //mapping (uint256 => mapping(address => DataTypes.HealthDataDecodedReceived)) public HealthDataDecodedReceivedStorages;      /// [Key]: attestationId (uint256)
+    mapping (uint256 => mapping(address => DataTypes.HealthDataDecodedReceived)) public healthDataDecodedReceivedStorages;      /// [Key]: attestationId (uint256)
+    //mapping (uint256 => DataTypes.HealthDataDecodedReceived) public healthDataDecodedReceivedStorages;  /// [Key]: attestationId (uint256)
 
     modifier onlyHealthDataProvider() {
         require(healthDataProviders[msg.sender] > 0, "Not registered as a health data provider");
@@ -118,11 +118,11 @@ contract HealthDataSharingExecutor {
         address medicalResearcher = msg.sender;
         
         /// @dev - Validate whether or not a medicalResearcher (= msg.sender) has already paid the entrance fee.
-        rewardPool.validateMedicalResearcherAlreadyPaidEntranceFee(medicalResearcher);
+        //rewardPool.validateMedicalResearcherAlreadyPaidEntranceFee(medicalResearcher);
 
         /// @dev - Store the decoded-publicInput into the HealthDataDecodedReceived storage
-        DataTypes.HealthDataDecodedReceived memory healthDataDecodedReceivedStorage = HealthDataDecodedReceivedStorages[_attestationId];
-        //DataTypes.HealthDataDecodedReceived memory healthDataDecodedReceivedStorage = HealthDataDecodedReceivedStorages[_attestationId][medicalResearcher]; /// @dev - medicalResearcher is "msg.sender"
+        DataTypes.HealthDataDecodedReceived memory healthDataDecodedReceivedStorage = HealthDataDecodedReceivedStorages[_attestationId][medicalResearcher]; /// @dev - medicalResearcher is "msg.sender"
+        //DataTypes.HealthDataDecodedReceived memory healthDataDecodedReceivedStorage = HealthDataDecodedReceivedStorages[_attestationId];
     }
 
     /**
@@ -152,8 +152,8 @@ contract HealthDataSharingExecutor {
         DataTypes.HealthDataDecoded memory healthDataDecoded = _decodePublicInput(_attestationId);
 
         /// @dev - Store the decoded-publicInput into the HealthDataDecodedReceived storage
-        DataTypes.HealthDataDecodedReceived storage healthDataDecodedReceivedStorage = HealthDataDecodedReceivedStorages[_attestationId];
-        //DataTypes.HealthDataDecodedReceived storage healthDataDecodedReceivedStorage = HealthDataDecodedReceivedStorages[_attestationId][medicalResearcher]; /// @dev - medicalResearcher is "msg.sender"
+        DataTypes.HealthDataDecodedReceived storage healthDataDecodedReceivedStorage = HealthDataDecodedReceivedStorages[_attestationId][medicalResearcher]; /// @dev - medicalResearcher is "msg.sender"
+        //DataTypes.HealthDataDecodedReceived storage healthDataDecodedReceivedStorage = HealthDataDecodedReceivedStorages[_attestationId];
 
         /// [TODO]: Add the event to retrieve the "healthDataDecoded" on Frontend.
 

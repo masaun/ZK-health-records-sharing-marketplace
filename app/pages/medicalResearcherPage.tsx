@@ -23,6 +23,8 @@ export default function MedicalResearcherPage() {
   const { onGetNativeTokenBalance, nativeTokenBalance } = useGetBalance();
   const { onReceiveHealthData, status, eventData, txHash, error } = useReceiveHealthData();
   const { onGetAvailableAttestationIds, availableAttestationIds } = useGetAvailableAttestationIds();
+  const [fetchedAvailableAttestationIds, setFetchedAvailableAttestationIds] = useState<string | null>(null);
+
 
   /////////////////////////////////////////////////////////////
   /// Input form
@@ -78,6 +80,8 @@ export default function MedicalResearcherPage() {
     try {
       await onGetAvailableAttestationIds(provider, signer, account);
       console.log(`availableAttestationIds: ${ availableAttestationIds }`);
+      setFetchedAvailableAttestationIds(availableAttestationIds);
+      console.log(`fetchedAvailableAttestationIds: ${ fetchedAvailableAttestationIds }`);
     } catch (error) {
       setVerificationResult(`Error: ${(error as Error).message}`);
     } finally {
@@ -117,6 +121,9 @@ export default function MedicalResearcherPage() {
       const fetchAttestationIds = async () => {
         try {  
           await onGetAvailableAttestationIds(provider, signer, account); /// @dev - Get availableAttestationIds
+          console.log(`availableAttestationIds: ${ availableAttestationIds }`);
+          setFetchedAvailableAttestationIds(availableAttestationIds);
+          console.log(`fetchedAvailableAttestationIds: ${ fetchedAvailableAttestationIds }`);
         } catch (error) {
           console.error('Error fetching attestation IDs:', error);
         }
@@ -146,20 +153,7 @@ export default function MedicalResearcherPage() {
             Go to the HealthData Provider Page
           </Link>
 
-          <br />
-
-          <ConnectEVMWalletButton />
-
-          <h4>$EDU balance of account: { nativeTokenBalance } EDU</h4>
-
-          <button
-              onClick={handleGetNativeTokenBalance}
-              className={`button ${styles.verifyButton}`}
-          >
-            Get $EDU balance of account
-          </button>
-
-          <br />
+          {/* <br /> */}
 
           {/* <h4>Deposit</h4> */}
 
@@ -181,7 +175,20 @@ export default function MedicalResearcherPage() {
           </button>
           */}
 
-          {/* <br /> */}
+          <br />
+
+          <ConnectEVMWalletButton />
+
+          <h4>$EDU balance of account: { nativeTokenBalance } EDU</h4>
+
+          <button
+              onClick={handleGetNativeTokenBalance}
+              className={`button ${styles.verifyButton}`}
+          >
+            Get $EDU balance of account
+          </button>
+
+          <br />
 
           <hr />
 
@@ -197,6 +204,7 @@ export default function MedicalResearcherPage() {
           </button>
 
           <h4>Available Attestation IDs: { availableAttestationIds }</h4>
+          <h4>Available Attestation IDs: { fetchedAvailableAttestationIds }</h4>
 
           <div className={styles.resultContainer}>
             {availableAttestationIds && (
