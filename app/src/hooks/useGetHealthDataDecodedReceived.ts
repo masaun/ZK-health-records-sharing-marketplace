@@ -31,7 +31,8 @@ export function useGetHealthDataDecodedReceived() {
                 "function getAvailableAttestationIds() public view returns(uint256[] memory _availableAttestationIds)",
                 "function getHealthDataDecodedReceived(uint256 _attestationId) public view returns (tuple(uint256 id, string data))",
                 "function getHealthData(uint256 _attestationId) public view returns(tuple(bytes proof, bytes32[] publicInput))",
-                "function getPublicInputInHealthData(uint256 _attestationId) public view returns(tuple(bytes32[] publicInput))"
+                "function getPublicInputInHealthData(uint256 _attestationId) public view returns(bytes32[] memory _publicInput)"
+                //"function getPublicInputInHealthData(uint256 _attestationId) public view returns(tuple(bytes32[] publicInput))"
             ];
 
             const healthDataSharingExecutorContract = new Contract(process.env.NEXT_PUBLIC_EDU_CHAIN_HEALTH_DATA_SHARING_EXECUTOR_CONTRACT_ADDRESS, abiHealthDataSharingExecutorContract, provider);
