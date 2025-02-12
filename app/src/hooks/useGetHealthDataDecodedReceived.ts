@@ -29,7 +29,8 @@ export function useGetHealthDataDecodedReceived() {
                 "function submitHealthData(bytes calldata proof, bytes32[] calldata publicInput, uint256 medicalResearcherId, uint256 healthDataSharingRequestId, uint256 _attestationId, bytes32 _leaf, bytes32[] calldata _merklePath, uint256 _leafCount, uint256 _index)",
                 "function receiveHealthData(uint256 _attestationId)",
                 "function getAvailableAttestationIds() public view returns(uint256[] memory _availableAttestationIds)",
-                "function getHealthDataDecodedReceived(uint256 _attestationId) public view returns (tuple(uint256 id, string data))"
+                "function getHealthDataDecodedReceived(uint256 _attestationId) public view returns (tuple(uint256 id, string data))",
+                "function getHealthData(uint256 _attestationId) public view returns(tuple(bytes proof, bytes32[] publicInput))"
             ];
 
             const healthDataSharingExecutorContract = new Contract(process.env.NEXT_PUBLIC_EDU_CHAIN_HEALTH_DATA_SHARING_EXECUTOR_CONTRACT_ADDRESS, abiHealthDataSharingExecutorContract, provider);
@@ -41,6 +42,10 @@ export function useGetHealthDataDecodedReceived() {
             console.log(`healthDataDecodedReceivedStorage: ${ healthDataDecodedReceivedStorage }`);
             console.log(`healthDataDecodedReceived: ${ healthDataDecodedReceived }`);
             //console.log(`healthDataDecodedReceivedStorage: ${JSON.stringify(healthDataDecodedReceivedStorage, null, 4)}`);
+
+            /// @dev - Retrieve the publicInput (before decoded)
+            const healthDataReceived = await healthDataSharingExecutorContract.getHealthData(attestationId);
+            console.log(`healthDataReceived (publicInput before decoded): ${ healthDataReceived }`); /// [Result]: Successful to retrieve the publicInput before decoded (in bytes).
         } catch (error: unknown) {
             const errorMessage = (error as Error).message;
             setError(errorMessage);
