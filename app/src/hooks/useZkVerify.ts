@@ -22,39 +22,39 @@ export function useZkVerify() {
         vk: any,
         provider: any, /// Browser Provider, which is retrieved via ethers.js v6
         signer: any,   /// Browser Signer, which is retrieved via ethers.js v6
-        account: any,        /// This is also used as a "walletAddress" 
-        name: string,        /// Input value via UI
-        height: string,
-        weight: string,
-        age: string,
-        gender: string,        // 1: "Male", 2: "Female", 3: "Other"
-        race_type: string,     // 1: "White", 2: "Black", 3: "Yello"
-        blood_type: string,    // 1: "A", 2: "B", 3: "AB", 4: "O" 
-        blood_pressure: string,
-        heart_rate: string,
-        average_hours_of_sleep: string,
-        revealName: boolean,
-        revealWalletAddress: boolean,
-        revealAge: boolean,
-        revealGender: boolean,
-        revealHeight: boolean,
-        revealWeight: boolean,
-        revealRaceType: boolean,
-        revealBloodType: boolean,
-        revealBloodPressure: boolean,
-        revealHeartRate: boolean,
-        revealAverageHoursOfSleep: boolean
+        account: any        /// This is also used as a "walletAddress" 
+        // name: string,        /// Input value via UI
+        // height: string,
+        // weight: string,
+        // age: string,
+        // gender: string,        // 1: "Male", 2: "Female", 3: "Other"
+        // race_type: string,     // 1: "White", 2: "Black", 3: "Yello"
+        // blood_type: string,    // 1: "A", 2: "B", 3: "AB", 4: "O" 
+        // blood_pressure: string,
+        // heart_rate: string,
+        // average_hours_of_sleep: string,
+        // revealName: boolean,
+        // revealWalletAddress: boolean,
+        // revealAge: boolean,
+        // revealGender: boolean,
+        // revealHeight: boolean,
+        // revealWeight: boolean,
+        // revealRaceType: boolean,
+        // revealBloodType: boolean,
+        // revealBloodPressure: boolean,
+        // revealHeartRate: boolean,
+        // revealAverageHoursOfSleep: boolean
     ): Promise<void> => {
         try {
             console.log(`provider: ${JSON.stringify(provider, null, 4)}`);
             console.log(`signer: ${JSON.stringify(signer, null, 4)}`);
             console.log(`account: ${account}`);
-            console.log(`name: ${name}`);
-            console.log(`revealProviderId: ${revealProviderId}`);
-            console.log(`revealName: ${revealName}`);
-            console.log(`revealWalletAddress: ${revealWalletAddress}`);
-            console.log(`revealAge: ${revealAge}`);
-            console.log(`revealGender: ${revealGender}`);
+            // console.log(`name: ${name}`);
+            // console.log(`revealProviderId: ${revealProviderId}`);
+            // console.log(`revealName: ${revealName}`);
+            // console.log(`revealWalletAddress: ${revealWalletAddress}`);
+            // console.log(`revealAge: ${revealAge}`);
+            // console.log(`revealGender: ${revealGender}`);
 
             if (!proof || !publicSignals || !vk) {
                 throw new Error('Proof, public signals, or verification key is missing');
