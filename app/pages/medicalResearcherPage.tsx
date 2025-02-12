@@ -23,7 +23,8 @@ export default function MedicalResearcherPage() {
   const { connectEVMWallet, provider, signer, account, walletConnected } = useConnectEVMWallet();  /// @dev - Connect to an EVM wallet (i.e. MetaMask)
   const { onGetNativeTokenBalance, nativeTokenBalance } = useGetBalance();
   const { onReceiveHealthData, status, error, txHash, healthDataDecodedReceived } = useReceiveHealthData();
-  const { _healthDataDecodedReceived, onGetHealthDataDecodedReceived } = useGetHealthDataDecodedReceived();
+  const { productId, onGetHealthDataDecodedReceived } = useGetHealthDataDecodedReceived();
+  //const { _healthDataDecodedReceived, onGetHealthDataDecodedReceived } = useGetHealthDataDecodedReceived();
   const { onGetAvailableAttestationIds, availableAttestationIds } = useGetAvailableAttestationIds();
   const [fetchedAvailableAttestationIds, setFetchedAvailableAttestationIds] = useState<string | null>(null);
 
@@ -86,7 +87,8 @@ export default function MedicalResearcherPage() {
 
     try {
       await onGetHealthDataDecodedReceived(provider, signer, account, inputAttestationIdValueForGetHealthDataDecodedReceived);
-      console.log(`_healthDataDecodedReceived (on the MR page): ${ _healthDataDecodedReceived }`);
+      console.log(`productId (on the MR page): ${ productId }`);
+      //console.log(`_healthDataDecodedReceived (on the MR page): ${ _healthDataDecodedReceived }`);
     } catch (error) {
       setVerificationResult(`Error: ${(error as Error).message}`);
     } finally {
@@ -313,12 +315,6 @@ export default function MedicalResearcherPage() {
                   <p>Tx Hash-sent to EDU Chain: {txHash || 'N/A'}</p>
                 </div>
             )}
-
-            {healthDataDecodedReceived && (
-                <div className={styles.transactionDetails}>
-                  <p>Decoded-Attested Health Data: { healthDataDecodedReceived || 'N/A' }</p>
-                </div>
-            )}
           </div>
 
           <br />
@@ -350,14 +346,15 @@ export default function MedicalResearcherPage() {
             </button>
           </form>
 
-          <div className={styles.resultContainer}>
-            {_healthDataDecodedReceived && (
-                <div className={styles.transactionDetails}>
-                  <p>Decoded-Attested Health Data: { _healthDataDecodedReceived || 'N/A' }</p>
-                </div>
-            )} 
-          </div>
+          <p>Product ID: { productId || 'N/A' }</p>
 
+          <div className={styles.resultContainer}>
+            {productId && (
+                <div className={styles.transactionDetails}>
+                  <p>Product ID: { productId || 'N/A' }</p>
+                </div>
+            )}
+          </div>
         </div>
       </div>
   );

@@ -6,6 +6,7 @@ import { ethers, providers, Contract } from 'ethers';
 
 export function useGetHealthDataDecodedReceived() {
     const [healthDataDecodedReceived, setHealthDataDecodedReceived] = useState<any>(null);
+    const [productId, setProductId] = useState<any>(null);
     const [status, setStatus] = useState<string | null>(null);
     const [error, setError] = useState<string | null>(null);
 
@@ -57,20 +58,22 @@ export function useGetHealthDataDecodedReceived() {
             console.log(`typeof - publicInputInHealthDataReceived[0] ("publicInput" before decoded): ${ typeof publicInputInHealthDataReceived[0] }`); /// [Result]: String
 
             /// @dev - Convert string to bytes
-            const bytes = ethers.getBytes(publicInputInHealthDataReceived[0]);
-            console.log(`Converted bytes: ${bytes}`);
-            console.log(`typeof - Converted bytes: ${typeof bytes}`); /// [Result]: String
-            const uint256Value = await healthDataSharingExecutorContract.bytes32ToUint256(bytes);
-            console.log(`uint256Value: ${uint256Value}`);
-            console.log(`typeof - uint256Value: ${typeof uint256Value}`); /// [Result]: Number
+            const productIdInBytes = ethers.getBytes(publicInputInHealthDataReceived[0]);
+            console.log(`productIdBytes: ${productIdInBytes }`);
+            console.log(`typeof - Converted bytes: ${typeof productIdInBytes }`); /// [Result]: String
+            const productIdInUint = await healthDataSharingExecutorContract.bytes32ToUint256(productIdInBytes);
+            console.log(`productIdInUint: ${productIdInUint}`);
+            console.log(`typeof - productIdInUint: ${typeof productIdInUint}`); /// [Result]: BigInt
+            setProductId(productIdInUint);
         } catch (error: unknown) {
             const errorMessage = (error as Error).message;
             setError(errorMessage);
             setStatus('error'); /// @dev - This message is shown on the bottom of left on the screen (UI).
         }
     };
-
-    return { healthDataDecodedReceived, onGetHealthDataDecodedReceived };
+    
+    return { productId, onGetHealthDataDecodedReceived };
+    //return { healthDataDecodedReceived, onGetHealthDataDecodedReceived };
 }
 
 
