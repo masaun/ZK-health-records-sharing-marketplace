@@ -10,7 +10,8 @@ pub struct RevealedData {
     gender: u8,        // 1: "Male", 2: "Female", 3: "Other"
     race_type: u8,     // 1: "White", 2: "Black", 3: "Yello"
     blood_type: u8,    // 1: "A", 2: "B", 3: "AB", 4: "O" 
-    blood_pressure: u8,
+    blood_pressure_systolic: u8,
+    blood_pressure_diastolic: u8,
     heart_rate: u8,
     average_hours_of_sleep: u8
 }
@@ -27,10 +28,10 @@ fn main(
     gender: u8,        // 1: "Male", 2: "Female", 3: "Other"
     race_type: u8,     // 1: "White", 2: "Black", 3: "Yello"
     blood_type: u8,    // 1: "A", 2: "B", 3: "AB", 4: "O" 
-    blood_pressure: u8,
+    blood_pressure_systolic: u8,
+    blood_pressure_diastolic: u8,
     heart_rate: u8,
     average_hours_of_sleep: u8,
-    revealProviderId: bool,
     revealName: bool,
     revealWalletAddress: bool,
     revealAge: bool, // @dev - Boolean type is "0": False /or True: "1" in the Prover.toml
@@ -39,7 +40,8 @@ fn main(
     revealWeight: bool,
     revealRaceType: bool,
     revealBloodType: bool,
-    revealBloodPressure: bool,
+    revealBloodPressureSystolic: bool,
+    revealBloodPressureDiastolic: bool,
     revealHeartRate: bool,
     revealAverageHoursOfSleep: bool
 ) -> pub RevealedData {
@@ -52,7 +54,8 @@ fn main(
     let outputGender = if revealGender { gender } else { 0 };
     let outputRaceType = if revealRaceType { race_type } else { 0 };
     let outputBloodType = if revealBloodType { blood_type } else { 0 };
-    let outputBloodPressure = if revealBloodPressure { blood_pressure } else { 0 };
+    let outputBloodPressureSystolic = if revealBloodPressureSystolic { blood_pressure_systolic } else { 0 };
+    let outputBloodPressureDiastolic = if revealBloodPressureDiastolic { blood_pressure_diastolic } else { 0 };
     let outputHeartRate = if revealHeartRate { heart_rate } else { 0 };
     let outputAverageHoursOfSleep = if revealAverageHoursOfSleep { average_hours_of_sleep } else { 0 };
 
@@ -83,7 +86,8 @@ fn main(
         gender: outputGender,
         race_type: outputRaceType,
         blood_type: outputBloodType,
-        blood_pressure: outputBloodPressure,
+        blood_pressure_systolic: outputBloodPressureSystolic,
+        blood_pressure_diastolic: outputBloodPressureDiastolic,
         heart_rate: outputHeartRate,
         average_hours_of_sleep: outputAverageHoursOfSleep
     }
@@ -102,7 +106,8 @@ fn test_main() { // [CLI]: nargo test --show-output
     let race_type: u8 = 1;     // 1: "White", 2: "Black", 3: "Yello"
     let blood_type: u8 = 1;    // 1: "A", 2: "B", 3: "AB", 4: "O" 
     //let blood_type: [u8; 1],    // 1: "A", 2: "B", 3: "AB", 4: "O" 
-    let blood_pressure: u8 = 110;
+    let blood_pressure_systolic: u8 = 120;
+    let blood_pressure_diastolic: u8 = 80;
     let heart_rate: u8 = 75;
     let average_hours_of_sleep: u8 = 8;
     let revealProviderId: bool = true;
@@ -114,7 +119,8 @@ fn test_main() { // [CLI]: nargo test --show-output
     let revealWeight: bool = true;
     let revealRaceType: bool = true;
     let revealBloodType: bool = true;
-    let revealBloodPressure: bool = true;
+    let revealBloodPressureSystolic: bool = true;
+    let revealBloodPressureDiastolic: bool = true;
     let revealHeartRate: bool = true;
     let revealAverageHoursOfSleep: bool = true;
 
@@ -127,10 +133,10 @@ fn test_main() { // [CLI]: nargo test --show-output
         gender,
         race_type,
         blood_type, 
-        blood_pressure, 
+        blood_pressure_systolic,
+        blood_pressure_diastolic, 
         heart_rate, 
         average_hours_of_sleep,
-        revealProviderId,
         revealName,
         revealWalletAddress,
         revealAge,
@@ -139,7 +145,8 @@ fn test_main() { // [CLI]: nargo test --show-output
         revealWeight,
         revealRaceType,
         revealBloodType,
-        revealBloodPressure,
+        revealBloodPressureSystolic,
+        revealBloodPressureDiastolic,
         revealHeartRate,
         revealAverageHoursOfSleep
     );
@@ -153,8 +160,9 @@ fn test_main() { // [CLI]: nargo test --show-output
     assert(revealed_data.gender == 1, "Gender should Male (1)");
     assert(revealed_data.race_type == 1, "Race Type should 'White' (1)");
     assert(revealed_data.blood_type == 1, "Blood Type should 'A' (1)");
-    assert(revealed_data.blood_pressure == 110, "Blood Pressure should 110");
-    assert(revealed_data.heart_rate == 75, "Heart Rate should be 75");
+    assert(revealed_data.blood_pressure_systolic == 120, "Blood Pressure/Systolic should 120 mmHg");
+    assert(revealed_data.blood_pressure_diastolic == 80, "Blood Pressure/Diastolic should 80 mmHg");
+    assert(revealed_data.heart_rate == 75, "Heart Rate should be 75/h");
     assert(revealed_data.average_hours_of_sleep == 8, "Average hours of sleep should be 8 hours");
     println(revealed_data.name);
     println(revealed_data.walletAddress);
@@ -164,7 +172,8 @@ fn test_main() { // [CLI]: nargo test --show-output
     println(revealed_data.gender);
     println(revealed_data.race_type);
     println(revealed_data.blood_type);
-    println(revealed_data.blood_pressure);
+    println(revealed_data.blood_pressure_systolic);
+    println(revealed_data.blood_pressure_diastolic);
     println(revealed_data.heart_rate);
     println(revealed_data.average_hours_of_sleep);
 
