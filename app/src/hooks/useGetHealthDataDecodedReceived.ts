@@ -32,14 +32,14 @@ export function useGetHealthDataDecodedReceived() {
                 "function getHealthDataDecodedReceived(uint256 _attestationId) public view returns (tuple(uint256 id, string data))"
             ];
 
-            const zkvContract = new Contract(process.env.NEXT_PUBLIC_EDU_CHAIN_ZKVERIFY_CONTRACT_ADDRESS, abiZkvContract, provider);
             const healthDataSharingExecutorContract = new Contract(process.env.NEXT_PUBLIC_EDU_CHAIN_HEALTH_DATA_SHARING_EXECUTOR_CONTRACT_ADDRESS, abiHealthDataSharingExecutorContract, provider);
             const healthDataSharingExecutorContractWithSigner = healthDataSharingExecutorContract.connect(signer);
-            
+
             /// @dev - Retrieve the decoded publicInput
             const healthDataDecodedReceivedStorage = await healthDataSharingExecutorContract.getHealthDataDecodedReceived(attestationId);
             setHealthDataDecodedReceived(healthDataDecodedReceivedStorage);
             console.log(`healthDataDecodedReceivedStorage: ${ healthDataDecodedReceivedStorage }`);
+            console.log(`healthDataDecodedReceived: ${ healthDataDecodedReceived }`);
             //console.log(`healthDataDecodedReceivedStorage: ${JSON.stringify(healthDataDecodedReceivedStorage, null, 4)}`);
         } catch (error: unknown) {
             const errorMessage = (error as Error).message;
