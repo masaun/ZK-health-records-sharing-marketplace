@@ -24,7 +24,7 @@ export default function MedicalResearcherPage() {
   const { connectEVMWallet, provider, signer, account, walletConnected } = useConnectEVMWallet();  /// @dev - Connect to an EVM wallet (i.e. MetaMask)
   const { onGetNativeTokenBalance, nativeTokenBalance } = useGetBalance();
   const { onReceiveHealthData, status, error, txHash, healthDataDecodedReceived } = useReceiveHealthData();
-  const { productId, onGetHealthDataDecodedReceived } = useGetHealthDataDecodedReceived();
+  const { onGetHealthDataDecodedReceived, publicInputInHealthDataReceived, productId, providerId, name, walletAddress, height, weight, age, gender, raceType, bloodType, bloodPressure, heartRate, averageHoursOfSleep } = useGetHealthDataDecodedReceived();
   //const { _healthDataDecodedReceived, onGetHealthDataDecodedReceived } = useGetHealthDataDecodedReceived();
   const { onGetAvailableAttestationIds, availableAttestationIds } = useGetAvailableAttestationIds();
   const [fetchedAvailableAttestationIds, setFetchedAvailableAttestationIds] = useState<string | null>(null);
@@ -157,6 +157,34 @@ export default function MedicalResearcherPage() {
       ? `https://testnet-explorer.zkverify.io/v0/block/${blockHash}`
       : null;
 
+  /////////////////////////////////////////////////////////////
+  /// Conditional Branches for certain "publicInput" 
+  ///////////////////////////////////////////////////////////// 
+  const genderMapping: { [key: string]: string } = {
+    "1": "Male",
+    "2": "Female",
+    "3": "Other",
+  };
+  const genderString = genderMapping[String(gender)] || "Not Revealed";
+
+  const raceTypeMapping: { [key: string]: string } = {
+    "1": "White",
+    "2": "Black",
+    "3": "Yellow",
+  };
+  const raceTypeString = raceTypeMapping[String(raceType)] || "Not Revealed";
+
+  const bloodTypeMapping: { [key: string]: string } = {
+    "1": "A",
+    "2": "B",
+    "3": "O",
+    "4": "AB"
+  };
+  const bloodTypeString = bloodTypeMapping[String(bloodType)] || "Not Revealed";
+  
+  /////////////////////////////////////////////////////////////
+  /// Render HTML
+  ///////////////////////////////////////////////////////////// 
   return (
       <div className={styles.page}>
         <div className={styles.main}>
@@ -235,7 +263,7 @@ export default function MedicalResearcherPage() {
                           : styles.resultSuccess
                     }
                 >
-                  {　String(availableAttestationIds) }
+                  { String(availableAttestationIds) }
                 </p>
             )} 
           </div>
@@ -345,9 +373,97 @@ export default function MedicalResearcherPage() {
           </form>
 
           <div className={styles.resultContainer}>
-            {productId && (
+            {publicInputInHealthDataReceived && (
                 <div className={styles.transactionDetails}>
-                  <p>Product ID: { String(productId) || 'N/A' }</p>
+                  <p>Product ID: { String(productId) != "0" ? String(productId) : 'Not Revealed' }</p>
+                  {/* <p>Product ID: { String(productId) || 'Not Revealed' }</p> */}
+                </div>
+            )}
+
+            {publicInputInHealthDataReceived && (
+                <div className={styles.transactionDetails}>
+                  <p>Provider ID: { String(providerId) != "0" ? String(providerId) : 'Not Revealed' }</p>
+                  {/* <p>Provider ID: { String(providerId) || 'Not Revealed' }</p> */}
+                </div>
+            )}
+
+            {publicInputInHealthDataReceived && (
+                <div className={styles.transactionDetails}>
+                  <p>Name: { String(name) != "0" ? String(name) : 'Not Revealed' }</p>
+                  {/* <p>Name: { String(name) || 'Not Revealed' }</p> */}
+                </div>
+            )}
+
+            {publicInputInHealthDataReceived && (
+                <div className={styles.transactionDetails}>
+                  <p>Wallet Address: { String(walletAddress) != "0" ? String(walletAddress) : 'Not Revealed' }</p>
+                  {/* <p>Wallet Address: { String(walletAddress) || 'Not Revealed' }</p> */}
+                </div>
+            )}
+
+            {publicInputInHealthDataReceived && (
+                <div className={styles.transactionDetails}>
+                  <p>Height: { String(height) != "0" ? String(height) : 'Not Revealed' }</p>
+                  {/* <p>Height: { String(height) || 'Not Revealed' }</p> */}
+                </div>
+            )}
+
+            {publicInputInHealthDataReceived && (
+                <div className={styles.transactionDetails}>
+                  <p>Weight: { String(weight) != "0" ? String(weight) : 'Not Revealed' }</p>
+                  {/* <p>Weight: { String(weight) || 'Not Revealed' }</p> */}
+                </div>
+            )}
+
+            {publicInputInHealthDataReceived && (
+                <div className={styles.transactionDetails}>
+                  <p>Age: { String(age) != "0" ? String(age) : 'Not Revealed' }</p>
+                  {/* <p>Age: { String(age) || 'Not Revealed' }</p> */}
+                </div>
+            )}
+
+            {publicInputInHealthDataReceived && (
+                <div className={styles.transactionDetails}>
+                  <p>Gender: { genderString }</p>                  
+                  {/* <p>Gender: { String(gender) != "0" ? String(gender) : 'Not Revealed' }</p> */}
+                  {/* <p>Gender: { String(gender) || 'Not Revealed' }</p> */}
+                </div>
+            )}
+
+            {publicInputInHealthDataReceived && (
+                <div className={styles.transactionDetails}>
+                  <p>Race Type: { raceTypeString }</p>
+                  {/* <p>Race Type: { String(raceType) != "0" ? String(raceType) : 'Not Revealed' }</p> */}
+                  {/* <p>Race Type: { String(raceType) || 'Not Revealed' }</p> */}
+                </div>
+            )}
+
+            {publicInputInHealthDataReceived && (
+                <div className={styles.transactionDetails}>
+                  <p>Blood Type: { bloodTypeString }</p>
+                  {/* <p>Blood Type: { String(bloodType) != "0" ? String(bloodType) : 'Not Revealed' }</p> */}
+                  {/* <p>Blood Type: { String(bloodType) || 'Not Revealed' }</p> */}
+                </div>
+            )}
+
+            {publicInputInHealthDataReceived && (
+                <div className={styles.transactionDetails}>
+                  <p>Blood Pressure: { String(bloodPressure) != "0" ? String(bloodPressure) : 'Not Revealed' }</p>
+                  {/* <p>Blood Pressure: { String(bloodPressure) || 'Not Revealed' }</p> */}
+                </div>
+            )}
+
+            {publicInputInHealthDataReceived && (
+                <div className={styles.transactionDetails}>
+                  <p>Heart Rate: { String(heartRate) != "0" ? String(heartRate) : 'Not Revealed' }</p>
+                  {/* <p>Heart Rate: { String(heartRate) || 'Not Revealed' }</p> */}
+                </div>
+            )}
+
+            {publicInputInHealthDataReceived && (
+                <div className={styles.transactionDetails}>
+                  <p>Average Hours Of Sleep: { String(averageHoursOfSleep) != "0" ? String(averageHoursOfSleep) : 'Not Revealed' }</p>
+                  {/* <p>Average Hours Of Sleep: { String(averageHoursOfSleep) || 'Not Revealed' }</p> */}
                 </div>
             )}
           </div>
