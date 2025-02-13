@@ -258,7 +258,9 @@ export default function MedicalResearcherPage() {
           <br />
 
           <form onSubmit={handleSubmit}>
-            <h2>Receive a Health Data, which is attested (by zkVerify), and Pay 0.00001 $EDU to a Health Data Provider</h2>
+            <h2>Buy a Health Data, which is attested (by zkVerify) in $EDU</h2>
+            <p>NOTE: This payment will be sent to a Health Data Provider via the HealthDataSharingMarketplance contract</p>
+            <p>NOTE: Current price per a Health Data: 0.00001 $EDU</p>
             <h4>Attestation ID</h4>
             <input
               type="text"
@@ -280,7 +282,7 @@ export default function MedicalResearcherPage() {
                     <div className="spinner"></div>
                   </>
               ) : (
-                  'Receive Health Data-attested and Pay the rewards in $EDU'
+                  'Buy Health Data-attested in $EDU'
               )}
             </button>
           </form>
@@ -334,7 +336,7 @@ export default function MedicalResearcherPage() {
           <br />
 
           <form onSubmit={handleGetHealthDataDecodedReceived}>
-            <h2>Show a Health Data, which is attested (by zkVerify), in decoded-values</h2>
+            <h2>Show a Health Data-bought, which is attested (by zkVerify), in decoded-values</h2>
             <h4>Attestation ID</h4>
             <input
               type="text"
@@ -356,7 +358,7 @@ export default function MedicalResearcherPage() {
                     <div className="spinner"></div>
                   </>
               ) : (
-                  'Show Health Data-attested in decoded-values'
+                  'Show Health Data-bought in decoded-values'
               )}
             </button>
           </form>
