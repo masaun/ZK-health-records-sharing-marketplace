@@ -175,12 +175,13 @@ contract HealthDataSharingExecutor {
         address healthDataProvider = healthDataDecoded.walletAddress;
         //require(msg.sender == healthDataDecoded.walletAddress, "A caller (health data provider) must be the same with the walletAddress, which is included in the proof");
         require(msg.sender == getHealthDataProviderByAttestationId(_attestationId), "A caller (health data provider) must already submited a proof and the proof must already be attested");
-                    
+
         address payable rewardReceiver = payable(getHealthDataProviderByAttestationId(_attestationId));
         uint256 rewardAmountPerSubmission = 1 * 1e13;  /// [NOTE]: 0.00001 $EDU
         require(msg.value == rewardAmountPerSubmission, "A caller (medical researcher) must transfer the rewardAmountPerSubmission of $EDU to this platform smart contract"); 
         (bool success, ) = rewardReceiver.call{ value: rewardAmountPerSubmission }("");
         require(success, "Transfer failed.");
+
         //if (healthDataDecoded.walletAddress != address(0)) {
         //    address healthDataProvider = healthDataDecoded.walletAddress;
         //    require(msg.sender == healthDataDecoded.walletAddress, "A caller (health data provider) must be the same with the walletAddress, which is included in the proof");
