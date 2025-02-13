@@ -215,7 +215,7 @@ export default function MedicalResearcherPage() {
 
           <ConnectEVMWalletButton />
 
-          <h4>$EDU balance of account: { String(nativeTokenBalance) } EDU</h4>
+          <h2>$EDU balance of account: { String(nativeTokenBalance) } EDU</h2>
 
           <button
               onClick={handleGetNativeTokenBalance}
@@ -230,7 +230,7 @@ export default function MedicalResearcherPage() {
 
           <br />
 
-          <h4>Attestation IDs of Buyable Health Data</h4> 
+          <h2>Attestation IDs of Buyable Health Data</h2> 
           
           <button
               onClick={handleGetAvailableAttestationIds}
@@ -258,6 +258,7 @@ export default function MedicalResearcherPage() {
           <br />
 
           <form onSubmit={handleSubmit}>
+            <h2>Receive a Health Data, which is attested (by zkVerify), and Pay the rewards in $EDU to a Health Data Provider</h2>
             <h4>Attestation ID</h4>
             <input
               type="text"
@@ -279,7 +280,7 @@ export default function MedicalResearcherPage() {
                     <div className="spinner"></div>
                   </>
               ) : (
-                  'Receive Attested-Health Data'
+                  'Receive Health Data-attested and Pay the rewards in $EDU'
               )}
             </button>
           </form>
@@ -333,6 +334,7 @@ export default function MedicalResearcherPage() {
           <br />
 
           <form onSubmit={handleGetHealthDataDecodedReceived}>
+            <h2>Show a Health Data, which is attested (by zkVerify), in decoded-values</h2>
             <h4>Attestation ID</h4>
             <input
               type="text"
@@ -354,7 +356,7 @@ export default function MedicalResearcherPage() {
                     <div className="spinner"></div>
                   </>
               ) : (
-                  'Receive decoded-attested Health Data'
+                  'Show Health Data-attested in decoded-values'
               )}
             </button>
           </form>
