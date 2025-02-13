@@ -140,8 +140,8 @@ export function useZkVerify() {
                 console.error('Transaction failed:', error);
             }
 
-            /// @dev - Wait 60 seconds (2 block + 6 seconds) to wait for that a new attestation is published.
-            await asyncTimeout(60000);
+            /// @dev - Wait 90 seconds to wait for that a new attestation is published.
+            await asyncTimeout(90000);
             // setTimeout(() => {
             //     console.log("Waited 60s");
             // }, 60000);
