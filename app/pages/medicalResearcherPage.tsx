@@ -258,7 +258,7 @@ export default function MedicalResearcherPage() {
           <br />
 
           <form onSubmit={handleSubmit}>
-            <h2>Receive a Health Data, which is attested (by zkVerify), and Pay the rewards in $EDU to a Health Data Provider</h2>
+            <h2>Receive a Health Data, which is attested (by zkVerify), and Pay 0.00001 $EDU to a Health Data Provider</h2>
             <h4>Attestation ID</h4>
             <input
               type="text"

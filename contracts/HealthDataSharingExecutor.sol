@@ -27,6 +27,8 @@ contract HealthDataSharingExecutor {
     uint256 public healthDataProviderId;
     uint256[] public availableAttestationIds;
 
+    uint256 rewardAmountPerSubmission;  /// [NOTE]: rewardAmountPerSubmission in $EDU
+
     mapping (address => uint256) public healthDataProviders;
     mapping (uint256 => address) public healthDataProviderWithAttestationIds;
     mapping (uint256 => DataTypes.ProofAndPublicInput) public proofAndPublicInputStorages; /// [Key]: attestationId (uint256)
@@ -50,6 +52,8 @@ contract HealthDataSharingExecutor {
         healthDataSharingVerifier = _healthDataSharingVerifier;
         //healthDataSharingRequester = _healthDataSharingRequester;
         //rewardPool = _rewardPool;
+
+        rewardAmountPerSubmission = 1 * 1e13;  /// [NOTE]: 0.00001 $EDU
     }
 
     /**
@@ -177,7 +181,7 @@ contract HealthDataSharingExecutor {
         require(msg.sender == getHealthDataProviderByAttestationId(_attestationId), "A caller (health data provider) must already submited a proof and the proof must already be attested");
 
         address payable rewardReceiver = payable(getHealthDataProviderByAttestationId(_attestationId));
-        uint256 rewardAmountPerSubmission = 1 * 1e13;  /// [NOTE]: 0.00001 $EDU
+        //uint256 rewardAmountPerSubmission = 1 * 1e13;  /// [NOTE]: 0.00001 $EDU
         require(msg.value == rewardAmountPerSubmission, "A caller (medical researcher) must transfer the rewardAmountPerSubmission of $EDU to this platform smart contract"); 
         (bool success, ) = rewardReceiver.call{ value: rewardAmountPerSubmission }("");
         require(success, "Transfer failed.");
@@ -242,6 +246,13 @@ contract HealthDataSharingExecutor {
         }
 
         return healthDataDecoded;
+    }
+
+    /**
+     * @notice - Get a reward amount per submission
+     */
+    function getRewardAmountPerSubmission() public view returns(uint256 _rewardAmountPerSubmission) {
+        return rewardAmountPerSubmission;
     }
 
 
