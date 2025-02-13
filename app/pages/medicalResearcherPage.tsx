@@ -258,9 +258,9 @@ export default function MedicalResearcherPage() {
           <br />
 
           <form onSubmit={handleSubmit}>
-            <h2>Buy a Health Data, which is attested (by zkVerify) in $EDU</h2>
+            <h2>Buy a Health Data, which is attested (by zkVerify), in $EDU</h2>
             <p>NOTE: This payment will be sent to a Health Data Provider via the HealthDataSharingMarketplance contract</p>
-            <p>NOTE: Current price per a Health Data: 0.00001 $EDU</p>
+            <p>NOTE: Current price per Health Data-attached a single atttestation ID: 0.00001 $EDU</p>
             <h4>Attestation ID</h4>
             <input
               type="text"
