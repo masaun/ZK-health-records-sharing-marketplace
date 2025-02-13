@@ -154,8 +154,8 @@ fn test_main() { // [CLI]: nargo test --show-output
     // @dev - For when the return value is "RevealedData (struct data)"  - Validate the return value
     assert(revealed_data.name == 0, "Name should not be revealed (0)");
     assert(revealed_data.walletAddress == 0x2e315a7650eD5FaF4F909EdaF6a8C5908c568F04, "walletAddress should be 0x2e315a7650eD5FaF4F909EdaF6a8C5908c568F04");
-    assert(revealed_data.height == 180, "Height should be 180");
-    assert(revealed_data.weight == 70, "Height should be 70");
+    assert(revealed_data.height == 180, "Height should be 180 cm");
+    assert(revealed_data.weight == 70, "Height should be 70 kg");
     assert(revealed_data.age == 21, "Age should be 21");
     assert(revealed_data.gender == 1, "Gender should Male (1)");
     assert(revealed_data.race_type == 1, "Race Type should 'White' (1)");

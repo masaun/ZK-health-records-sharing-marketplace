@@ -389,14 +389,14 @@ export default function MedicalResearcherPage() {
 
             {publicInputInHealthDataReceived && (
                 <div className={styles.transactionDetails}>
-                  <p>Height: { String(height) != "0" ? String(height) : 'Not Revealed' }</p>
+                  <p>Height: { String(height) != "0" ? String(height + " cm") : 'Not Revealed' }</p>
                   {/* <p>Height: { String(height) || 'Not Revealed' }</p> */}
                 </div>
             )}
 
             {publicInputInHealthDataReceived && (
                 <div className={styles.transactionDetails}>
-                  <p>Weight: { String(weight) != "0" ? String(weight) : 'Not Revealed' }</p>
+                  <p>Weight: { String(weight) != "0" ? String(weight + " kg") : 'Not Revealed' }</p>
                   {/* <p>Weight: { String(weight) || 'Not Revealed' }</p> */}
                 </div>
             )}
@@ -434,28 +434,28 @@ export default function MedicalResearcherPage() {
 
             {publicInputInHealthDataReceived && (
                 <div className={styles.transactionDetails}>
-                  <p>Blood Pressure (Systolic): { String(bloodPressureSystolic) != "0" ? String(bloodPressureSystolic) : 'Not Revealed' }</p>
+                  <p>Blood Pressure (Systolic): { String(bloodPressureSystolic) != "0" ? String(bloodPressureSystolic + " mmHg") : 'Not Revealed' }</p>
                   {/* <p>Blood Pressure (Systolic): { String(bloodPressureSystolic) || 'Not Revealed' }</p> */}
                 </div>
             )}
 
             {publicInputInHealthDataReceived && (
                 <div className={styles.transactionDetails}>
-                  <p>Blood Pressure (Diastolic): { String(bloodPressureDiastolic) != "0" ? String(bloodPressureDiastolic) : 'Not Revealed' }</p>
+                  <p>Blood Pressure (Diastolic): { String(bloodPressureDiastolic) != "0" ? String(bloodPressureDiastolic + " mmHg") : 'Not Revealed' }</p>
                   {/* <p>Blood Pressure (Diastolic): { String(bloodPressureDiastolic) || 'Not Revealed' }</p> */}
                 </div>
             )}
 
             {publicInputInHealthDataReceived && (
                 <div className={styles.transactionDetails}>
-                  <p>Heart Rate: { String(heartRate) != "0" ? String(heartRate) : 'Not Revealed' }</p>
+                  <p>Heart Rate: { String(heartRate) != "0" ? String(heartRate + "/h") : 'Not Revealed' }</p>
                   {/* <p>Heart Rate: { String(heartRate) || 'Not Revealed' }</p> */}
                 </div>
             )}
 
             {publicInputInHealthDataReceived && (
                 <div className={styles.transactionDetails}>
-                  <p>Average Hours Of Sleep: { String(averageHoursOfSleep) != "0" ? String(averageHoursOfSleep) : 'Not Revealed' }</p>
+                  <p>Average Hours Of Sleep: { String(averageHoursOfSleep + " hours") != "0" ? String(averageHoursOfSleep) : 'Not Revealed' }</p>
                   {/* <p>Average Hours Of Sleep: { String(averageHoursOfSleep) || 'Not Revealed' }</p> */}
                 </div>
             )}
