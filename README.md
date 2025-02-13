@@ -18,6 +18,15 @@ The advantage for a buyer is that:
 
 <br>
 
+## Archtecture and Userflow
+
+- Diagram Link (draw.io)
+
+- Image of Diagram
+
+
+<br>
+
 ## DEMO Video
 
 - Video Link
