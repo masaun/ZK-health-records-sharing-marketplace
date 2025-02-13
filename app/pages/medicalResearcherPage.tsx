@@ -88,7 +88,6 @@ export default function MedicalResearcherPage() {
 
     try {
       await onGetHealthDataDecodedReceived(provider, signer, account, inputAttestationIdValueForGetHealthDataDecodedReceived);
-      console.log(`productId (on the MR page): ${ productId }`);
       //console.log(`_healthDataDecodedReceived (on the MR page): ${ _healthDataDecodedReceived }`);
     } catch (error) {
       setVerificationResult(`Error: ${(error as Error).message}`);
