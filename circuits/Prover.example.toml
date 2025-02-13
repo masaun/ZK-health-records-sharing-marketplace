@@ -2,7 +2,7 @@
 
 # [NOTE]: Input of "Boolean" type should be write in a string number (True: "0" / False: "1")
 name = ""
-walletAddress = ""
+walletAddress = "<EOA /or SmartContractWallet addresss of a Health Data Provider>"
 height = ""
 weight = ""
 age = ""
