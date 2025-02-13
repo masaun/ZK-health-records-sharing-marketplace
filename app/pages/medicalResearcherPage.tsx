@@ -187,21 +187,9 @@ export default function MedicalResearcherPage() {
   return (
       <div className={styles.page}>
         <div className={styles.main}>
-          <Image
-               src="/zk_Verify_logo_full_black.png"
-               alt="zkVerify Logo"
-               width={450}
-               height={150}
-          />
- 
+          <h1>Page for Medical Researcher</h1>
+
           <br />
-
-          <h1>Medical Researcher Page</h1>
-          <Link href="/">
-            Go to the HealthData Provider Page
-          </Link>
-
-          {/* <br /> */}
 
           {/* <h4>Deposit</h4> */}
 
@@ -459,6 +447,17 @@ export default function MedicalResearcherPage() {
                 </div>
             )}
           </div>
+
+          <br />
+          <br />
+
+          <div>
+            ( Link: 
+            <Link href="/">
+              Move to the HealthData Provider Page )
+            </Link>
+          </div>
+
         </div>
       </div>
   );

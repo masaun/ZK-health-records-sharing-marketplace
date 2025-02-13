@@ -167,25 +167,8 @@ export default function Home() {
   return (
       <div className={styles.page}>
         <div className={styles.main}>
-          <Image
-              src="/zk_Verify_logo_full_black.png"
-              alt="zkVerify Logo"
-              width={450}
-              height={150}
-          />
 
-          <br />
-
-          <h1>HealthData Provider Page</h1>
-          <Link href="/medicalResearcherPage">
-            Go to the MedicalResearcherPage
-          </Link>
-
-          <br />
-
-          <Link href="/about">
-            Go to the About Page
-          </Link>
+          <h1>Page for HealthData Provider</h1>
 
           <br />
 
@@ -468,6 +451,18 @@ export default function Home() {
                 </div>
             )} 
           </div>
+
+          <br />
+
+          <div>
+            ( Link: 
+            <u>
+              <Link href="/medicalResearcherPage">
+                Move to the MedicalResearcherPage )
+              </Link>
+            </u>
+          </div>
+
         </div>
       </div>
   );
