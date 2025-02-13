@@ -69,7 +69,7 @@ contract HealthDataSharingVerifierViaNoirHelperTest is Test {
         // bool revealAverageHoursOfSleep = true;
 
         noirHelper.withInput("name", 376348719)
-                  .withInput("walletAddress", 0x2e315a7650eD5FaF4F909EdaF6a8C5908c568F04) /// @dev - Success
+                  .withInput("walletAddress", 0x2e315a7650eD5FaF4F909EdaF6a8C5908c568F04) /// @dev - Should input the same address with a Health Data Provider address, which is inputted via the Prover.toml.
                   //.withInput("walletAddress", bytes32(abi.encodePacked(0x8b29290F07E37615Fa68D64A1759F19d72D154E9))) /// @dev - Convert to 'bytes' type data
                   .withInput("height", 180)
                   .withInput("weight", 70)
