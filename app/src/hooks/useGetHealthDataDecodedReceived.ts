@@ -42,29 +42,29 @@ export function useGetHealthDataDecodedReceived() {
                 "function submitHealthData(bytes calldata proof, bytes32[] calldata publicInput, uint256 _attestationId, bytes32 _leaf, bytes32[] calldata _merklePath, uint256 _leafCount, uint256 _index)",
                 "function receiveHealthData(uint256 _attestationId)",
                 "function getAvailableAttestationIds() public view returns(uint256[] memory _availableAttestationIds)",
+                "function getHealthDataProviderByAttestationId(uint256 _attestationId) public view returns(address _healthDataProvider)",
                 "function getHealthDataDecodedReceived(uint256 _attestationId) public view returns (tuple(uint256 id, string data))",
                 "function getHealthData(uint256 _attestationId) public view returns(tuple(bytes proof, bytes32[] publicInput))",
-                "function getPublicInputInHealthData(uint256 _attestationId) public view returns(bytes32[] memory _publicInput)",
-                //"function getPublicInputInHealthData(uint256 _attestationId) public view returns(tuple(bytes32[] publicInput))",
+                "function getPublicInputInHealthData(uint256 attestationId, address healthDataProvider, address medicalResearcher) public view returns(bytes32[] memory _publicInput)",
+                //"function getPublicInputInHealthData(uint256 _attestationId) public view returns(bytes32[] memory _publicInput)",
+                "function getPaymentStatus(uint256 attestationId, address healthDataProvider, address medicalResearcher) public view returns(bool _paid)",
+                "function getRewardAmountPerSubmission() public view returns(uint256 _rewardAmountPerSubmission)",
                 "function bytes32ToUint256(bytes32 data) public pure returns (uint256)"
             ];
 
             const healthDataSharingExecutorContract = new Contract(process.env.NEXT_PUBLIC_EDU_CHAIN_HEALTH_DATA_SHARING_EXECUTOR_CONTRACT_ADDRESS, abiHealthDataSharingExecutorContract, provider);
             const healthDataSharingExecutorContractWithSigner = healthDataSharingExecutorContract.connect(signer);
 
-            /// @dev - Retrieve the decoded publicInput
-            const healthDataDecodedReceivedStorage = await healthDataSharingExecutorContract.getHealthDataDecodedReceived(attestationId);
-            setHealthDataDecodedReceived(healthDataDecodedReceivedStorage);
-            console.log(`healthDataDecodedReceivedStorage: ${ healthDataDecodedReceivedStorage }`);
-            console.log(`healthDataDecodedReceived: ${ healthDataDecodedReceived }`);
-            //console.log(`healthDataDecodedReceivedStorage: ${JSON.stringify(healthDataDecodedReceivedStorage, null, 4)}`);
+            /// @dev - Retrieve the logs of above.
+            const healthDataProvider = await healthDataSharingExecutorContract.getHealthDataProviderByAttestationId(attestationId);
 
             /// @dev - Retrieve both the "proof" and "publicInput (before decoded)
             //const healthDataReceived = await healthDataSharingExecutorContract.getHealthData(attestationId);
             //console.log(`healthDataReceived (Both "proof" and "publicInput" before decoded): ${ healthDataReceived }`); /// [Result]: Successful to retrieve the publicInput before decoded (in bytes).
 
             /// @dev - Retrieve the publicInput (before decoded)
-            const publicInputInHealthDataReceived = await healthDataSharingExecutorContract.getPublicInputInHealthData(attestationId);
+            const publicInputInHealthDataReceived = await healthDataSharingExecutorContract.getPublicInputInHealthData(attestationId, healthDataProvider, account);
+            //const publicInputInHealthDataReceived = await healthDataSharingExecutorContract.getPublicInputInHealthData(attestationId);
             console.log(`publicInputInHealthDataReceived ("publicInput" before decoded): ${ publicInputInHealthDataReceived }`);
             setPublicInputInHealthDataReceived(publicInputInHealthDataReceived);
 

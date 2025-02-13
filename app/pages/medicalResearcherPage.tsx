@@ -236,7 +236,7 @@ export default function MedicalResearcherPage() {
                           : styles.resultSuccess
                     }
                 >
-                  { String(nativeTokenBalance + "$EDU") }
+                  { String(nativeTokenBalance + " $EDU") }
                 </p>
             )} 
           </div>

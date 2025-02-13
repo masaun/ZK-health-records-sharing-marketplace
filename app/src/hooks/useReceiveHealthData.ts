@@ -40,12 +40,14 @@ export function useReceiveHealthData() {
 
             /// @dev - ABI of the HealthDataSharingExecutor.sol
             const abiHealthDataSharingExecutorContract = [
-                "function receiveHealthData(uint256 _attestationId) public payable returns(bool)",
+                "function buyHealthData(uint256 _attestationId) public payable returns(bool)",
+                "function receiveHealthData(uint256 _attestationId) public returns(bool)",
                 "function getAvailableAttestationIds() public view returns(uint256[] memory _availableAttestationIds)",
                 "function getHealthDataDecodedReceived(uint256 _attestationId) public view returns(tuple(uint256 id, string data))",
                 "function getHealthData(uint256 _attestationId) public view returns(tuple(bytes proof, bytes32[] publicInput))",
-                "function getPublicInputInHealthData(uint256 _attestationId) public view returns(bytes32[] memory _publicInput)",
-                //"function getPublicInputInHealthData(uint256 _attestationId) public view returns(tuple(bytes32[] publicInput))",
+                "function getPublicInputInHealthData(uint256 attestationId, address healthDataProvider, address medicalResearcher)",
+                //"function getPublicInputInHealthData(uint256 _attestationId) public view returns(bytes32[] memory _publicInput)",
+                "function getRewardAmountPerSubmission() public view returns(uint256 _rewardAmountPerSubmission)",
                 "function registerAsHealthDataProvider(address account) public returns(uint256 healthDataProviderId)"
             ];
 
@@ -63,16 +65,23 @@ export function useReceiveHealthData() {
             // });
 
             /// @dev - Register as a Health Data Provider -> Success!!
-            // const txResponse2 = await healthDataSharingExecutorContractWithSigner.registerAsHealthDataProvider(account);
-            // await txResponse2.wait();
-            // const { hash2 } = await txResponse2;
-            // console.log(`Tx sent to EDU Chain (Testnet), tx-hash 2: ${hash2}`);
+            // const txResponse = await healthDataSharingExecutorContractWithSigner.registerAsHealthDataProvider(account);
+            // await txResponse.wait();
+            // const { hash } = await txResponse;
+            // console.log(`Tx sent to EDU Chain (Testnet), tx-hash 2: ${hash}`);
 
-            const txResponse = await healthDataSharingExecutorContractWithSigner.receiveHealthData(attestationId, { value: rewardAmountPerSubmission });
+            const txResponse = await healthDataSharingExecutorContractWithSigner.buyHealthData(attestationId, { value: String(rewardAmountPerSubmission) });
             await txResponse.wait();
             const { hash } = await txResponse;
             console.log(`Tx sent to EDU Chain (Testnet), tx-hash ${hash}`);
             setTxHash(hash);
+
+            // const txResponse = await healthDataSharingExecutorContractWithSigner.receiveHealthData(attestationId);
+            // //const txResponse = await healthDataSharingExecutorContractWithSigner.receiveHealthData(attestationId, { value: String(rewardAmountPerSubmission) });
+            // await txResponse.wait();
+            // const { hash } = await txResponse;
+            // console.log(`Tx sent to EDU Chain (Testnet), tx-hash ${hash}`);
+            // setTxHash(hash);
 
             /// @dev - Retrieve the decoded publicInput
             const healthDataDecodedReceivedStorage = await healthDataSharingExecutorContract.getHealthDataDecodedReceived(attestationId);
