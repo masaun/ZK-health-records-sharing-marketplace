@@ -58,6 +58,13 @@ export function useGetHealthDataDecodedReceived() {
             /// @dev - Retrieve the logs of above.
             const healthDataProvider = await healthDataSharingExecutorContract.getHealthDataProviderByAttestationId(attestationId);
 
+            /// @dev - Check whether or not a medical researcher (account) is already paid for the health data
+            const _paid: boolean = await healthDataSharingExecutorContract.getPaymentStatus(attestationId, healthDataProvider, account);
+            if (!_paid) {
+                console.log("This medical researcher (caller) is not paid yet for the health data");
+                return { publicInputInHealthDataReceived, name, walletAddress, height, weight, age, gender, raceType, bloodType, bloodPressureSystolic, bloodPressureDiastolic, heartRate, averageHoursOfSleep, onGetHealthDataDecodedReceived };
+            }
+
             /// @dev - Retrieve both the "proof" and "publicInput (before decoded)
             //const healthDataReceived = await healthDataSharingExecutorContract.getHealthData(attestationId);
             //console.log(`healthDataReceived (Both "proof" and "publicInput" before decoded): ${ healthDataReceived }`); /// [Result]: Successful to retrieve the publicInput before decoded (in bytes).

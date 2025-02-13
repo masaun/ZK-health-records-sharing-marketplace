@@ -381,6 +381,14 @@ export default function MedicalResearcherPage() {
           </form>
 
           <div className={styles.resultContainer}>
+            {!publicInputInHealthDataReceived && (
+                <div className={styles.transactionDetails}>
+                  <p>{ String("Please push the 'Show Health Data-bought in decoded-values' button above") }</p> 
+                  <p>{ String("If this space is not changed after pushing the button, it means that you (medical researcher) have not bought the health data and paid for it yet. In this case, please buy the health data and pay for it at first") }</p>
+                  {/* <p>{ String("This medical researcher (caller) is not paid yet for the health data") }</p> */}
+                </div>
+            )}
+          
             {publicInputInHealthDataReceived && (
                 <div className={styles.transactionDetails}>
                   <p>Name: { String(name) != "0" ? String(name) : 'Not Revealed' }</p>
