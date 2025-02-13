@@ -274,4 +274,9 @@ contract HealthDataSharingExecutor {
         healthDataProviders[account] = healthDataProviderId; 
         healthDataProviderId++;
     }
+
+    /**
+     * @notice - To receive NativeToken (EDU) in this SC.
+     */
+    receive() external payable {}
 }

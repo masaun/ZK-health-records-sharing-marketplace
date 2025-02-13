@@ -39,10 +39,9 @@ export function useReceiveHealthData() {
 
             /// @dev - ABI of the HealthDataSharingExecutor.sol
             const abiHealthDataSharingExecutorContract = [
-                "function submitHealthData(bytes calldata proof, bytes32[] calldata publicInput, uint256 medicalResearcherId, uint256 healthDataSharingRequestId, uint256 _attestationId, bytes32 _leaf, bytes32[] calldata _merklePath, uint256 _leafCount, uint256 _index)",
-                "function receiveHealthData(uint256 _attestationId)",
+                "function receiveHealthData(uint256 _attestationId) public payable returns(bool)",
                 "function getAvailableAttestationIds() public view returns(uint256[] memory _availableAttestationIds)",
-                "function getHealthDataDecodedReceived(uint256 _attestationId) public view returns (tuple(uint256 id, string data))",
+                "function getHealthDataDecodedReceived(uint256 _attestationId) public view returns(tuple(uint256 id, string data))",
                 "function getHealthData(uint256 _attestationId) public view returns(tuple(bytes proof, bytes32[] publicInput))",
                 "function getPublicInputInHealthData(uint256 _attestationId) public view returns(bytes32[] memory _publicInput)"
                 //"function getPublicInputInHealthData(uint256 _attestationId) public view returns(tuple(bytes32[] publicInput))"
