@@ -215,7 +215,8 @@ export default function MedicalResearcherPage() {
 
           <ConnectEVMWalletButton />
 
-          <h2>$EDU balance of account: { String(nativeTokenBalance) } EDU</h2>
+          <h2>$EDU balance of account (on EDU Chain testnet)</h2>
+          {/* <h2>$EDU balance of account (on EDU Chain testnet): { String(nativeTokenBalance) } $EDU</h2> */}
 
           <button
               onClick={handleGetNativeTokenBalance}
@@ -223,6 +224,22 @@ export default function MedicalResearcherPage() {
           >
             Get $EDU balance of account
           </button>
+          
+          <div className={styles.resultContainer}>
+            {nativeTokenBalance && (
+                <p
+                    className={
+                      nativeTokenBalance.includes('failed') ||
+                      nativeTokenBalance.includes('Error') ||
+                      nativeTokenBalance.includes('Rejected')
+                          ? styles.resultError
+                          : styles.resultSuccess
+                    }
+                >
+                  { String(nativeTokenBalance + "$EDU") }
+                </p>
+            )} 
+          </div>
 
           <br />
 
