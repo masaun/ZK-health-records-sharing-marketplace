@@ -7,8 +7,6 @@ import { ethers, providers, Contract } from 'ethers';
 export function useGetHealthDataDecodedReceived() {
     const [healthDataDecodedReceived, setHealthDataDecodedReceived] = useState<any>(null);
     const [publicInputInHealthDataReceived, setPublicInputInHealthDataReceived] = useState<any>(null);
-    const [productId, setProductId] = useState<any>(null);
-    const [providerId, setProviderId] = useState<any>(null);
     const [name, setName] = useState<any>(null);
     const [walletAddress, setWalletAddress] = useState<any>(null);
     const [height, setHeight] = useState<any>(null);
@@ -17,7 +15,8 @@ export function useGetHealthDataDecodedReceived() {
     const [gender, setGender] = useState<any>(null);
     const [raceType, setRaceType] = useState<any>(null);
     const [bloodType, setBloodType] = useState<any>(null);
-    const [bloodPressure, setBloodPressure] = useState<any>(null);
+    const [bloodPressureSystolic, setBloodPressureSystolic] = useState<any>(null);
+    const [bloodPressureDiastolic, setBloodPressureDiastolic] = useState<any>(null);
     const [heartRate, setHeartRate] = useState<any>(null);
     const [averageHoursOfSleep, setAverageHoursOfSleep] = useState<any>(null);
     const [status, setStatus] = useState<string | null>(null);
@@ -40,7 +39,7 @@ export function useGetHealthDataDecodedReceived() {
 
             /// @dev - ABI of the HealthDataSharingExecutor.sol
             const abiHealthDataSharingExecutorContract = [
-                "function submitHealthData(bytes calldata proof, bytes32[] calldata publicInput, uint256 medicalResearcherId, uint256 healthDataSharingRequestId, uint256 _attestationId, bytes32 _leaf, bytes32[] calldata _merklePath, uint256 _leafCount, uint256 _index)",
+                "function submitHealthData(bytes calldata proof, bytes32[] calldata publicInput, uint256 _attestationId, bytes32 _leaf, bytes32[] calldata _merklePath, uint256 _leafCount, uint256 _index)",
                 "function receiveHealthData(uint256 _attestationId)",
                 "function getAvailableAttestationIds() public view returns(uint256[] memory _availableAttestationIds)",
                 "function getHealthDataDecodedReceived(uint256 _attestationId) public view returns (tuple(uint256 id, string data))",
@@ -76,23 +75,6 @@ export function useGetHealthDataDecodedReceived() {
 
                 if (i == 0) {
                     /// @dev - Convert string to bytes
-                    const productIdInBytes = ethers.getBytes(publicInputInHealthDataReceived[i]);
-                    console.log(`productIdBytes: ${productIdInBytes}`);
-                    console.log(`typeof - Converted bytes: ${typeof productIdInBytes}`); /// [Result]: String
-                    const productIdInUint = await healthDataSharingExecutorContract.bytes32ToUint256(productIdInBytes);
-                    console.log(`productIdInUint: ${productIdInUint}`);
-                    console.log(`typeof - productIdInUint: ${typeof productIdInUint}`); /// [Result]: BigInt
-                    setProductId(productIdInUint);
-                } else if (i == 1) {
-                    /// @dev - Convert string to bytes
-                    const productIdInBytes = ethers.getBytes(publicInputInHealthDataReceived[i]);
-                    console.log(`productIdBytes: ${productIdInBytes}`);
-                    console.log(`typeof - Converted bytes: ${typeof productIdInBytes}`); /// [Result]: String
-                    const productIdInUint = await healthDataSharingExecutorContract.bytes32ToUint256(productIdInBytes);
-                    console.log(`productIdInUint: ${productIdInUint}`);
-                    console.log(`typeof - productIdInUint: ${typeof productIdInUint}`); /// [Result]: BigInt
-                } else if (i == 2) {
-                    /// @dev - Convert string to bytes
                     const nameInBytes = ethers.getBytes(publicInputInHealthDataReceived[i]);
                     console.log(`nameInBytes: ${nameInBytes}`);
                     console.log(`typeof - Converted bytes: ${typeof nameInBytes}`); /// [Result]: String
@@ -100,16 +82,7 @@ export function useGetHealthDataDecodedReceived() {
                     console.log(`nameInUint: ${nameInUint}`);
                     console.log(`typeof - nameInUint: ${typeof nameInUint}`); /// [Result]: BigInt
                     setName(nameInUint);
-                } else if (i == 3) {
-                    /// @dev - Convert string to bytes
-                    const providerIdInBytes = ethers.getBytes(publicInputInHealthDataReceived[i]);
-                    console.log(`providerIdInBytes: ${providerIdInBytes}`);
-                    console.log(`typeof - Converted bytes: ${typeof providerIdInBytes}`); /// [Result]: String
-                    const providerIdInUint = await healthDataSharingExecutorContract.bytes32ToUint256(providerIdInBytes);
-                    console.log(`providerIdInUint: ${providerIdInUint}`);
-                    console.log(`typeof - providerIdInUint: ${typeof providerIdInUint}`); /// [Result]: BigInt
-                    setProviderId(providerIdInUint);
-                } else if (i == 4) {
+                } else if (i == 1) {
                     const walletAddressInString = publicInputInHealthDataReceived[i];
                     const walletAddressInStringSliced = walletAddressInString.slice(26, 66);
                     const walletAddress0xAdded = '0x' + walletAddressInStringSliced;
@@ -119,7 +92,7 @@ export function useGetHealthDataDecodedReceived() {
                     const checksumWalletAddress = ethers.getAddress(walletAddress0xAdded);
                     console.log(`walletAddress (Checksum Address): ${checksumWalletAddress}`);
                     setWalletAddress(checksumWalletAddress);
-                } else if (i == 5) {
+                } else if (i == 2) {
                     /// @dev - Convert string to bytes
                     const heightInBytes = ethers.getBytes(publicInputInHealthDataReceived[i]);
                     console.log(`heightBytes: ${heightInBytes}`);
@@ -128,7 +101,7 @@ export function useGetHealthDataDecodedReceived() {
                     console.log(`heightInUint: ${heightInUint}`);
                     console.log(`typeof - heightInUint: ${typeof heightInUint}`); /// [Result]: BigInt
                     setHeight(heightInUint);
-                } else if (i == 6) {
+                } else if (i == 3) {
                     /// @dev - Convert string to bytes
                     const weightInBytes = ethers.getBytes(publicInputInHealthDataReceived[i]);
                     console.log(`weightBytes: ${weightInBytes}`);
@@ -137,7 +110,7 @@ export function useGetHealthDataDecodedReceived() {
                     console.log(`weightInUint: ${weightInUint}`);
                     console.log(`typeof - weightInUint: ${typeof weightInUint}`); /// [Result]: BigInt
                     setWeight(weightInUint);
-                } else if (i == 7) {
+                } else if (i == 4) {
                     /// @dev - Convert string to bytes
                     const ageInBytes = ethers.getBytes(publicInputInHealthDataReceived[i]);
                     console.log(`ageInBytes: ${ageInBytes}`);
@@ -146,7 +119,7 @@ export function useGetHealthDataDecodedReceived() {
                     console.log(`ageInUint: ${ageInUint}`);
                     console.log(`typeof - ageInUint: ${typeof ageInUint}`); /// [Result]: BigInt
                     setAge(ageInUint);
-                } else if (i == 8) {
+                } else if (i == 5) {
                     /// @dev - Convert string to bytes
                     const genderInBytes = ethers.getBytes(publicInputInHealthDataReceived[i]);
                     console.log(`genderInBytes: ${genderInBytes}`);
@@ -155,7 +128,7 @@ export function useGetHealthDataDecodedReceived() {
                     console.log(`genderInUint: ${genderInUint}`);
                     console.log(`typeof - ?InUint: ${typeof genderInUint}`); /// [Result]: BigInt
                     setGender(genderInUint);
-                } else if (i == 9) {
+                } else if (i == 6) {
                     /// @dev - Convert string to bytes
                     const raceTypeInBytes = ethers.getBytes(publicInputInHealthDataReceived[i]);
                     console.log(`raceTypeInBytes: ${raceTypeInBytes}`);
@@ -164,7 +137,7 @@ export function useGetHealthDataDecodedReceived() {
                     console.log(`raceTypeInUint: ${raceTypeInUint}`);
                     console.log(`typeof - raceTypeInUint: ${typeof raceTypeInUint}`); /// [Result]: BigInt
                     setRaceType(raceTypeInUint);
-                } else if (i == 10) {
+                } else if (i == 7) {
                     /// @dev - Convert string to bytes
                     const bloodTypeInBytes = ethers.getBytes(publicInputInHealthDataReceived[i]);
                     console.log(`bloodTypeInBytes: ${bloodTypeInBytes}`);
@@ -173,16 +146,25 @@ export function useGetHealthDataDecodedReceived() {
                     console.log(`bloodTypeInUint: ${bloodTypeInUint}`);
                     console.log(`typeof - bloodTypeInUint: ${typeof bloodTypeInUint}`); /// [Result]: BigInt
                     setBloodType(bloodTypeInUint);
-                } else if (i == 11) {
+                } else if (i == 8) {
                     /// @dev - Convert string to bytes
-                    const bloodPressureInBytes = ethers.getBytes(publicInputInHealthDataReceived[i]);
-                    console.log(`bloodPressureInBytes: ${bloodPressureInBytes}`);
-                    console.log(`typeof - Converted bytes: ${typeof bloodPressureInBytes}`); /// [Result]: String
-                    const bloodPressureInUint = await healthDataSharingExecutorContract.bytes32ToUint256(bloodPressureInBytes);
-                    console.log(`bloodPressureInUint: ${bloodPressureInUint}`);
-                    console.log(`typeof - bloodPressureInUint: ${typeof bloodPressureInUint}`); /// [Result]: BigInt
-                    setBloodPressure(bloodPressureInUint);
-                } else if (i == 12) {
+                    const bloodPressureSystolicInBytes = ethers.getBytes(publicInputInHealthDataReceived[i]);
+                    console.log(`bloodPressureSystolicInBytes: ${bloodPressureSystolicInBytes}`);
+                    console.log(`typeof - Converted bytes: ${typeof bloodPressureSystolicInBytes}`); /// [Result]: String
+                    const bloodPressureSystolicInUint = await healthDataSharingExecutorContract.bytes32ToUint256(bloodPressureSystolicInBytes);
+                    console.log(`bloodPressureSystolicInUint: ${bloodPressureSystolicInUint}`);
+                    console.log(`typeof - bloodPressureSystolicInUint: ${typeof bloodPressureSystolicInUint}`); /// [Result]: BigInt
+                    setBloodPressureSystolic(bloodPressureSystolicInUint);
+                } else if (i == 9) {
+                    /// @dev - Convert string to bytes
+                    const bloodPressureDiastolicInBytes = ethers.getBytes(publicInputInHealthDataReceived[i]);
+                    console.log(`bloodPressureDiastolicInBytes: ${bloodPressureDiastolicInBytes}`);
+                    console.log(`typeof - Converted bytes: ${typeof bloodPressureDiastolicInBytes}`); /// [Result]: String
+                    const bloodPressureDiastolicInUint = await healthDataSharingExecutorContract.bytes32ToUint256(bloodPressureDiastolicInBytes);
+                    console.log(`bloodPressureDiastolicInUint: ${bloodPressureDiastolicInUint}`);
+                    console.log(`typeof - bloodPressureDiastolicInUint: ${typeof bloodPressureDiastolicInUint}`); /// [Result]: BigInt
+                    setBloodPressureDiastolic(bloodPressureDiastolicInUint);
+                } else if (i == 10) {
                     /// @dev - Convert string to bytes
                     const heartRateInBytes = ethers.getBytes(publicInputInHealthDataReceived[i]);
                     console.log(`heartRateInBytes: ${heartRateInBytes}`);
@@ -191,7 +173,7 @@ export function useGetHealthDataDecodedReceived() {
                     console.log(`heartRateInUint: ${heartRateInUint}`);
                     console.log(`typeof - heartRateInUint: ${typeof heartRateInUint}`); /// [Result]: BigInt
                     setHeartRate(heartRateInUint);
-                } else if (i == 13) {
+                } else if (i == 11) {
                     /// @dev - Convert string to bytes
                     const averageHoursOfSleepInBytes = ethers.getBytes(publicInputInHealthDataReceived[i]);
                     console.log(`averageHoursOfSleepInBytes: ${averageHoursOfSleepInBytes}`);
@@ -203,10 +185,8 @@ export function useGetHealthDataDecodedReceived() {
                 }
             }
 
-            // // @dev - Return data as a "RevealedData" struct data in Noir ZK circuit (main.nr)
+            // // @dev - Return data as a "RevealedData" struct data
             // RevealedData {
-            //     productId: outputProductId,
-            //     providerId: outputProviderId,
             //     name: outputName,
             //     walletAddress: outputWalletAddress,
             //     height: outputHeight,
@@ -215,7 +195,8 @@ export function useGetHealthDataDecodedReceived() {
             //     gender: outputGender,
             //     race_type: outputRaceType,
             //     blood_type: outputBloodType,
-            //     blood_pressure: outputBloodPressure,
+            //     blood_pressure_systolic: outputBloodPressureSystolic,
+            //     blood_pressure_diastolic: outputBloodPressureDiastolic,
             //     heart_rate: outputHeartRate,
             //     average_hours_of_sleep: outputAverageHoursOfSleep
             // }
@@ -226,7 +207,7 @@ export function useGetHealthDataDecodedReceived() {
         }
     };
     
-    return { publicInputInHealthDataReceived, productId, providerId, name, walletAddress, height, weight, age, gender, raceType, bloodType, bloodPressure, heartRate, averageHoursOfSleep, onGetHealthDataDecodedReceived };
+    return { publicInputInHealthDataReceived, name, walletAddress, height, weight, age, gender, raceType, bloodType, bloodPressureSystolic, bloodPressureDiastolic, heartRate, averageHoursOfSleep, onGetHealthDataDecodedReceived };
     //return { healthDataDecodedReceived, onGetHealthDataDecodedReceived };
 }
 

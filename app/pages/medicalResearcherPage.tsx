@@ -24,7 +24,7 @@ export default function MedicalResearcherPage() {
   const { connectEVMWallet, provider, signer, account, walletConnected } = useConnectEVMWallet();  /// @dev - Connect to an EVM wallet (i.e. MetaMask)
   const { onGetNativeTokenBalance, nativeTokenBalance } = useGetBalance();
   const { onReceiveHealthData, status, error, txHash, healthDataDecodedReceived } = useReceiveHealthData();
-  const { onGetHealthDataDecodedReceived, publicInputInHealthDataReceived, productId, providerId, name, walletAddress, height, weight, age, gender, raceType, bloodType, bloodPressure, heartRate, averageHoursOfSleep } = useGetHealthDataDecodedReceived();
+  const { onGetHealthDataDecodedReceived, publicInputInHealthDataReceived, name, walletAddress, height, weight, age, gender, raceType, bloodType, bloodPressureSystolic, bloodPressureDiastolic, heartRate, averageHoursOfSleep } = useGetHealthDataDecodedReceived();
   //const { _healthDataDecodedReceived, onGetHealthDataDecodedReceived } = useGetHealthDataDecodedReceived();
   const { onGetAvailableAttestationIds, availableAttestationIds } = useGetAvailableAttestationIds();
   const [fetchedAvailableAttestationIds, setFetchedAvailableAttestationIds] = useState<string | null>(null);
@@ -243,13 +243,13 @@ export default function MedicalResearcherPage() {
 
           <br />
 
-          <h4>Available (= Buyable) Attestation IDs</h4> 
+          <h4>Attestation IDs of Buyable Health Data</h4> 
           
           <button
               onClick={handleGetAvailableAttestationIds}
               className={`button ${styles.verifyButton}`}
           >
-            Get Available Attestation IDs
+            Get Attestation IDs of Buyable Health Data
           </button>
 
           <div className={styles.resultContainer}>
@@ -375,20 +375,6 @@ export default function MedicalResearcherPage() {
           <div className={styles.resultContainer}>
             {publicInputInHealthDataReceived && (
                 <div className={styles.transactionDetails}>
-                  <p>Product ID: { String(productId) != "0" ? String(productId) : 'Not Revealed' }</p>
-                  {/* <p>Product ID: { String(productId) || 'Not Revealed' }</p> */}
-                </div>
-            )}
-
-            {publicInputInHealthDataReceived && (
-                <div className={styles.transactionDetails}>
-                  <p>Provider ID: { String(providerId) != "0" ? String(providerId) : 'Not Revealed' }</p>
-                  {/* <p>Provider ID: { String(providerId) || 'Not Revealed' }</p> */}
-                </div>
-            )}
-
-            {publicInputInHealthDataReceived && (
-                <div className={styles.transactionDetails}>
                   <p>Name: { String(name) != "0" ? String(name) : 'Not Revealed' }</p>
                   {/* <p>Name: { String(name) || 'Not Revealed' }</p> */}
                 </div>
@@ -448,8 +434,15 @@ export default function MedicalResearcherPage() {
 
             {publicInputInHealthDataReceived && (
                 <div className={styles.transactionDetails}>
-                  <p>Blood Pressure: { String(bloodPressure) != "0" ? String(bloodPressure) : 'Not Revealed' }</p>
-                  {/* <p>Blood Pressure: { String(bloodPressure) || 'Not Revealed' }</p> */}
+                  <p>Blood Pressure (Systolic): { String(bloodPressureSystolic) != "0" ? String(bloodPressureSystolic) : 'Not Revealed' }</p>
+                  {/* <p>Blood Pressure (Systolic): { String(bloodPressureSystolic) || 'Not Revealed' }</p> */}
+                </div>
+            )}
+
+            {publicInputInHealthDataReceived && (
+                <div className={styles.transactionDetails}>
+                  <p>Blood Pressure (Diastolic): { String(bloodPressureDiastolic) != "0" ? String(bloodPressureDiastolic) : 'Not Revealed' }</p>
+                  {/* <p>Blood Pressure (Diastolic): { String(bloodPressureDiastolic) || 'Not Revealed' }</p> */}
                 </div>
             )}
 
