@@ -439,9 +439,11 @@ export default function Home() {
 
             {merkleProofDetails && (
                 <div className={styles.transactionDetails}>
+                  <p>Merkle Root: {merkleProofDetails.root || 'N/A'}</p>
                   <p>Merkle Proof: {merkleProofDetails.proof || 'N/A'}</p>
                   <p>Number Of Leaves: {merkleProofDetails.numberOfLeaves || 'N/A'}</p>
-                  <p>Leaf Index: {merkleProofDetails.leafIndex || 'N/A'}</p>
+                  <p>Leaf Index: {merkleProofDetails.leafIndex || '0'}</p>
+                  <p>Leaf Digest: {merkleProofDetails.leaf || 'N/A'}</p>
                 </div>
             )} 
 
