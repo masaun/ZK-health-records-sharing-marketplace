@@ -102,20 +102,25 @@ _The advantage for a Medical Researcher (Buyer) is that:_
 - Time 6:37~).
   - Then, the Health Data Provider would submit the `Attestation ID` and Health Data Proof /w its `publicInput` to `EDU Chain`. 
     - At this point, the Health Data Provider would sign and send the TX (transaction) of submitting a proof on `EVM wallet` (i.e. MetaMask).
-    - This TX hash-send to `EDU Chain` can been searched on the [`EDU Chain` Block Explorer](https://edu-chain-testnet.blockscout.com/txs).
+    - This TX hash on `EDU Chain` can be searched on the [`EDU Chain` Block Explorer](https://edu-chain-testnet.blockscout.com/txs).
 
 
 - Time 8:45~).
   - A **Medical Researcher**, who is a buyer of the health records/data, would open the "Page for Medical Researcher" (`http://localhost:3000/medicalResearcherPage`) and connect their EVM Wallet.
   - Check how much $EDU (NativeToken in EDU Chain) balance the Medical Researcher's EVM wallet hold by pushing the `"Get $EDU balance of account"` button.
   - Check which `Attestation IDs` of health records/data is buyable by pushing the button.
-  - Buy an `Attestation ID` of the health records/data by specifying a favorble `Attestation ID` in the input field (NOTE: In this demo, a medical researcher specify `Attestation ID = 44354`) and pushing the button.
 
-     
 
-- When a Medical Researcher, who already bought the Health Data, push the `"Show a Health Data-bought in decoded-values` button on the page for a Medical Researcher:
-  - If you select that the `revealed` data (i.e. `revealedName`) is `false` for a certain item (i.e, `name`) when you write the `input data` (`Health Records/Data`) in the `Prover.toml` in the process of ["ZK circuit - Generate (Prove) an Ultraplonk proof in Noir"](https://github.com/masaun/ZK-health-records-sharing-marketplace?tab=readme-ov-file#zk-circuit---generate-prove-an-ultraplonk-proof-in-noir), `"Not Revealed"` would be shown for the item on UI.
+- Time 9:55~).
+  - Buy an `Attestation ID` of the health records/data by specifying a favorble `Attestation ID` in the input field (NOTE: In this demo, a medical researcher specify `Attestation ID = 44354`) and pushing the `"Get Attestation IDs of Buyable Health Data"` button.
+  - Since the price per a health records/data would be `0.00001 $EDU`, `0.00001 $EDU` would be transferred during the Medical Researcher's TX for buying a health records/data.
+  - This TX hash on `EDU Chain` can been searched on the [`EDU Chain` Block Explorer](https://edu-chain-testnet.blockscout.com/txs).
 
+  
+- Time 12:15~).
+  - When a Medical Researcher, who already bought the Health Data, push the `"Show a Health Data-bought in decoded-values` button on the page for a Medical Researcher:
+    - If you select that the `revealed` data (i.e. `revealedName`) is `false` for a certain item (i.e, `name`) when you write the `input data` (`Health Records/Data`) in the `Prover.toml` in the process of ["ZK circuit - Generate (Prove) an Ultraplonk proof in Noir"](https://github.com/masaun/ZK-health-records-sharing-marketplace?tab=readme-ov-file#zk-circuit---generate-prove-an-ultraplonk-proof-in-noir), `"Not Revealed"` would be shown for the item on UI.
+      - In this DEMO Video, the `revealedName` and `revealedAge` was specified as `false` when inputing data in the `Prover.toml` to generate a ZK Proof in Noir. Hence, the `name` and `age` would be shown as `"Not Revealed"`. 
 
 
 <br>
