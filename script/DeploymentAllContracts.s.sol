@@ -9,7 +9,7 @@ import { IZkVerifyAttestation } from "../contracts/zkv-attestation-contracts/int
 import { UltraVerifier } from "../circuits/target/contract.sol"; /// @dev - Deployed-Verifier SC, which was generated based on the main.nr
 import { HealthDataSharingVerifier } from "../contracts/circuits/HealthDataSharingVerifier.sol";
 
-import { HealthDataSharingRequester } from "../contracts/HealthDataSharingRequester.sol";
+//import { HealthDataSharingRequester } from "../contracts/HealthDataSharingRequester.sol";
 import { HealthDataSharingExecutor } from "../contracts/HealthDataSharingExecutor.sol";
 
 import { RewardPoolFactory } from "../contracts/rewards/RewardPoolFactory.sol";
