@@ -96,19 +96,3 @@ contract DeploymentAllContracts is Script {
 //     ./circuits/target/contract.sol:UltraVerifier \
 //     ./contracts/circuits/HealthDataSharingVerifier.sol:HealthDataSharingVerifier \
 //     ./contracts/HealthDataSharingExecutor.sol:HealthDataSharingExecutor --skip-simulation
-
-
-
-/////////////////////////////////////////
-/// CLI (icl. SC sources) - Old version
-//////////////////////////////////////
-
-// forge script script/DeploymentAllContracts.s.sol --broadcast --private-key <EDU_CHAIN_PRIVATE_KEY> \
-//     ./contracts/zkv-attestation-contracts/interfaces/IZkVerifyAttestation.sol:ZkVerifyAttestation \
-//     ./circuits/target/contract.sol:UltraVerifier \
-//     ./contracts/circuits/HealthDataSharingVerifier.sol:HealthDataSharingVerifier \
-//     ./contracts/HealthDataSharingRequester.sol:HealthDataSharingRequester \
-//     ./contracts/HealthDataSharingExecutor.sol:HealthDataSharingExecutor \
-//     ./contracts/rewards/RewardPoolFactory.sol:RewardPoolFactory \
-//     ./contracts/rewards/RewardPool.sol:RewardPool \
-//     ./contracts/rewards/MockRewardToken.sol:RewardToken --skip-simulation
