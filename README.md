@@ -178,19 +178,9 @@ sh ./buildContract.sh
 
 ## Test - SC
 
-- Run the test of the `HealthDataSharing.t.sol`
-```shell
-sh ./test/runningTest_1.sh
-```
-
 - Run the test of the `HealthDataSharingViaNoirHelper.t.sol`
 ```shell
 sh ./test/runningTest_2.sh
-```
-
-- Run the test of the `Scenario.t.sol`
-```shell
-sh ./test/runningTest_3.sh
 ```
 
 
