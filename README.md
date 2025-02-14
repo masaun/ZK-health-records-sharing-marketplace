@@ -2,23 +2,28 @@
 
 ## Overview
 
-In the drug descovery space, there are problems for the following actors respectively:
-- For a Health Data Provider (i.e. patient, wearable device holder like Apple Watch holder), there is negative situations that their sensitive informations may also be leaked when they share their health records/data with Medical Researchers. Also, there is lack of incentive to share their health records/data with Medical Researchers. 
-- For a Medical Researcher, there is lack of health records/data to be analyzed for developing new drugs.
+In the **drug descovery** space, which is one of space in **DeSci**, there are problems for the following actors respectively:
+- For a **Health Data Provider** (i.e. patient, wearable device holder like Apple Watch holder), there is negative situations that their sensitive informations may also be leaked when they share their health records/data with Medical Researchers. Also, there is lack of incentive to share their health records/data with Medical Researchers. 
+- For a **Medical Researcher**, there is lack of health records/data to be analyzed for developing new drugs.
 
 The ZK (Zero-Knowledge) based Health Records/Data Sharing Marketplace, which is built on top of Noir and zkVerify, can resolved the problems above.
 
 In the Marketplace where buy/sell a Health records/data, there are the following 2 actors:
-- Seller: Health Data Provider (i.e. patient, wearable device holder like Apple Watch holder)
-- Buyer: Medical Researcher
+- **Seller**: **Health Data Provider** (i.e. patient, wearable device holder like Apple Watch holder)
+- **Buyer**: **Medical Researcher** (who want to analze Health records/data for developing new drugs)
 
 The advantage for a Health Data Provider (Seller) is that:
-- Health Data Provider can share (sell) their health data without sensitive data (i.e. Age, Name).
-- Selective Disclosure: 
-- Financial Incentive: A Health Data Provider can earn the rewards (fees), which is paid by a Medical Researcher when the Medical Researcher buy their health data.
+- A Health Data Provider can share (sell) their health data without sensitive data (i.e. Age, Name).
+  - NOTE: In the ZK circuit in Noir of this project (`./circuits/main.nr`), whether or not the `age` of a Health Data Provider is above 18 would be validated.
+
+- A Health Data Provider can choose which data they want to share (as the `Selective Disclosure` feature) 
+  - NOTE: In the ZK circuit in Noir of this project (`./circuits/main.nr`), the `Selective Disclosure` feature can be seen. 
+
+- A Health Data Provider can earn the rewards (fees) as a financial Incentive, which is paid by a Medical Researcher when the Medical Researcher buy their health data.
 
 The advantage for a Medical Researcher (Buyer) is that:
-- Buy a health Data which keep Data integrity - by ZK Proof and zkVerify’s attestation-attested health data
+- A Medical Researcher can collect (buy) a health records/data that the data integrity is kept by ZK Proof, which is generated in Noir and attested by zkVerify.
+- A Medical Researcher can collect (buy) a health records/data from the transparent market thanks to transacting on the smart contract based marketplace.
 
 <br>
 
@@ -33,6 +38,7 @@ The advantage for a Medical Researcher (Buyer) is that:
 
 ## DEMO Video
 
+### Basic information of DEMO Video
 - DEMO Video link: https://youtu.be/mpMr7RNzpJM
   
 - In the DEMO Video above, there are 2 pages:
@@ -42,6 +48,20 @@ The advantage for a Medical Researcher (Buyer) is that:
 - Both pages can work - after locally running the frontend app in the `./app` directory by the `npm run dev` command. 
 
 <br>
+
+### Description of DEMO Video
+
+
+<br>
+
+### Limitation of DEMO Video
+
+- Input data (Health records/data) must be inputted via Prover.toml to generate Noir's UltraPlonk Proof and zkVerify's UltraPlonk Proof
+  - In the future, these input data should be inputted via UI.
+
+
+<br>
+
 
 ## Deployed-smart contracts on EDU Chain (testnet)
 
