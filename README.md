@@ -3,27 +3,29 @@
 ## Overview
 
 In the **drug descovery** space, which is one of space in **DeSci**, there are problems for the following actors respectively:
-- For a **Health Data Provider** (i.e. patient, wearable device holder like Apple Watch holder), there is negative situations that their sensitive informations may also be leaked when they share their health records/data with Medical Researchers. Also, there is lack of incentive to share their health records/data with Medical Researchers. 
-- For a **Medical Researcher**, there is lack of health records/data to be analyzed for developing new drugs.
+- For a **Health Data Provider** (i.e. patient, wearable device holder like Apple Watch holder), there is negative situations that their unnecessary sensitive informations may also be leaked when they share their health records/data with Medical Researchers. Also, there is lack of incentive to share their health records/data with Medical Researchers. 
+- For a **Medical Researcher**, there is lack of access to large amount of the health records/data, which the data integrity is kept, to be analyzed for developing new drugs. Also, there is lack of transparent marketplace of them. These are one of cause of that makes the speed (pace) of new drug discovery slower.
 
-The ZK (Zero-Knowledge) based Health Records/Data Sharing Marketplace, which is built on top of Noir and zkVerify, can resolved the problems above.
+The ZK (Zero-Knowledge) based Health Records/Data Sharing Marketplace, which is built on top of Noir and zkVerify, can resolved the problems above by applying ZK (Zero-Knowledge) cryptographic techniques and smart contract/blockchain in order to securely share (buy/sell) sensitive health records/data while maintaining strong privacy protections. 
+This allow for more collaborative and open medical research (in DeSci space) without compromising individual privacy. 
 
 In the Marketplace where buy/sell a Health records/data, there are the following 2 actors:
 - **Seller**: **Health Data Provider** (i.e. patient, wearable device holder like Apple Watch holder)
 - **Buyer**: **Medical Researcher** (who want to analze Health records/data for developing new drugs)
 
-The advantage for a Health Data Provider (Seller) is that:
+_The advantage for a Health Data Provider (Seller) is that:_
 - A Health Data Provider can share (sell) their health data without sensitive data (i.e. Age, Name).
-  - NOTE: In the ZK circuit in Noir of this project (`./circuits/main.nr`), whether or not the `age` of a Health Data Provider is above 18 would be validated.
+  - NOTE: In the ZK circuit in Noir of this project (`./circuits/src/main.nr`), whether or not the `age` of a Health Data Provider is above 18 would be validated.
 
-- A Health Data Provider can choose which data they want to share (as the `Selective Disclosure` feature) 
-  - NOTE: In the ZK circuit in Noir of this project (`./circuits/main.nr`), the `Selective Disclosure` feature can be seen. 
+- A Health Data Provider can choose which data they want to share (as the `"Selective Disclosure"` feature) 
+  - NOTE: In the ZK circuit in Noir of this project (`./circuits/src/main.nr`), the `"Selective Disclosure"` feature can be seen. 
 
-- A Health Data Provider can earn the rewards (fees) as a financial Incentive, which is paid by a Medical Researcher when the Medical Researcher buy their health data.
+- In exchange for sharing (selling) their health records/data, a Health Data Provider can earn the rewards (fees) as a financial incentive, which is paid by a Medical Researcher when the Medical Researcher buy their health data.
 
-The advantage for a Medical Researcher (Buyer) is that:
-- A Medical Researcher can collect (buy) a health records/data that the data integrity is kept by ZK Proof, which is generated in Noir and attested by zkVerify.
-- A Medical Researcher can collect (buy) a health records/data from the transparent market thanks to transacting on the smart contract based marketplace.
+_The advantage for a Medical Researcher (Buyer) is that:_
+- A Medical Researcher can securely collect (buy) a health records/data that the data integrity is kept by **ZK Proof**, which is generated in **Noir** and attested by **zkVerify**.
+
+- A Medical Researcher can securely collect (buy) a health records/data from the transparent market thanks to transacting on the **smart contract** based marketplace.
 
 <br>
 
