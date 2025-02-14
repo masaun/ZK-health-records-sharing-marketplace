@@ -1,4 +1,4 @@
-# ZK based Health Records/Data Sharing Marketplace (built on the top of `Noir` and `zkVerify`)
+# ZK based Health Records/Data Sharing Marketplace (built on top of `Noir` and `zkVerify` and `EDU Chain`)
 
 ## Overview
 
@@ -59,7 +59,7 @@ _The advantage for a Medical Researcher (Buyer) is that:_
 
 ### Limitation of DEMO Video
 
-- Input data (Health records/data) must be inputted via the `Prover.toml` (`./circuits/src/Prover.toml`) to generate Noir's UltraPlonk Proof and zkVerify's UltraPlonk Proof
+- Input data (Health records/data) must be inputted via the `Prover.toml` (`./circuits/src/Prover.toml`) to generate Noir's UltraPlonk Proof and zkVerify's UltraPlonk Proof.
   - In the future, these input data should be inputted via UI.
 
 
