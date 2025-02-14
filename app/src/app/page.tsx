@@ -62,8 +62,8 @@ export default function Home() {
   /////////////////////////////////////////////////////////////
   /// zkVerify
   /////////////////////////////////////////////////////////////
-  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
-  //const handleSubmit = async () => {
+  const handleSubmit = async () => {
+  //const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     if (!selectedAccount || !selectedWallet) {
       setVerificationResult('Please connect a wallet and select an account.');
       return;
@@ -77,24 +77,24 @@ export default function Home() {
     //console.log(`vk, publicSignals, proof from the proofData: ${vk}, ${publicSignals}, ${proof}`);
 
     /// @dev - Retrieve the input values from the input form
-    event.preventDefault();
-    console.log('Input ProductId Value:', inputProductIdValue);
-    console.log('Input ProviderId Value:', inputProviderIdValue);
-    console.log('Input Name Value:', inputNameValue);
-    console.log('Is Provider ID checked?:', isCheckedRevealProviderId);
-    console.log('Is Name checked?:', isCheckedRevealName);
-    console.log('Is WalletAddress checked?:', isCheckedRevealWalletAddress);
-    console.log('Is Age checked?:', isCheckedRevealAge);
-    console.log('Is Gender checked?:', isCheckedRevealGender);
+    // event.preventDefault();
+    // console.log('Input ProductId Value:', inputProductIdValue);
+    // console.log('Input ProviderId Value:', inputProviderIdValue);
+    // console.log('Input Name Value:', inputNameValue);
+    // console.log('Is Provider ID checked?:', isCheckedRevealProviderId);
+    // console.log('Is Name checked?:', isCheckedRevealName);
+    // console.log('Is WalletAddress checked?:', isCheckedRevealWalletAddress);
+    // console.log('Is Age checked?:', isCheckedRevealAge);
+    // console.log('Is Gender checked?:', isCheckedRevealGender);
 
     /// @dev - Generate a ZK proof via NoirJS
-    try {
-      await onGenerateProof();
-    } catch (error) {
-      setVerificationResult(`Error: ${(error as Error).message}`);
-    } finally { 
-      setLoading(false);
-    }
+    // try {
+    //   await onGenerateProof();
+    // } catch (error) {
+    //   setVerificationResult(`Error: ${(error as Error).message}`);
+    // } finally { 
+    //   setLoading(false);
+    // }
 
     /// @dev - Verify a ZK proof via zkVerify
     try {
@@ -106,31 +106,31 @@ export default function Home() {
         provider, 
         signer, 
         account, /// @dev - walletAddress, which is also used for an argument of ZK circuit (main.nr)
-        inputProductIdValue,
-        inputProviderIdValue,
-        inputNameValue,
-        inputHeightValue,
-        inputWeightValue,
-        inputAgeValue,
-        inputGenderValue,
-        inputRaceTypeValue,
-        inputBloodTypeValue,
-        inputBloodPressureValue,
-        inputHeartRateValue,
-        inputAverageHoursOfSleepValue,
+        // inputProductIdValue,
+        // inputProviderIdValue,
+        // inputNameValue,
+        // inputHeightValue,
+        // inputWeightValue,
+        // inputAgeValue,
+        // inputGenderValue,
+        // inputRaceTypeValue,
+        // inputBloodTypeValue,
+        // inputBloodPressureValue,
+        // inputHeartRateValue,
+        // inputAverageHoursOfSleepValue,
         /// @dev - Below are "Selective Disclose" (NOTE: isCheckedRevealProductId is not needed)
-        isCheckedRevealProviderId,
-        isCheckedRevealName,
-        isCheckedRevealWalletAddress,
-        isCheckedRevealAge,
-        isCheckedRevealGender,
-        isCheckedRevealHeight,
-        isCheckedRevealWeight,
-        isCheckedRevealRaceType,
-        isCheckedRevealBloodType,
-        isCheckedRevealBloodPressure,
-        isCheckedRevealHeartRate,
-        isCheckedRevealAverageHoursOfSleep
+        // isCheckedRevealProviderId,
+        // isCheckedRevealName,
+        // isCheckedRevealWalletAddress,
+        // isCheckedRevealAge,
+        // isCheckedRevealGender,
+        // isCheckedRevealHeight,
+        // isCheckedRevealWeight,
+        // isCheckedRevealRaceType,
+        // isCheckedRevealBloodType,
+        // isCheckedRevealBloodPressure,
+        // isCheckedRevealHeartRate,
+        // isCheckedRevealAverageHoursOfSleep
       );
     } catch (error) {
       setVerificationResult(`Error: ${(error as Error).message}`);
@@ -167,25 +167,8 @@ export default function Home() {
   return (
       <div className={styles.page}>
         <div className={styles.main}>
-          <Image
-              src="/zk_Verify_logo_full_black.png"
-              alt="zkVerify Logo"
-              width={450}
-              height={150}
-          />
 
-          <br />
-
-          <h1>HealthData Provider Page</h1>
-          <Link href="/medicalResearcherPage">
-            Go to the MedicalResearcherPage
-          </Link>
-
-          <br />
-
-          <Link href="/about">
-            Go to the About Page
-          </Link>
+          <h1>Page for HealthData Provider</h1>
 
           <br />
 
@@ -196,7 +179,8 @@ export default function Home() {
           <ConnectEVMWalletButton />
 
           <br></br>
-
+            
+          {/* 
           <form onSubmit={handleSubmit}>
             <h4>Product ID</h4>
             <input
@@ -399,8 +383,8 @@ export default function Home() {
               )}
             </button>
           </form>
+          */}
 
-          {/* 
           <button
               onClick={handleSubmit}
               className={`button ${styles.verifyButton}`}
@@ -412,10 +396,9 @@ export default function Home() {
                   <div className="spinner"></div>
                 </>
             ) : (
-                'Submit Proof'
+                'Submit a Health Data Proof'
             )}
-          </button> 
-          */}
+          </button>
 
           <div className={styles.resultContainer}>
             {verificationResult && (
@@ -468,6 +451,18 @@ export default function Home() {
                 </div>
             )} 
           </div>
+
+          <br />
+
+          <div>
+            ( Link: 
+            <u>
+              <Link href="/medicalResearcherPage">
+                Move to the MedicalResearcherPage )
+              </Link>
+            </u>
+          </div>
+
         </div>
       </div>
   );

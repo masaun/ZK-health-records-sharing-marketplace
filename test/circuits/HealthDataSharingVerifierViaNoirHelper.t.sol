@@ -68,10 +68,8 @@ contract HealthDataSharingVerifierViaNoirHelperTest is Test {
         // bool revealHeartRate = true;
         // bool revealAverageHoursOfSleep = true;
 
-        noirHelper.withInput("productId", 1)
-                  .withInput("providerId", 1)
-                  .withInput("name", 376348719)
-                  .withInput("walletAddress", 0x2e315a7650eD5FaF4F909EdaF6a8C5908c568F04) /// @dev - Success
+        noirHelper.withInput("name", 376348719)
+                  .withInput("walletAddress", 0x2e315a7650eD5FaF4F909EdaF6a8C5908c568F04) /// @dev - Should input the same address with a Health Data Provider address, which is inputted via the Prover.toml.
                   //.withInput("walletAddress", bytes32(abi.encodePacked(0x8b29290F07E37615Fa68D64A1759F19d72D154E9))) /// @dev - Convert to 'bytes' type data
                   .withInput("height", 180)
                   .withInput("weight", 70)
@@ -79,19 +77,21 @@ contract HealthDataSharingVerifierViaNoirHelperTest is Test {
                   .withInput("gender", 1)
                   .withInput("race_type", 1)
                   .withInput("blood_type", 1) /// @dev - 'blood_type' parameter (u8) - 'A' is '1', 'B' is '2', 'AB' is '3', 'O' is '4'
-                  .withInput("blood_pressure", 110)
+                  .withInput("blood_pressure_systolic", 120)
+                  .withInput("blood_pressure_diastolic", 80)
                   .withInput("heart_rate", 75)
                   .withInput("average_hours_of_sleep", 8)
                   .withInput("revealProviderId", true)
                   .withInput("revealName", false)
                   .withInput("revealWalletAddress", true)
-                  .withInput("revealAge", true)
+                  .withInput("revealAge", false)
                   .withInput("revealGender", true)
                   .withInput("revealHeight", true)
                   .withInput("revealWeight", true)
                   .withInput("revealRaceType", true)
                   .withInput("revealBloodType", true)
-                  .withInput("revealBloodPressure", true)
+                  .withInput("revealBloodPressureSystolic", true)
+                  .withInput("revealBloodPressureDiastolic", true)
                   .withInput("revealHeartRate", true)
                   .withInput("revealAverageHoursOfSleep", true);
                   //.withInput("return", 1);
@@ -113,7 +113,8 @@ contract HealthDataSharingVerifierViaNoirHelperTest is Test {
                 //     average_hours_of_sleep: outputAverageHoursOfSleep
                 // }
 
-        (bytes32[] memory publicInputs, bytes memory proof) = noirHelper.generateProof("test_verifyProof", 14); /// [NOTE]: The number of 'publicInput' is '2'
+        (bytes32[] memory publicInputs, bytes memory proof) = noirHelper.generateProof("test_verifyProof", 12); /// [NOTE]: The number of 'publicInput' is '12'
+        //(bytes32[] memory publicInputs, bytes memory proof) = noirHelper.generateProof("test_verifyProof", 14); /// [NOTE]: The number of 'publicInput' is '14'
         //(bytes32[] memory publicInputs, bytes memory proof) = noirHelper.generateProof("test_verifyProof", 2); /// [NOTE]: The number of 'publicInput' is '2'
         healthDataSharingVerifier.verifyHealthDataSharingProof(proof, publicInputs);
     }

@@ -24,7 +24,7 @@ export default function MedicalResearcherPage() {
   const { connectEVMWallet, provider, signer, account, walletConnected } = useConnectEVMWallet();  /// @dev - Connect to an EVM wallet (i.e. MetaMask)
   const { onGetNativeTokenBalance, nativeTokenBalance } = useGetBalance();
   const { onReceiveHealthData, status, error, txHash, healthDataDecodedReceived } = useReceiveHealthData();
-  const { onGetHealthDataDecodedReceived, publicInputInHealthDataReceived, productId, providerId, name, walletAddress, height, weight, age, gender, raceType, bloodType, bloodPressure, heartRate, averageHoursOfSleep } = useGetHealthDataDecodedReceived();
+  const { onGetHealthDataDecodedReceived, publicInputInHealthDataReceived, name, walletAddress, height, weight, age, gender, raceType, bloodType, bloodPressureSystolic, bloodPressureDiastolic, heartRate, averageHoursOfSleep } = useGetHealthDataDecodedReceived();
   //const { _healthDataDecodedReceived, onGetHealthDataDecodedReceived } = useGetHealthDataDecodedReceived();
   const { onGetAvailableAttestationIds, availableAttestationIds } = useGetAvailableAttestationIds();
   const [fetchedAvailableAttestationIds, setFetchedAvailableAttestationIds] = useState<string | null>(null);
@@ -88,7 +88,6 @@ export default function MedicalResearcherPage() {
 
     try {
       await onGetHealthDataDecodedReceived(provider, signer, account, inputAttestationIdValueForGetHealthDataDecodedReceived);
-      console.log(`productId (on the MR page): ${ productId }`);
       //console.log(`_healthDataDecodedReceived (on the MR page): ${ _healthDataDecodedReceived }`);
     } catch (error) {
       setVerificationResult(`Error: ${(error as Error).message}`);
@@ -188,21 +187,9 @@ export default function MedicalResearcherPage() {
   return (
       <div className={styles.page}>
         <div className={styles.main}>
-          <Image
-               src="/zk_Verify_logo_full_black.png"
-               alt="zkVerify Logo"
-               width={450}
-               height={150}
-          />
- 
+          <h1>Page for Medical Researcher</h1>
+
           <br />
-
-          <h1>Medical Researcher Page</h1>
-          <Link href="/">
-            Go to the HealthData Provider Page
-          </Link>
-
-          {/* <br /> */}
 
           {/* <h4>Deposit</h4> */}
 
@@ -228,7 +215,8 @@ export default function MedicalResearcherPage() {
 
           <ConnectEVMWalletButton />
 
-          <h4>$EDU balance of account: { String(nativeTokenBalance) } EDU</h4>
+          <h2>$EDU balance of account (on EDU Chain testnet)</h2>
+          {/* <h2>$EDU balance of account (on EDU Chain testnet): { String(nativeTokenBalance) } $EDU</h2> */}
 
           <button
               onClick={handleGetNativeTokenBalance}
@@ -236,6 +224,22 @@ export default function MedicalResearcherPage() {
           >
             Get $EDU balance of account
           </button>
+          
+          <div className={styles.resultContainer}>
+            {nativeTokenBalance && (
+                <p
+                    className={
+                      nativeTokenBalance.includes('failed') ||
+                      nativeTokenBalance.includes('Error') ||
+                      nativeTokenBalance.includes('Rejected')
+                          ? styles.resultError
+                          : styles.resultSuccess
+                    }
+                >
+                  { String(nativeTokenBalance + " $EDU") }
+                </p>
+            )} 
+          </div>
 
           <br />
 
@@ -243,13 +247,13 @@ export default function MedicalResearcherPage() {
 
           <br />
 
-          <h4>Available (= Buyable) Attestation IDs</h4> 
+          <h2>Attestation IDs of Buyable Health Data</h2> 
           
           <button
               onClick={handleGetAvailableAttestationIds}
               className={`button ${styles.verifyButton}`}
           >
-            Get Available Attestation IDs
+            Get Attestation IDs of Buyable Health Data
           </button>
 
           <div className={styles.resultContainer}>
@@ -271,6 +275,9 @@ export default function MedicalResearcherPage() {
           <br />
 
           <form onSubmit={handleSubmit}>
+            <h2>Buy a Health Data, which is attested (by zkVerify), in $EDU</h2>
+            <p>NOTE: This payment will be sent to a Health Data Provider via the HealthDataSharingMarketplance contract</p>
+            <p>NOTE: Current price per Health Data-attached a single atttestation ID: 0.00001 $EDU</p>
             <h4>Attestation ID</h4>
             <input
               type="text"
@@ -292,7 +299,7 @@ export default function MedicalResearcherPage() {
                     <div className="spinner"></div>
                   </>
               ) : (
-                  'Receive Attested-Health Data'
+                  'Buy Health Data-attested in $EDU'
               )}
             </button>
           </form>
@@ -346,6 +353,7 @@ export default function MedicalResearcherPage() {
           <br />
 
           <form onSubmit={handleGetHealthDataDecodedReceived}>
+            <h2>Show a Health Data-bought, which is attested (by zkVerify), in decoded-values</h2>
             <h4>Attestation ID</h4>
             <input
               type="text"
@@ -367,26 +375,20 @@ export default function MedicalResearcherPage() {
                     <div className="spinner"></div>
                   </>
               ) : (
-                  'Receive decoded-attested Health Data'
+                  'Show Health Data-bought in decoded-values'
               )}
             </button>
           </form>
 
           <div className={styles.resultContainer}>
-            {publicInputInHealthDataReceived && (
+            {!publicInputInHealthDataReceived && (
                 <div className={styles.transactionDetails}>
-                  <p>Product ID: { String(productId) != "0" ? String(productId) : 'Not Revealed' }</p>
-                  {/* <p>Product ID: { String(productId) || 'Not Revealed' }</p> */}
+                  <p>{ String("Please push the 'Show Health Data-bought in decoded-values' button above") }</p> 
+                  <p>{ String("If this space is not changed after pushing the button, it means that you (medical researcher) have not bought the health data and paid for it yet. In this case, please buy the health data and pay for it at first") }</p>
+                  {/* <p>{ String("This medical researcher (caller) is not paid yet for the health data") }</p> */}
                 </div>
             )}
-
-            {publicInputInHealthDataReceived && (
-                <div className={styles.transactionDetails}>
-                  <p>Provider ID: { String(providerId) != "0" ? String(providerId) : 'Not Revealed' }</p>
-                  {/* <p>Provider ID: { String(providerId) || 'Not Revealed' }</p> */}
-                </div>
-            )}
-
+          
             {publicInputInHealthDataReceived && (
                 <div className={styles.transactionDetails}>
                   <p>Name: { String(name) != "0" ? String(name) : 'Not Revealed' }</p>
@@ -403,14 +405,14 @@ export default function MedicalResearcherPage() {
 
             {publicInputInHealthDataReceived && (
                 <div className={styles.transactionDetails}>
-                  <p>Height: { String(height) != "0" ? String(height) : 'Not Revealed' }</p>
+                  <p>Height: { String(height) != "0" ? String(height + " cm") : 'Not Revealed' }</p>
                   {/* <p>Height: { String(height) || 'Not Revealed' }</p> */}
                 </div>
             )}
 
             {publicInputInHealthDataReceived && (
                 <div className={styles.transactionDetails}>
-                  <p>Weight: { String(weight) != "0" ? String(weight) : 'Not Revealed' }</p>
+                  <p>Weight: { String(weight) != "0" ? String(weight + " kg") : 'Not Revealed' }</p>
                   {/* <p>Weight: { String(weight) || 'Not Revealed' }</p> */}
                 </div>
             )}
@@ -448,25 +450,43 @@ export default function MedicalResearcherPage() {
 
             {publicInputInHealthDataReceived && (
                 <div className={styles.transactionDetails}>
-                  <p>Blood Pressure: { String(bloodPressure) != "0" ? String(bloodPressure) : 'Not Revealed' }</p>
-                  {/* <p>Blood Pressure: { String(bloodPressure) || 'Not Revealed' }</p> */}
+                  <p>Blood Pressure (Systolic): { String(bloodPressureSystolic) != "0" ? String(bloodPressureSystolic + " mmHg") : 'Not Revealed' }</p>
+                  {/* <p>Blood Pressure (Systolic): { String(bloodPressureSystolic) || 'Not Revealed' }</p> */}
                 </div>
             )}
 
             {publicInputInHealthDataReceived && (
                 <div className={styles.transactionDetails}>
-                  <p>Heart Rate: { String(heartRate) != "0" ? String(heartRate) : 'Not Revealed' }</p>
+                  <p>Blood Pressure (Diastolic): { String(bloodPressureDiastolic) != "0" ? String(bloodPressureDiastolic + " mmHg") : 'Not Revealed' }</p>
+                  {/* <p>Blood Pressure (Diastolic): { String(bloodPressureDiastolic) || 'Not Revealed' }</p> */}
+                </div>
+            )}
+
+            {publicInputInHealthDataReceived && (
+                <div className={styles.transactionDetails}>
+                  <p>Heart Rate: { String(heartRate) != "0" ? String(heartRate + "/h") : 'Not Revealed' }</p>
                   {/* <p>Heart Rate: { String(heartRate) || 'Not Revealed' }</p> */}
                 </div>
             )}
 
             {publicInputInHealthDataReceived && (
                 <div className={styles.transactionDetails}>
-                  <p>Average Hours Of Sleep: { String(averageHoursOfSleep) != "0" ? String(averageHoursOfSleep) : 'Not Revealed' }</p>
+                  <p>Average Hours Of Sleep: { String(averageHoursOfSleep + " hours") != "0" ? String(averageHoursOfSleep) : 'Not Revealed' }</p>
                   {/* <p>Average Hours Of Sleep: { String(averageHoursOfSleep) || 'Not Revealed' }</p> */}
                 </div>
             )}
           </div>
+
+          <br />
+          <br />
+
+          <div>
+            ( Link: 
+            <Link href="/">
+              Move to the HealthData Provider Page )
+            </Link>
+          </div>
+
         </div>
       </div>
   );

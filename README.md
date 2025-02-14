@@ -1,3 +1,43 @@
+# ZK based Health Data Sharing Marketplace (built on the top of `Noir` and `zkVerify`)
+
+## Overview
+
+In the drug descovery space, there is a problem that .
+- For a Health Data Provider (i.e. patient, wearable device holder like Apple Watch holder), ~.
+- For a Medical Researcher, ~.
+
+
+This is the ZK (Zero-Knowledge) based Health Data Sharing Marketplace, which is built on top of Noir and zkVerify.
+
+Marketplace where buy/sell a Health data between the following 2 actors:
+- Seller: Health Data Provider 
+- Buyer: Medical Researcher
+
+The advantage for a seller is that:
+- Seller can share (sell) their health data without sensitive data (i.e. Age, Name)
+- Selective Disclosure ⭐
+
+The advantage for a buyer is that:
+- Buy a health Data which keep Data integrity - by ZK Proof and zkVerify’s attestation-attested health data
+
+<br>
+
+## Archtecture and Userflow
+
+- Archtecture and Userflow: 
+ ![Image](https://github.com/user-attachments/assets/8f5cd53e-0999-4778-ac0d-fdf12370bdde)
+
+
+<br>
+
+## DEMO Video
+
+- Video Link
+
+<br>
+
+<hr>
+
 
 ## Installation
 - Install libraries

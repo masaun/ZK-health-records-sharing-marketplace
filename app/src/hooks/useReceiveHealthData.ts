@@ -36,33 +36,52 @@ export function useReceiveHealthData() {
 
             /// @dev - Retrieve the logs of above.
             console.log("NEXT_PUBLIC_EDU_CHAIN_RPC_URL: ", process.env.NEXT_PUBLIC_EDU_CHAIN_RPC_URL);
-
-            const abiZkvContract = [
-                "event AttestationPosted(uint256 indexed _attestationId, bytes32 indexed _proofsAttestation)"
-            ];
+            console.log("NEXT_PUBLIC_EDU_CHAIN_HEALTH_DATA_SHARING_EXECUTOR_CONTRACT_ADDRESS: ", process.env.NEXT_PUBLIC_EDU_CHAIN_HEALTH_DATA_SHARING_EXECUTOR_CONTRACT_ADDRESS);
 
             /// @dev - ABI of the HealthDataSharingExecutor.sol
             const abiHealthDataSharingExecutorContract = [
-                "function submitHealthData(bytes calldata proof, bytes32[] calldata publicInput, uint256 medicalResearcherId, uint256 healthDataSharingRequestId, uint256 _attestationId, bytes32 _leaf, bytes32[] calldata _merklePath, uint256 _leafCount, uint256 _index)",
-                "function receiveHealthData(uint256 _attestationId)",
+                "function buyHealthData(uint256 _attestationId) public payable returns(bool)",
+                "function receiveHealthData(uint256 _attestationId) public returns(bool)",
                 "function getAvailableAttestationIds() public view returns(uint256[] memory _availableAttestationIds)",
-                "function getHealthDataDecodedReceived(uint256 _attestationId) public view returns (tuple(uint256 id, string data))",
+                "function getHealthDataDecodedReceived(uint256 _attestationId) public view returns(tuple(uint256 id, string data))",
                 "function getHealthData(uint256 _attestationId) public view returns(tuple(bytes proof, bytes32[] publicInput))",
-                "function getPublicInputInHealthData(uint256 _attestationId) public view returns(bytes32[] memory _publicInput)"
-                //"function getPublicInputInHealthData(uint256 _attestationId) public view returns(tuple(bytes32[] publicInput))"
+                "function getPublicInputInHealthData(uint256 attestationId, address healthDataProvider, address medicalResearcher)",
+                //"function getPublicInputInHealthData(uint256 _attestationId) public view returns(bytes32[] memory _publicInput)",
+                "function getRewardAmountPerSubmission() public view returns(uint256 _rewardAmountPerSubmission)",
+                "function registerAsHealthDataProvider(address account) public returns(uint256 healthDataProviderId)"
             ];
 
-            const zkvContract = new Contract(process.env.NEXT_PUBLIC_EDU_CHAIN_ZKVERIFY_CONTRACT_ADDRESS, abiZkvContract, provider);
             const healthDataSharingExecutorContract = new Contract(process.env.NEXT_PUBLIC_EDU_CHAIN_HEALTH_DATA_SHARING_EXECUTOR_CONTRACT_ADDRESS, abiHealthDataSharingExecutorContract, provider);
             const healthDataSharingExecutorContractWithSigner = healthDataSharingExecutorContract.connect(signer);
             
             /// @dev - Call the HealthDataSharingRequester#receiveHealthData()
-            const rewardAmountPerSubmission = ethers.parseEther('0.00001'); // 0.00001 $EDU
-            const txResponse = await healthDataSharingExecutorContractWithSigner.receiveHealthData(attestationId, { value: rewardAmountPerSubmission });
+            const rewardAmountPerSubmission = ethers.parseEther('0.00001'); // 0.00001 $EDU -> 10000000000000 wei in $EDU
+            console.log(`rewardAmountPerSubmission: ${rewardAmountPerSubmission} wei in $EDU`);
+
+            /// @dev - Send a transaction to the contract -> Success!!
+            // const tx = await signer.sendTransaction({
+            //     to: process.env.NEXT_PUBLIC_EDU_CHAIN_HEALTH_DATA_SHARING_EXECUTOR_CONTRACT_ADDRESS,
+            //     value: ethers.parseEther('0.00001')
+            // });
+
+            /// @dev - Register as a Health Data Provider -> Success!!
+            // const txResponse = await healthDataSharingExecutorContractWithSigner.registerAsHealthDataProvider(account);
+            // await txResponse.wait();
+            // const { hash } = await txResponse;
+            // console.log(`Tx sent to EDU Chain (Testnet), tx-hash 2: ${hash}`);
+
+            const txResponse = await healthDataSharingExecutorContractWithSigner.buyHealthData(attestationId, { value: String(rewardAmountPerSubmission) });
             await txResponse.wait();
             const { hash } = await txResponse;
             console.log(`Tx sent to EDU Chain (Testnet), tx-hash ${hash}`);
             setTxHash(hash);
+
+            // const txResponse = await healthDataSharingExecutorContractWithSigner.receiveHealthData(attestationId);
+            // //const txResponse = await healthDataSharingExecutorContractWithSigner.receiveHealthData(attestationId, { value: String(rewardAmountPerSubmission) });
+            // await txResponse.wait();
+            // const { hash } = await txResponse;
+            // console.log(`Tx sent to EDU Chain (Testnet), tx-hash ${hash}`);
+            // setTxHash(hash);
 
             /// @dev - Retrieve the decoded publicInput
             const healthDataDecodedReceivedStorage = await healthDataSharingExecutorContract.getHealthDataDecodedReceived(attestationId);
