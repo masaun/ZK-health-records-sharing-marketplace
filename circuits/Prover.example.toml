@@ -1,6 +1,6 @@
 #return = ""     # Don't write the return value here - Because the return value is the Struct data
 
-# [NOTE]: Input of "Boolean" type should be write in a string number (True: "0" / False: "1")
+# [NOTE]: Each `revealed` data (i.e. `revealName`) should be written in `"Boolean"` type. But, it should be written in a string number (True: `"0"` / False: `"1"`)
 name = ""
 walletAddress = "<EOA /or SmartContractWallet addresss of a Health Data Provider>"
 height = ""

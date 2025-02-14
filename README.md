@@ -146,12 +146,48 @@ This result must be `noir-cli 0.3.0`.
 cd circuits
 ```
 
+- 2/ Create the `Prover.toml` file by coping the example file (`Prover.example.toml`) in the `./circuits` directory.
+```shell
+cp Prover.example.toml Prover.toml
+```
+
+- 3/ Write the `input data` (`Health Records/Data`) should be written in the `Prover.toml`.
+  - [NOTE]: This `input data` would be assumed that a Health Data Provider input their `Health Records/Data`. And then, this will be used for generating a ZK proof (Ultraplonk proof) in Noir in the subsequent process.
+  - [NOTE]: Each `revealed` data (i.e. `revealName`) should be written in `"Boolean"` type. But, it should be written in a string number (True: `"0"` / False: `"1"`).
+```toml
+name = ""
+walletAddress = "<EOA /or SmartContractWallet addresss of a Health Data Provider>"
+height = ""
+weight = ""
+age = ""
+gender = ""
+race_type = ""
+blood_type = ""
+blood_pressure_systolic = ""
+blood_pressure_diastolic = ""
+heart_rate = ""
+average_hours_of_sleep = ""
+revealName = ""
+revealWalletAddress = ""
+revealAge = ""
+revealGender = ""
+revealHeight = ""
+revealWeight = ""
+revealRaceType = ""
+revealBloodType = ""
+revealBloodPressureSystolic = ""
+revealBloodPressureDiastolic = ""
+revealHeartRate = ""
+revealAverageHoursOfSleep = ""
+```
+
+
 - 2/ Run the `build.sh` to run ZK circuit
 ```shell
 sh build.sh
 ```
 
-- 3/ The `proof` and `vk` in Noir would be generated under the `./circuits/target`
+- 3/ The UltraVerifier contract (`contract.sol`) and `proof` and `vk` in Noir would be generated under the `./circuits/target`.
 
 
 <br>
