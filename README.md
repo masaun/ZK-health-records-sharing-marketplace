@@ -6,11 +6,10 @@ In the drug descovery space, there is a problem that .
 - For a Health Data Provider (i.e. patient, wearable device holder like Apple Watch holder), ~.
 - For a Medical Researcher, ~.
 
-
 This is the ZK (Zero-Knowledge) based Health Records/Data Sharing Marketplace, which is built on top of Noir and zkVerify.
 
-Marketplace where buy/sell a Health data between the following 2 actors:
-- Seller: Health Data Provider 
+In the Marketplace where buy/sell a Health records/data, there are the following 2 actors:
+- Seller: Health Data Provider (i.e. patient, wearable device holder like Apple Watch holder)
 - Buyer: Medical Researcher
 
 The advantage for a seller is that:
@@ -33,7 +32,24 @@ The advantage for a buyer is that:
 
 ## DEMO Video
 
-- https://youtu.be/mpMr7RNzpJM
+- DEMO Video link: https://youtu.be/mpMr7RNzpJM
+  
+- In the DEMO Video above, there are 2 pages:
+  - The page for a Health Data Provider (URL: `http://localhost:3000`)
+  - The other page for a Medical Researcher (URL: `http://localhost:3000/medicalResearcherPage`)
+
+- Both pages can work - after locally running the frontend app in the `./app` directory by the `npm run dev` command. 
+
+<br>
+
+## Deployed-smart contracts on EDU Chain (testnet)
+
+| Contract Name | Descripttion | Deployed-contract addresses on EDU Chain (testnet) |
+| ------------- |:-------------:| -----:|
+| ZkVerifyAttestation contract | xxx | 0x147AD899D1773f5De5e064C33088b58c7acb7acf |
+| UltraVerifier | xxx | 0x71F3108Be6F52D59fdc220C2aFd21B3721Bf5fb7 |
+| HealthDataSharingVerifier | xxx | 0x23C6269f0807bFc14ab91A7d32Ad9b643B96cA1A |
+| HealthDataSharingExecutor | xxx | 0x097eB4757edba7D2c398411C07091A5Ac8ce9FEe |
 
 <br>
 
