@@ -71,6 +71,48 @@ _The advantage for a Medical Researcher (Buyer) is that:_
 
 ### Description of DEMO Video
 
+- Time 0.01~). Explain ZK circuit in Noir.
+  - `Selective Disclosure` by storing a given input data into the `RevealedData` struct and returning it as a `public input` value.
+  - Writing the input data (Health Records/Data) in the `Prover.toml`.
+
+- Time 1:51~). 
+  - Generating a ZK Proof of the input data (Health Records/Data) in Noir.
+    (The detail of this process can be seen in the ["ZK circuit - Generate (Prove) an Ultraplonk proof in Noir" paragraph](https://github.com/masaun/ZK-health-records-sharing-marketplace?tab=readme-ov-file#zk-circuit---generate-prove-an-ultraplonk-proof-in-noir))
+
+
+- Time 2.04~).
+  - Convert an original Ultraplonk proof in Noir to an Ultraplonk proof in zkVerify version (by using UltraPlonk zk-SNARK Verifier powered by zkVerify)
+    (The detail of this process can be seen [here](https://github.com/masaun/ZK-health-records-sharing-marketplace?tab=readme-ov-file#ultraplonk-zk-snark-verifier-powered-by-zkverify---convert-an-original-ultraplonk-proof-in-noir-to-an-ultraplonk-proof-in-zkverify-version))
+
+- Time 4:00~).
+  - Run the frontend (UI) locally by running `npm run dev` command and then opening a web browser with `http://localhost:3000` (which is the "Page for Health Data Provider").
+
+- Time 4:19~).
+  - On the page for Health Data Provider, connecting both wallet (Polkadot and EVM) **as a `Health Data Provider`**.
+  - Then, the Health Data Provider would submit a Health Data Proof to the zkVerify Network on Polkadot. 
+    - At this point, the Health Data Provider would sign and send the TX (transaction) of submitting a proof on `Polkadot wallet` (i.e. Talisman).
+    - At this point, the `proof data` of the Ultraplonk proof in zkVerify would be loaded and submitted as the Health Data Proof.
+
+- Time 5:04~).
+  - On the page for Health Data Provider, the TX result of the zkVerify Network and would be returned and shown with the following data.
+    - TX hash on the zkVerify Network (This TX hash can be confirm by searching on the [zkVerify Block Explorer](https://zkverify-explorer.zkverify.io))
+    - `Proof Type`: `UltraPlonk` (zk proof)
+    - `Attestation ID`: `44354`
+
+- Time 6:37~).
+  - Then, the Health Data Provider would submit the `Attestation ID` and Health Data Proof /w its `publicInput` to `EDU Chain`. 
+    - At this point, the Health Data Provider would sign and send the TX (transaction) of submitting a proof on `EVM wallet` (i.e. MetaMask).
+    - This TX hash-send to `EDU Chain` can been searched on the [`EDU Chain` Block Explorer](https://edu-chain-testnet.blockscout.com/txs).
+
+
+- Time 8:45~).
+  - A **Medical Researcher**, who is a buyer of the health records/data, would open the "Page for Medical Researcher" (`http://localhost:3000/medicalResearcherPage`) and connect their EVM Wallet.
+  - Check how much $EDU (NativeToken in EDU Chain) balance the Medical Researcher's EVM wallet hold by pushing the `"Get $EDU balance of account"` button.
+  - Check which `Attestation IDs` of health records/data is buyable by pushing the button.
+  - Buy an `Attestation ID` of the health records/data by specifying a favorble `Attestation ID` in the input field (NOTE: In this demo, a medical researcher specify `Attestation ID = 44354`) and pushing the button.
+
+     
+
 - When a Medical Researcher, who already bought the Health Data, push the `"Show a Health Data-bought in decoded-values` button on the page for a Medical Researcher:
   - If you select that the `revealed` data (i.e. `revealedName`) is `false` for a certain item (i.e, `name`) when you write the `input data` (`Health Records/Data`) in the `Prover.toml` in the process of ["ZK circuit - Generate (Prove) an Ultraplonk proof in Noir"](https://github.com/masaun/ZK-health-records-sharing-marketplace?tab=readme-ov-file#zk-circuit---generate-prove-an-ultraplonk-proof-in-noir), `"Not Revealed"` would be shown for the item on UI.
 
