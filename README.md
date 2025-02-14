@@ -383,3 +383,24 @@ npm run dev
 ```
 
 - 5/ Open the WebApp (`http://localhost:3000`) on your Web Browser (i.e. Google Chrome).
+
+
+<br>
+
+<hr>
+
+## References and Resources
+
+- zkVerify: 
+  - High-Level dApp Architecture: https://docs.zkverify.io/tutorials/porting-dapp#high-level-dapp-architecture
+  - zkVerify Architecture: https://docs.zkverify.io/overview/introduction_what_is_zkverify/core_components
+  - zkVerify relevant links (i.e. Deployed contract addresses, Block Explorer, Fancet): https://docs.zkverify.io/relevant_links
+
+
+- Noir:
+  - Doc: https://noir-lang.org/docs/getting_started/quick_start
+
+
+- EDU Chain: 
+  - Block Explorer: https://edu-chain-testnet.blockscout.com
+  - Doc (icl. RPC, Fancet, etc): https://devdocs.opencampus.xyz/build/ 
