@@ -91,7 +91,7 @@ Describe the each section in the DEMO Video (and its time in the DEMO Video):
 
 - Time 4:40~).
   - On the page for Health Data Provider, connecting both wallet (Polkadot and EVM) **as a `Health Data Provider`**.
-  - Then, the Health Data Provider would submit a Health Data Proof to the zkVerify Network on Polkadot. 
+  - Then, the Health Data Provider would **submit** a Health Data Proof to the zkVerify Network on Polkadot through the HealthDataSharingExecutor contract (`submitHealthData()` function). 
     - At this point, the Health Data Provider would sign and send the TX (transaction) of submitting a proof on `Polkadot wallet` (i.e. Talisman).
     - At this point, the `proof data` of the Ultraplonk proof in zkVerify would be loaded and submitted as the Health Data Proof.
 
@@ -118,13 +118,20 @@ Describe the each section in the DEMO Video (and its time in the DEMO Video):
 
 - Time 11:03~).
   - A **Medical Researcher**, who is a buyer of the health records/data, would open the "Page for Medical Researcher" (`http://localhost:3000/medicalResearcherPage`) and connect their EVM Wallet.
-  - Check how much $EDU (NativeToken in EDU Chain) balance the Medical Researcher's EVM wallet hold by pushing the `"Get $EDU balance of account"` button.
-  - Check which `Attestation IDs` of health records/data is buyable by pushing the button.
+  - A Medical Researcher would check how much $EDU (NativeToken in EDU Chain) balance the Medical Researcher's EVM wallet hold by clicking the `"Get $EDU balance of account"` button.
 
 
 - Time 11:37~).
-  - Buy an `Attestation ID` of the health records/data by specifying a favorble `Attestation ID` in the input field (NOTE: In this demo, a medical researcher specify `Attestation ID = 44667`) and pushing the `"Get Attestation IDs of Buyable Health Data"` button.
-  - Since the price per a health records/data would be `0.00001 $EDU`, `0.00001 $EDU` would be transferred to the Health Data Provider as the reward payment from the Medical Researcher through the HealthDataSharingExecutor contract (`buyHealthData()` function) during the Medical Researcher's TX for buying a health records/data.
+  - Check which `Attestation IDs` of health records/data is buyable by clicking the `"Get Attestation IDs of Buyable Health Data"` button.
+  - Since all `Attestation IDs` of health records/data, which is shown on the page (UI) for Medical Researcher, would be attested by zkVerify, a Medical Researcher can securely choose any `Attestation ID` of health records/data-shown on the page (UI) for Medical Researcher.
+
+
+- Time xx:xx~).
+  - A Medical Researcher would buy an `Attestation ID` of the health records/data by specifying the `Attestation ID` in the input field and then clicking the `"Get Attestation IDs of Buyable Health Data"` button. 
+    - NOTE: In this demo, a medical researcher specify `Attestation ID = 44667`) and clicking the `"Get Attestation IDs of Buyable Health Data"` button.
+    - Since the price per a health records/data would be `0.00001 $EDU`, `0.00001 $EDU` would be transferred to the Health Data Provider (Seller) as the **reward payment** from the Medical Researcher (Buyer) through the HealthDataSharingExecutor contract (`buyHealthData()` function) on `EDU Chain` during the Medical Researcher's TX for buying a health records/data.
+
+
   - This TX hash on `EDU Chain` can been searched on the [`EDU Chain` Block Explorer](https://edu-chain-testnet.blockscout.com/txs).
 
   
