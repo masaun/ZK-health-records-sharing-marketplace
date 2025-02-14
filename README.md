@@ -32,8 +32,9 @@ _The advantage for a Medical Researcher (Buyer) is that:_
 ## Archtecture and Userflow
 
 - Archtecture and Userflow: 
-  - The actual functionality of the ZK based Health Records/Data Sharing Marketplace would be implemented in the HealthDataSharingExecutor contract (`HealthDataSharingExecutor.sol`).
-    ![Image](https://github.com/user-attachments/assets/8f5cd53e-0999-4778-ac0d-fdf12370bdde)
+  - The actual functionality of the ZK based Health Records/Data Sharing Marketplace would be implemented in the HealthDataSharingExecutor contract (`HealthDataSharingExecutor.sol`).  
+    https://github.com/masaun/ZK-health-records-sharing-marketplace/tree/main/doc/diagrams  
+    ![Image](https://github.com/user-attachments/assets/f99a3358-7f0f-4e02-bd31-9267d95dc79d)
 
 
 <br>
