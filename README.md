@@ -100,8 +100,9 @@ _The advantage for a Medical Researcher (Buyer) is that:_
     - `Attestation ID`: `44354`
 
 - Time 6:37~).
-  - Then, the Health Data Provider would submit the `Attestation ID` and Health Data Proof /w its `publicInput` to `EDU Chain`. 
+  - Then, the Health Data Provider would submit the Health Data Proof /w `Attestation ID` and so on to `EDU Chain`. 
     - At this point, the Health Data Provider would sign and send the TX (transaction) of submitting a proof on `EVM wallet` (i.e. MetaMask).
+    - By submitting the Health Data Proof /w `Attestation ID` and so on to `EDU Chain`, these ZK Proof Data (`Proof`, `Public Input`) and its attestation information (i.e. `Attestation ID`, `Leaf Digest`, `Merkle Proof`) would be associated and saved on `EDU Chain`.
     - This TX hash on `EDU Chain` can be searched on the [`EDU Chain` Block Explorer](https://edu-chain-testnet.blockscout.com/txs).
 
 
