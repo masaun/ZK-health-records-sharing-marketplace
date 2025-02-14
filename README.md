@@ -1,4 +1,15 @@
-# ZK based Health Records/Data Sharing Marketplace (built on top of `Noir` and `zkVerify` and `EDU Chain`)
+# ZK based Health Records/Data Sharing Marketplace
+
+## Built on top of the following tech stack
+
+ZK based Health Records/Data Sharing Marketplace is built on top of the following tech stack:
+- `Noir` (for ZK Circuit)
+- `zkVerify` (for ZK Attestation)
+- `EDU Chain` (for deploying smart contracts)
+- Solidity / Foundry (for smart contract development)
+- Next.js / React (for front-end)
+
+<br>
 
 ## Overview
 
