@@ -71,6 +71,10 @@ _The advantage for a Medical Researcher (Buyer) is that:_
 
 ### Description of DEMO Video
 
+- When a Medical Researcher, who already bought the Health Data, push the `"Show a Health Data-bought in decoded-values` button on the page for a Medical Researcher:
+  - If you select that the `revealed` data (i.e. `revealedName`) is `false` for a certain item (i.e, `name`) when you write the `input data` (`Health Records/Data`) in the `Prover.toml` in the process of ["ZK circuit - Generate (Prove) an Ultraplonk proof in Noir"](https://github.com/masaun/ZK-health-records-sharing-marketplace?tab=readme-ov-file#zk-circuit---generate-prove-an-ultraplonk-proof-in-noir), `"Not Revealed"` would be shown for the item on UI.
+
+
 
 <br>
 
