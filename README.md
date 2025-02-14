@@ -1,4 +1,4 @@
-# ZK based Health Data Sharing Marketplace (built on the top of `Noir` and `zkVerify`)
+# ZK based Health Records/Data Sharing Marketplace (built on the top of `Noir` and `zkVerify`)
 
 ## Overview
 
@@ -7,7 +7,7 @@ In the drug descovery space, there is a problem that .
 - For a Medical Researcher, ~.
 
 
-This is the ZK (Zero-Knowledge) based Health Data Sharing Marketplace, which is built on top of Noir and zkVerify.
+This is the ZK (Zero-Knowledge) based Health Records/Data Sharing Marketplace, which is built on top of Noir and zkVerify.
 
 Marketplace where buy/sell a Health data between the following 2 actors:
 - Seller: Health Data Provider 
@@ -25,14 +25,15 @@ The advantage for a buyer is that:
 ## Archtecture and Userflow
 
 - Archtecture and Userflow: 
- ![Image](https://github.com/user-attachments/assets/8f5cd53e-0999-4778-ac0d-fdf12370bdde)
+  - The actual functionality of the ZK based Health Records/Data Sharing Marketplace would be implemented in the HealthDataSharingExecutor contract (`HealthDataSharingExecutor.sol`).
+    ![Image](https://github.com/user-attachments/assets/8f5cd53e-0999-4778-ac0d-fdf12370bdde)
 
 
 <br>
 
 ## DEMO Video
 
-- Video Link
+- https://youtu.be/mpMr7RNzpJM
 
 <br>
 
