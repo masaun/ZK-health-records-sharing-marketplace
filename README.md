@@ -126,16 +126,16 @@ Describe the each section in the DEMO Video (and its time in the DEMO Video):
   - Since all `Attestation IDs` of health records/data, which is shown on the page (UI) for Medical Researcher, would be attested by zkVerify, a Medical Researcher can securely choose any `Attestation ID` of health records/data-shown on the page (UI) for Medical Researcher.
 
 
-- Time xx:xx~).
+- Time 12:15~).
   - A Medical Researcher would buy an `Attestation ID` of the health records/data by specifying the `Attestation ID` in the input field and then clicking the `"Get Attestation IDs of Buyable Health Data"` button. 
-    - NOTE: In this demo, a medical researcher specify `Attestation ID = 44667`) and clicking the `"Get Attestation IDs of Buyable Health Data"` button.
+    - NOTE: In this demo, a medical researcher specify `Attestation ID = 44667`) and clicking the `"Buy Health Data-attested in $EDU"` button.
     - Since the price per a health records/data would be `0.00001 $EDU`, `0.00001 $EDU` would be transferred to the Health Data Provider (Seller) as the **reward payment** from the Medical Researcher (Buyer) through the HealthDataSharingExecutor contract (`buyHealthData()` function) on `EDU Chain` during the Medical Researcher's TX for buying a health records/data.
 
 
   - This TX hash on `EDU Chain` can been searched on the [`EDU Chain` Block Explorer](https://edu-chain-testnet.blockscout.com/txs).
 
   
-- Time 12:15~).
+- Time 14:40~).
   - Once a Medical Researcher would be successful to buy the Health Data, the Medical Researcher would push the `"Show a Health Data-bought in decoded-values` button on the page for a Medical Researcher:
     - If you select that the `revealed` data (i.e. `revealedName`) is `false` for a certain item (i.e, `name`) when you write the `input data` (`Health Records/Data`) in the `Prover.toml` in the process of ["ZK circuit - Generate (Prove) an Ultraplonk proof in Noir"](https://github.com/masaun/ZK-health-records-sharing-marketplace?tab=readme-ov-file#zk-circuit---generate-prove-an-ultraplonk-proof-in-noir), `"Not Revealed"` would be shown for the item on UI.
       - In this DEMO Video, the `revealedName` and `revealedAge` was specified as `false` when inputing data in the `Prover.toml` to generate a ZK Proof in Noir. Hence, the `name` and `age` would be shown as `"Not Revealed"`. 
