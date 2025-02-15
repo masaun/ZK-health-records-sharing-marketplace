@@ -167,6 +167,17 @@ NOTE: Basically, the HealthDataSharingExecutor contract would work as the Health
 
 <br>
 
+## Future integration/implementation ideas
+- [`NoirJS`](https://noir-lang.org/docs/tutorials/noirjs_app) integration:
+  - To enable a Health Data Provider to input data (their health records/data) from UI/frontend.
+    (NOTE: Instead, for the moment, a Health Data Provider would input data through the `./circuits/Prover.toml`. This way is not good from UX perspective)
+
+- [`World ID`](https://world.org/world-id) integration:
+  - To more securely verify both actors (Health Data Provider and Medical Researcher)
+
+
+<br>
+
 <hr>
 
 # Installations of the ZK based Health Records/Data Sharing Marketplace
