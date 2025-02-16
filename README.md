@@ -173,7 +173,7 @@ NOTE: Basically, the HealthDataSharingExecutor contract would work as the Health
     (NOTE: Instead, for the moment, a Health Data Provider would input data through the `./circuits/Prover.toml`. This way is not good from UX perspective)
 
 - [`World ID`](https://world.org/world-id) integration:
-  - To more securely verify both actors (Health Data Provider and Medical Researcher)
+  - To prevent malicious Health Data Provider from spamming (submitting a lot of meaningless health records/data).
 
 
 <br>
