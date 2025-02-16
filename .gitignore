@@ -12,7 +12,11 @@ broadcast
 ./test/.DS_Store
 
 plonk_vk.sol
-circuits/target/*
+circuits/target/health_data_sharing_proof.bin
+circuits/target/health_data_sharing_vk.bin
+circuits/target/health_data_sharing.gz
+circuits/target/health_data_sharing.json
+circuits/target/vk
 circuits/Prover.toml
 circuits/Verifier.toml
 
